@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -22,6 +23,8 @@ namespace MyBulkMealsApp.Models
         public virtual DbSet<AspNetUserRoles> AspNetUserRoles { get; set; }
         public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
+        public virtual DbSet<IdentityUser> IdentityUsers { get; set; }
+        public virtual DbSet<IdentityUserClaim<string>> IdentityUserClaims { get; set; }
         public virtual DbSet<Ingredient> Ingredient { get; set; }
         public virtual DbSet<MealPlan> MealPlan { get; set; }
         public virtual DbSet<MealPlanEntry> MealPlanEntry { get; set; }
