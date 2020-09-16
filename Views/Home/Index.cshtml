@@ -1,8 +1,37 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
     ViewData["Title"] = "Home Page";
+    Layout = "/Views/Shared/_SplashLayout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<div class="home__hero">
+    <img src="~/images/splash_2.jpg" class="home__hero__image" alt="Splash Image (Meal Prep Bowls)" />
+    <div class="container jumbotron position--absolute">
+        <h1 class="display-4">MyBulkMeals</h1>
+        <p class="lead">Meal prep for dummies.</p>
+        <hr class="my-4">
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <p class="lead">Hello @User.Identity.Name!</p>
+            
+            <a class="btn btn-secondary btn-lg" href="/Recipes" role="button">Recipes</a>
+            <a class="btn btn-secondary btn-lg" href="/Ingredients" role="button">Ingredients</a>
+            <a class="btn btn-secondary btn-lg" href="/MealPlans" role="button">Meal Plans</a>
+        }
+        else
+        {
+            <p class="lead">
+                Meal prep doesn't have to be difficult. MyBulkMeals helps you plan by providing high quality recipes, giving you a shopping list and helping your schedule your prep time.
+            </p>
+            <a class="btn btn-primary btn-lg" asp-area="Identity" asp-page="/Account/Register" role="button">Register</a>
+            <a class="btn btn-secondary btn-lg" asp-area="Identity" asp-page="/Account/Login" role="button">Login</a>
+        }
+    </div>
+
+
 </div>
+
