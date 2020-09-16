@@ -96,6 +96,7 @@ body {
     z-index: -1;
 }
 
-.position--absolute {
-    position: absolute;
+.home__body {
+    padding-top: 48px;
+    font-size: 1.5em;
 }

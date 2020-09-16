@@ -10,17 +10,17 @@
 
 <div class="home__hero">
     <img src="~/images/splash_2.jpg" class="home__hero__image" alt="Splash Image (Meal Prep Bowls)" />
-    <div class="container jumbotron position--absolute">
+    <div class="container jumbotron position-absolute">
         <h1 class="display-4">MyBulkMeals</h1>
         <p class="lead">Meal prep for dummies.</p>
         <hr class="my-4">
         @if (SignInManager.IsSignedIn(User))
         {
             <p class="lead">Hello @User.Identity.Name!</p>
-            
-            <a class="btn btn-secondary btn-lg" href="/Recipes" role="button">Recipes</a>
-            <a class="btn btn-secondary btn-lg" href="/Ingredients" role="button">Ingredients</a>
-            <a class="btn btn-secondary btn-lg" href="/MealPlans" role="button">Meal Plans</a>
+
+            <a class="btn btn-secondary btn-lg" href="~/Recipes" role="button">Recipes</a>
+            <a class="btn btn-secondary btn-lg" href="~/Ingredients" role="button">Ingredients</a>
+            <a class="btn btn-secondary btn-lg" href="~/MealPlans" role="button">Meal Plans</a>
         }
         else
         {
@@ -31,7 +31,47 @@
             <a class="btn btn-secondary btn-lg" asp-area="Identity" asp-page="/Account/Login" role="button">Login</a>
         }
     </div>
-
-
 </div>
 
+<div class="container home__body">
+    <div class="row">
+        <div class="col-lg-6 col-sm-12">
+            <h3  class="font-weight-bold">How does it work?</h3>
+            <p>Check out our most popular recipes and frequently used ingredients. Users are free to submit their own content, which is verified by administration, so you know you're getting quality.</p>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="shadow p-3 mb-5 bg-white rounded">
+                        Recipes
+                        <button class="btn btn-outline-info float-right">34</button>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="shadow p-3 mb-5 bg-white rounded">
+                        Ingredients
+                        <button class="btn btn-outline-info float-right">89</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-sm-12">
+            <h4 class="font-weight-bold">Our most popular recipes...</h4>
+            <ul class="list-group m-4">
+                <li class="list-group-item">Placeholder</li>
+                <li class="list-group-item list-group-item-dark">Placeholder</li>
+                <li class="list-group-item list-group-item">Placeholder</li>
+                <li class="list-group-item list-group-item-dark">Placeholder</li>
+                <li class="list-group-item">Placeholder</li>
+            </ul>
+            <button class="btn btn-outline-success btn-lg m-4">View More</button>
+        </div>
+    </div>
+    <div class="row col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-12">
+        <div class="input-group input-group-lg">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-lg">Search</span>
+            </div>
+            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+            <button class="btn btn-primary">GO!</button>
+        </div>
+    </div>
+</div>
