@@ -1,11 +1,12 @@
-﻿using System;
+﻿using MyBulkMealsApp.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MyBulkMealsApp.Models
 {
-    public partial class Recipe
+    public partial class Recipe : IEntity
     {
         [Key]
         public int Id { get; set; }

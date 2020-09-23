@@ -56,11 +56,10 @@
         <div class="col-lg-6 col-sm-12">
             <h4 class="font-weight-bold">Our most popular recipes...</h4>
             <ul class="list-group m-4">
-                <li class="list-group-item">Placeholder</li>
-                <li class="list-group-item list-group-item-dark">Placeholder</li>
-                <li class="list-group-item list-group-item">Placeholder</li>
-                <li class="list-group-item list-group-item-dark">Placeholder</li>
-                <li class="list-group-item">Placeholder</li>
+                @foreach (var recipe in (List<Recipe>)ViewData["topRecipes"])
+                {
+                    <li class="list-group-item">@recipe.ItemName</li>
+                }
             </ul>
             <button class="btn btn-outline-success btn-lg m-4">View More</button>
         </div>

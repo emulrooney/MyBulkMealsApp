@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyBulkMealsApp.Models;
+using MyBulkMealsApp.Repositories;
 
 namespace MyBulkMealsApp
 {
@@ -35,6 +36,8 @@ namespace MyBulkMealsApp
                 .AddEntityFrameworkStores<MyBulkMealsAppContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddScoped<RecipeRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
