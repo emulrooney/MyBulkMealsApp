@@ -15,7 +15,6 @@ namespace MyBulkMealsApp.Models
         [Required]
         public byte? BaseServings { get; set; }
         public string Instructions { get; set; }
-        public string Step { get; set; }
         public byte? Time { get; set; }
         public int? Views { get; set; }
     }

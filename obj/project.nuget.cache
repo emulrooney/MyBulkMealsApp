@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "i2H+v2wtxRO7b28jNqnSHiNmlXkSwVz4xFkDfRJIKJPO21Kjcoy+/Eq5akOyI5OnM5JEUMJqL+36pe3gZuacHw==",
+  "dgSpecHash": "vyztarwb47qNBfv2WSfZ4LIi5QEMd7lPLTxbbCGi5jSkN0WKu0yONDa3b+3xKMwIAifXcqYQ03vj5eElo2DlmQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\evanm\\source\\repos\\MyBulkMealsApp\\MyBulkMealsApp.csproj",
   "expectedPackageFiles": [
@@ -69,7 +69,7 @@
     "C:\\Users\\evanm\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\evanm\\.nuget\\packages\\microsoft.win32.registry\\4.5.0\\microsoft.win32.registry.4.5.0.nupkg.sha512",
     "C:\\Users\\evanm\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
-    "C:\\Users\\evanm\\.nuget\\packages\\newtonsoft.json\\12.0.2\\newtonsoft.json.12.0.2.nupkg.sha512",
+    "C:\\Users\\evanm\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
     "C:\\Users\\evanm\\.nuget\\packages\\nuget.frameworks\\4.7.0\\nuget.frameworks.4.7.0.nupkg.sha512",
     "C:\\Users\\evanm\\.nuget\\packages\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Users\\evanm\\.nuget\\packages\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",

@@ -192,10 +192,6 @@ namespace MyBulkMealsApp.Models
                     .IsRequired()
                     .HasMaxLength(128)
                     .IsUnicode(false);
-
-                entity.Property(e => e.Step)
-                    .HasMaxLength(4096)
-                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<RecipeIngredient>(entity =>
