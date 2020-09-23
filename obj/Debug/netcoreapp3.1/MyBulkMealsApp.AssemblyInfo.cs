@@ -11,7 +11,6 @@
 using System;
 using System.Reflection;
 
-[assembly: Microsoft.AspNetCore.Identity.UI.UIFrameworkAttribute("Bootstrap4")]
 [assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("aspnet-MyBulkMealsApp-E2745670-682D-4BD0-BCC2-C0D73844B791")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("MyBulkMealsApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
