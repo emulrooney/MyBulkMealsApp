@@ -7,46 +7,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyBulkMealsApp.Data;
 using MyBulkMealsApp.Models;
+using MyBulkMealsApp.Repositories;
 
 namespace MyBulkMealsApp.Controllers
 {
-    public class IngredientsController : Controller
+    public class IngredientsController : BaseController<Ingredient, IngredientRepository>
     {
-        private readonly MyBulkMealsAppContext _context;
 
-        public IngredientsController(MyBulkMealsAppContext context)
+        public IngredientsController(IngredientRepository repository) : base(repository)
         {
-            _context = context;
-        }
-
-        // GET: Ingredients
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Ingredient.ToListAsync());
-        }
-
-        // GET: Ingredients/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ingredient = await _context.Ingredient
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ingredient == null)
-            {
-                return NotFound();
-            }
-
-            return View(ingredient);
-        }
-
-        // GET: Ingredients/Create
-        public IActionResult Create()
-        {
-            return View();
         }
 
         // POST: Ingredients/Create
@@ -58,25 +27,8 @@ namespace MyBulkMealsApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(ingredient);
-                await _context.SaveChangesAsync();
+                await repository.Add(ingredient);
                 return RedirectToAction(nameof(Index));
-            }
-            return View(ingredient);
-        }
-
-        // GET: Ingredients/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ingredient = await _context.Ingredient.FindAsync(id);
-            if (ingredient == null)
-            {
-                return NotFound();
             }
             return View(ingredient);
         }
@@ -97,12 +49,11 @@ namespace MyBulkMealsApp.Controllers
             {
                 try
                 {
-                    _context.Update(ingredient);
-                    await _context.SaveChangesAsync();
+                    await repository.Update(ingredient);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!IngredientExists(ingredient.Id))
+                    if (!ItemExists(ingredient.Id))
                     {
                         return NotFound();
                     }
@@ -114,40 +65,6 @@ namespace MyBulkMealsApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(ingredient);
-        }
-
-        // GET: Ingredients/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ingredient = await _context.Ingredient
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ingredient == null)
-            {
-                return NotFound();
-            }
-
-            return View(ingredient);
-        }
-
-        // POST: Ingredients/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var ingredient = await _context.Ingredient.FindAsync(id);
-            _context.Ingredient.Remove(ingredient);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool IngredientExists(int id)
-        {
-            return _context.Ingredient.Any(e => e.Id == id);
         }
     }
 }

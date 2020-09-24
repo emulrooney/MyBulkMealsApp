@@ -42,13 +42,13 @@
                 <div class="col-lg-6">
                     <div class="shadow p-3 mb-5 bg-white rounded">
                         Recipes
-                        <button class="btn btn-outline-info float-right">34</button>
+                        <a class="btn btn-outline-info float-right" href="~/Recipes">@ViewData["recipesCount"]</a>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="shadow p-3 mb-5 bg-white rounded">
                         Ingredients
-                        <button class="btn btn-outline-info float-right">89</button>
+                        <a class="btn btn-outline-info float-right" href="~/Ingredients">@ViewData["ingredientsCount"]</a>
                     </div>
                 </div>
             </div>
@@ -58,10 +58,10 @@
             <ul class="list-group m-4">
                 @foreach (var recipe in (List<Recipe>)ViewData["topRecipes"])
                 {
-                    <li class="list-group-item">@recipe.ItemName</li>
+                    <li class="list-group-item">@recipe.ItemName <a class="btn btn-sm btn-outline-info float-right">Go!</a></li>
                 }
             </ul>
-            <button class="btn btn-outline-success btn-lg m-4">View More</button>
+            <a class="btn btn-outline-success btn-lg m-4" href="~/Recipes">View More</a>
         </div>
     </div>
     <div class="row col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-12">

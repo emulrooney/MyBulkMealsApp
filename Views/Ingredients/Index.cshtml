@@ -2,20 +2,49 @@
 
 @{
     ViewData["Title"] = "Index";
+    int itemCount = 0; //TODO: Start with correct number for page
 }
 
-<h1>Index</h1>
+<h1>Ingredients</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<ul class="list-inline">
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info">My Ingredients</a>
+    </li>
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info">Saved Ingredients</a>
+    </li>
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info">Most Viewed</a>
+    </li>
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info">Newest</a>
+    </li>
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info">Random</a>
+    </li>
+</ul>
+
+<div class="m-4">
+    <label for="ingredientSearch">Quick Search by Keyword</label>
+    <div class="input-group input-group-lg">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-lg">
+                <i class="material-icons">search</i>
+            </span>
+        </div>
+        <input id="ingredientSearch" type="text" class="form-control" aria-describedby="inputGroup-sizing-lg">
+        @*<button class="btn btn-primary">GO!</button>*@
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.ItemName)
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.MeasurementType)
             </th>
             <th>
@@ -32,17 +61,19 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Fat)
-            </th>
+            </th>*@
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
+    itemCount++;
+    
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ItemName)
+                @(itemCount). @Html.DisplayFor(modelItem => item.ItemName)
             </td>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.MeasurementType)
             </td>
             <td>
@@ -59,7 +90,7 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Fat)
-            </td>
+            </td>*@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
@@ -69,3 +100,5 @@
 }
     </tbody>
 </table>
+
+<a class="float-right btn-success btn-lg btn" asp-action="Create">Create New</a>

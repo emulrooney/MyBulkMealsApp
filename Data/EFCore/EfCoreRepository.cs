@@ -52,6 +52,10 @@ namespace MyBulkApps.Data.EFCore
             return entity;
         }
 
+        public async Task<int> Count()
+        {
+            return await context.Set<TEntity>().CountAsync();
+        }
 
     }
 }

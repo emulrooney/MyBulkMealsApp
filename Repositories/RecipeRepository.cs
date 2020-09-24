@@ -15,7 +15,7 @@ namespace MyBulkMealsApp.Repositories {
 
         public async Task<List<Recipe>> GetTopRecipes(int recipesCount)
         {
-            var recipes = await context.Recipe.OrderBy(r => r.Views).Take(recipesCount).ToListAsync();
+            var recipes = await context.Recipe.OrderByDescending(r => r.Views).Take(recipesCount).ToListAsync();
             return recipes;
         }
     }

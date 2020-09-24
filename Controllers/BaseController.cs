@@ -24,7 +24,7 @@ namespace MyBulkMealsApp.Controllers
             return View(await repository.GetAll());
         }
 
-        // GET: Recipes/Details/5
+        // GET: {controller}/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,13 +42,13 @@ namespace MyBulkMealsApp.Controllers
             return View(recipe);
         }
 
-        // GET: Recipes/Create
+        // GET: {controller}/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // GET: Recipes/Edit/5
+        // GET: {controller}/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

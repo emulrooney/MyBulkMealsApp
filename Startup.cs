@@ -37,7 +37,9 @@ namespace MyBulkMealsApp
             services.AddControllersWithViews();
             services.AddRazorPages();
 
+            //REPOS
             services.AddScoped<RecipeRepository>();
+            services.AddScoped<IngredientRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
