@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyBulkMealsApp.Data;
+using MyBulkMealsApp.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MyBulkApps.Data.EFCore
@@ -43,6 +45,21 @@ namespace MyBulkApps.Data.EFCore
         public async Task<List<TEntity>> GetAll()
         {
             return await context.Set<TEntity>().ToListAsync();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TUserItem"></typeparam>
+        /// <returns></returns>
+        public virtual async Task<List<UserItem>> GetAllUserItems<TUserItem>()
+        {
+            if (typeof(Ingredient).Equals(typeof(TUserItem)))
+                return await context.Set<UserItem>().Where(ui => ui.Ingredient != null).ToListAsync();
+            else if (typeof(Recipe).Equals(typeof(TUserItem)))
+                return await context.Set<UserItem>().Where(ui => ui.Recipe != null).ToListAsync();
+
+            return null;
         }
 
         public async Task<TEntity> Update(TEntity entity)

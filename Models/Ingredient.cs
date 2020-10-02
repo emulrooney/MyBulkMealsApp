@@ -18,7 +18,8 @@ namespace MyBulkMealsApp.Models
         public short? Carbs { get; set; }
         public short? Fat { get; set; }
 
-        public string DefaultMeasurement { get
+        public string DefaultMeasurement { 
+            get 
             {
                 return "" + BaseMeasurement + " " + MeasurementType;
             }

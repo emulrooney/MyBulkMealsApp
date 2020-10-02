@@ -13,5 +13,8 @@ namespace MyBulkMealsApp.Models
         [Required]
         public int RecipeId { get; set; }
         public double MeasurementAmount { get; set; }
+
+        public virtual Recipe Recipe { get; set; }
+        public virtual Ingredient Ingredient { get; set; }
     }
 }

@@ -11,10 +11,10 @@ using MyBulkMealsApp.Repositories;
 
 namespace MyBulkMealsApp.Controllers
 {
-    public class IngredientsController : BaseController<Ingredient, IngredientRepository>
+    public class _IngredientsController : BaseController<Ingredient, IngredientRepository>
     {
 
-        public IngredientsController(IngredientRepository repository) : base(repository)
+        public _IngredientsController(IngredientRepository repository) : base(repository)
         {
         }
 

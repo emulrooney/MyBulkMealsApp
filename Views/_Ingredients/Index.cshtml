@@ -44,6 +44,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.ItemName)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DefaultMeasurement)
+            </th>
             @*<th>
                 @Html.DisplayNameFor(model => model.MeasurementType)
             </th>
@@ -72,6 +75,9 @@
         <tr>
             <td>
                 @(itemCount). @Html.DisplayFor(modelItem => item.ItemName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DefaultMeasurement)
             </td>
             @*<td>
                 @Html.DisplayFor(modelItem => item.MeasurementType)
