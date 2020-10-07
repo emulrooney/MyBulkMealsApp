@@ -1,4 +1,4 @@
-﻿@model MyBulkMealsApp.Models.Recipe
+﻿@model MyBulkMealsApp.Models.Ingredient
 
 @{
     ViewData["Title"] = "Edit";
@@ -7,36 +7,41 @@
 
 <h1>Edit</h1>
 
-<h4>Recipe</h4>
+<h4>Ingredient</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                <label asp-for="MeasurementType" class="control-label"></label>
+                <input asp-for="MeasurementType" class="form-control" />
+                <span asp-validation-for="MeasurementType" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BaseServings" class="control-label"></label>
-                <input asp-for="BaseServings" class="form-control" />
-                <span asp-validation-for="BaseServings" class="text-danger"></span>
+                <label asp-for="BaseMeasurement" class="control-label"></label>
+                <input asp-for="BaseMeasurement" class="form-control" />
+                <span asp-validation-for="BaseMeasurement" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Instructions" class="control-label"></label>
-                <input asp-for="Instructions" class="form-control" />
-                <span asp-validation-for="Instructions" class="text-danger"></span>
+                <label asp-for="Calories" class="control-label"></label>
+                <input asp-for="Calories" class="form-control" />
+                <span asp-validation-for="Calories" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Time" class="control-label"></label>
-                <input asp-for="Time" class="form-control" />
-                <span asp-validation-for="Time" class="text-danger"></span>
+                <label asp-for="Protein" class="control-label"></label>
+                <input asp-for="Protein" class="form-control" />
+                <span asp-validation-for="Protein" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Views" class="control-label"></label>
-                <input asp-for="Views" class="form-control" />
-                <span asp-validation-for="Views" class="text-danger"></span>
+                <label asp-for="Carbs" class="control-label"></label>
+                <input asp-for="Carbs" class="form-control" />
+                <span asp-validation-for="Carbs" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Fat" class="control-label"></label>
+                <input asp-for="Fat" class="form-control" />
+                <span asp-validation-for="Fat" class="text-danger"></span>
             </div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">

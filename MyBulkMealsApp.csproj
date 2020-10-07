@@ -8,6 +8,10 @@
   <ItemGroup>
     <Compile Remove="Data\Migrations\20200915181857_Sept15_DBUpdate.cs" />
     <Compile Remove="Data\Migrations\20200915181857_Sept15_DBUpdate.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201007011434_Rebuild-inheritance-Oct6.cs" />
+    <Compile Remove="Data\Migrations\20201007011434_Rebuild-inheritance-Oct6.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201007011950_FurtherMods_Oct6.cs" />
+    <Compile Remove="Data\Migrations\20201007011950_FurtherMods_Oct6.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

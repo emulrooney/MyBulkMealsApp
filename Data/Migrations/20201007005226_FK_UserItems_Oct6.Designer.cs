@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyBulkMealsApp.Models;
 
 namespace MyBulkMealsApp.Data.Migrations
 {
     [DbContext(typeof(MyBulkMealsAppContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201007005226_FK_UserItems_Oct6")]
+    partial class FK_UserItems_Oct6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -290,6 +292,43 @@ namespace MyBulkMealsApp.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("MyBulkMealsApp.Models.Ingredient", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<double>("BaseMeasurement")
+                        .HasColumnType("float");
+
+                    b.Property<short?>("Calories")
+                        .HasColumnType("smallint");
+
+                    b.Property<short?>("Carbs")
+                        .HasColumnType("smallint");
+
+                    b.Property<short?>("Fat")
+                        .HasColumnType("smallint");
+
+                    b.Property<string>("ItemName")
+                        .IsRequired()
+                        .HasColumnType("varchar(128)")
+                        .HasMaxLength(128)
+                        .IsUnicode(false);
+
+                    b.Property<string>("MeasurementType")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(false);
+
+                    b.Property<short?>("Protein")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ingredient");
+                });
+
             modelBuilder.Entity("MyBulkMealsApp.Models.MealPlan", b =>
                 {
                     b.Property<int>("Id")
@@ -298,11 +337,11 @@ namespace MyBulkMealsApp.Data.Migrations
                     b.Property<int>("CreatorId")
                         .HasColumnType("int");
 
-                    b.Property<int>("EndDay")
-                        .HasColumnType("int");
+                    b.Property<byte>("EndDay")
+                        .HasColumnType("tinyint");
 
-                    b.Property<int>("MealsPerDay")
-                        .HasColumnType("int");
+                    b.Property<byte>("MealsPerDay")
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("PlanName")
                         .IsRequired()
@@ -310,11 +349,11 @@ namespace MyBulkMealsApp.Data.Migrations
                         .HasMaxLength(128)
                         .IsUnicode(false);
 
-                    b.Property<int>("StartDay")
-                        .HasColumnType("int");
+                    b.Property<byte>("StartDay")
+                        .HasColumnType("tinyint");
 
-                    b.Property<int>("TotalDays")
-                        .HasColumnType("int");
+                    b.Property<byte>("TotalDays")
+                        .HasColumnType("tinyint");
 
                     b.HasKey("Id");
 
@@ -348,6 +387,65 @@ namespace MyBulkMealsApp.Data.Migrations
                     b.ToTable("MealPlanEntry");
                 });
 
+            modelBuilder.Entity("MyBulkMealsApp.Models.Recipe", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<byte?>("BaseServings")
+                        .IsRequired()
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("varchar(256)")
+                        .HasMaxLength(256)
+                        .IsUnicode(false);
+
+                    b.Property<string>("Instructions")
+                        .HasColumnType("varchar(4096)")
+                        .HasMaxLength(4096)
+                        .IsUnicode(false);
+
+                    b.Property<string>("ItemName")
+                        .IsRequired()
+                        .HasColumnType("varchar(128)")
+                        .HasMaxLength(128)
+                        .IsUnicode(false);
+
+                    b.Property<byte?>("Time")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int?>("Views")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Recipe");
+                });
+
+            modelBuilder.Entity("MyBulkMealsApp.Models.RecipeIngredient", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("MeasurementAmount")
+                        .HasColumnType("float");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IngredientId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("RecipeIngredient");
+                });
+
             modelBuilder.Entity("MyBulkMealsApp.Models.UserItem", b =>
                 {
                     b.Property<int>("Id")
@@ -359,22 +457,21 @@ namespace MyBulkMealsApp.Data.Migrations
                     b.Property<int>("CreatorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("IngredientId")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("IsAmendment")
-                        .HasColumnType("bit")
+                    b.Property<byte[]>("IsAmendment")
+                        .HasColumnType("binary(1)")
                         .IsFixedLength(true)
                         .HasMaxLength(1);
 
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("bit")
+                    b.Property<byte[]>("IsPublic")
+                        .HasColumnType("binary(1)")
                         .IsFixedLength(true)
                         .HasMaxLength(1);
 
-                    b.Property<bool>("IsVerified")
-                        .HasColumnType("bit")
+                    b.Property<byte[]>("IsVerified")
+                        .HasColumnType("binary(1)")
                         .IsFixedLength(true)
                         .HasMaxLength(1);
 
@@ -384,14 +481,19 @@ namespace MyBulkMealsApp.Data.Migrations
                         .HasMaxLength(128)
                         .IsUnicode(false);
 
-                    b.Property<DateTime?>("VerificationSubmissionTime")
+                    b.Property<int?>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("VerificationSubmission")
                         .HasColumnType("datetime");
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserItem");
+                    b.HasIndex("IngredientId");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("UserItem");
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("UserItem");
                 });
 
             modelBuilder.Entity("MyBulkMealsApp.Models.UserSavedItem", b =>
@@ -408,65 +510,6 @@ namespace MyBulkMealsApp.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserSavedItem");
-                });
-
-            modelBuilder.Entity("MyBulkMealsApp.Models.Ingredient", b =>
-                {
-                    b.HasBaseType("MyBulkMealsApp.Models.UserItem");
-
-                    b.Property<double>("BaseMeasurement")
-                        .HasColumnType("float");
-
-                    b.Property<short?>("Calories")
-                        .HasColumnType("smallint");
-
-                    b.Property<short?>("Carbs")
-                        .HasColumnType("smallint");
-
-                    b.Property<short?>("Fat")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("MeasurementType")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
-
-                    b.Property<short?>("Protein")
-                        .HasColumnType("smallint");
-
-                    b.Property<int?>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("RecipeId");
-
-                    b.HasDiscriminator().HasValue("Ingredient");
-                });
-
-            modelBuilder.Entity("MyBulkMealsApp.Models.Recipe", b =>
-                {
-                    b.HasBaseType("MyBulkMealsApp.Models.UserItem");
-
-                    b.Property<int>("BaseServings")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("varchar(256)")
-                        .HasMaxLength(256)
-                        .IsUnicode(false);
-
-                    b.Property<string>("Instructions")
-                        .HasColumnType("varchar(4096)")
-                        .HasMaxLength(4096)
-                        .IsUnicode(false);
-
-                    b.Property<int>("Time")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Views")
-                        .HasColumnType("int");
-
-                    b.HasDiscriminator().HasValue("Recipe");
                 });
 
             modelBuilder.Entity("MyBulkMealsApp.Models.AspNetRoleClaims", b =>
@@ -520,10 +563,29 @@ namespace MyBulkMealsApp.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MyBulkMealsApp.Models.Ingredient", b =>
+            modelBuilder.Entity("MyBulkMealsApp.Models.RecipeIngredient", b =>
                 {
-                    b.HasOne("MyBulkMealsApp.Models.Recipe", null)
-                        .WithMany("Ingredients")
+                    b.HasOne("MyBulkMealsApp.Models.Ingredient", "Ingredient")
+                        .WithMany()
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyBulkMealsApp.Models.Recipe", "Recipe")
+                        .WithMany()
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MyBulkMealsApp.Models.UserItem", b =>
+                {
+                    b.HasOne("MyBulkMealsApp.Models.Ingredient", "Ingredient")
+                        .WithMany()
+                        .HasForeignKey("IngredientId");
+
+                    b.HasOne("MyBulkMealsApp.Models.Recipe", "Recipe")
+                        .WithMany()
                         .HasForeignKey("RecipeId");
                 });
 #pragma warning restore 612, 618

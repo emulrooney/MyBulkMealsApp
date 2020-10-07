@@ -54,12 +54,7 @@ namespace MyBulkApps.Data.EFCore
         /// <returns></returns>
         public virtual async Task<List<UserItem>> GetAllUserItems<TUserItem>()
         {
-            if (typeof(Ingredient).Equals(typeof(TUserItem)))
-                return await context.Set<UserItem>().Where(ui => ui.Ingredient != null).ToListAsync();
-            else if (typeof(Recipe).Equals(typeof(TUserItem)))
-                return await context.Set<UserItem>().Where(ui => ui.Recipe != null).ToListAsync();
-
-            return null;
+            return await context.Set<UserItem>().Where(i => i is TUserItem).ToListAsync();
         }
 
         public async Task<TEntity> Update(TEntity entity)

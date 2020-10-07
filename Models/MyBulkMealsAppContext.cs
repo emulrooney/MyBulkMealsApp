@@ -29,7 +29,6 @@ namespace MyBulkMealsApp.Models
         public virtual DbSet<MealPlan> MealPlan { get; set; }
         public virtual DbSet<MealPlanEntry> MealPlanEntry { get; set; }
         public virtual DbSet<Recipe> Recipe { get; set; }
-        public virtual DbSet<RecipeIngredient> RecipeIngredient { get; set; }
         public virtual DbSet<UserItem> UserItem { get; set; }
         public virtual DbSet<UserSavedItem> UserSavedItem { get; set; }
 
@@ -194,11 +193,6 @@ namespace MyBulkMealsApp.Models
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<RecipeIngredient>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-            });
-
             modelBuilder.Entity<UserItem>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
@@ -222,7 +216,7 @@ namespace MyBulkMealsApp.Models
                     .HasMaxLength(128)
                     .IsUnicode(false);
 
-                entity.Property(e => e.VerificationSubmission).HasColumnType("datetime");
+                entity.Property(e => e.VerificationSubmissionTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<UserSavedItem>(entity =>

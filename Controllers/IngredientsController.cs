@@ -5,17 +5,18 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MyBulkMealsApp.Data;
 using MyBulkMealsApp.Models;
 using MyBulkMealsApp.Repositories;
 
 namespace MyBulkMealsApp.Controllers
 {
-    public class _IngredientsController : BaseController<Ingredient, IngredientRepository>
+    public class IngredientsController : BaseController<Ingredient, IngredientRepository>
     {
+        private readonly IngredientRepository _repo;
 
-        public _IngredientsController(IngredientRepository repository) : base(repository)
+        public IngredientsController(IngredientRepository repo) : base(repo)
         {
+            _repo = repo;
         }
 
         // POST: Ingredients/Create
@@ -23,13 +24,14 @@ namespace MyBulkMealsApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ItemName,MeasurementType,BaseMeasurement,Calories,Protein,Carbs,Fat")] Ingredient ingredient)
+        public async Task<IActionResult> Create([Bind("MeasurementType,BaseMeasurement,Calories,Protein,Carbs,Fat,Id,ItemName,CreatorId,IsVerified,IsPublic,VerificationSubmissionTime,IsAmendment")] Ingredient ingredient)
         {
             if (ModelState.IsValid)
             {
-                await repository.Add(ingredient);
+                await _repo.Add(ingredient);
                 return RedirectToAction(nameof(Index));
             }
+
             return View(ingredient);
         }
 
@@ -38,7 +40,7 @@ namespace MyBulkMealsApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ItemName,MeasurementType,BaseMeasurement,Calories,Protein,Carbs,Fat")] Ingredient ingredient)
+        public async Task<IActionResult> Edit(int id, [Bind("MeasurementType,BaseMeasurement,Calories,Protein,Carbs,Fat,ItemName,CreatedTime,CreatorId,IsVerified,IsPublic,VerificationSubmissionTime,IsAmendment")] Ingredient ingredient)
         {
             if (id != ingredient.Id)
             {
@@ -49,11 +51,11 @@ namespace MyBulkMealsApp.Controllers
             {
                 try
                 {
-                    await repository.Update(ingredient);
+                    await _repo.Update(ingredient);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ItemExists(ingredient.Id))
+                    if (!IngredientExists(ingredient.Id))
                     {
                         return NotFound();
                     }
@@ -65,6 +67,11 @@ namespace MyBulkMealsApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(ingredient);
+        }
+
+        private bool IngredientExists(int id)
+        {
+            return _repo.Get(id) != null;
         }
     }
 }

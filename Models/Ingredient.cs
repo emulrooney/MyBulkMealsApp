@@ -6,11 +6,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyBulkMealsApp.Models
 {
-    public partial class Ingredient : IEntity
+    public partial class Ingredient : UserItem
     {
-        public int Id { get; set; }
-        [DisplayName("Item")]
-        public string ItemName { get; set; }
         public string MeasurementType { get; set; }
         public double BaseMeasurement { get; set; }
         public short? Calories { get; set; }

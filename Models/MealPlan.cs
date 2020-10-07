@@ -8,9 +8,9 @@ namespace MyBulkMealsApp.Models
         public int Id { get; set; }
         public string PlanName { get; set; }
         public int CreatorId { get; set; }
-        public byte MealsPerDay { get; set; }
-        public byte TotalDays { get; set; }
-        public byte StartDay { get; set; }
-        public byte EndDay { get; set; }
+        public int MealsPerDay { get; set; }
+        public int TotalDays { get; set; }
+        public int StartDay { get; set; }
+        public int EndDay { get; set; }
     }
 }

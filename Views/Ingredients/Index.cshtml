@@ -1,0 +1,134 @@
+﻿@model IEnumerable<MyBulkMealsApp.Models.Ingredient>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    $(document).ready(function () {
+        $(".js__show-nutrition").on("click", function () {
+            row = $(this).closest("tr");
+            title = $(this).html();
+
+            $("#ingredientModal .modal-title").html(title);
+            $("#modalCalories").html(row.data("calories"));
+            $("#modalProtein").html(row.data("protein"));
+            $("#modalCarbs").html(row.data("carbs"));
+            $("#modalFat").html(row.data("fat"));
+
+            $("#ingredientModal").modal('show');
+        });
+    });
+</script>
+
+<div id="ingredientModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-unstyled">
+                    <li>Calories: <span id="modalCalories"></span></li>
+                    <li>Protein: <span id="modalProtein"></span></li>
+                    <li>Carbs: <span id="modalCarbs"></span></li>
+                    <li>Fat: <span id="modalFat"></span></li>
+
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-primary">Save to My Ingredients</button>
+                <button type="button" class="btn btn-sm btn-info">Propose Amendment</button>
+                <button type="button" class="btn btn-sm btn-info">Make Copy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h1>Ingredients</h1>
+
+<ul class="list-inline">
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info">My Ingredients</a>
+    </li>
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info">Saved Ingredients</a>
+    </li>
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info">Most Viewed</a>
+    </li>
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info">Newest</a>
+    </li>
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info">Random</a>
+    </li>
+</ul>
+
+<div class="m-4">
+    <label for="ingredientSearch">Quick Search by Keyword</label>
+    <div class="input-group input-group-lg">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-lg">
+                <i class="material-icons">search</i>
+            </span>
+        </div>
+        <input id="ingredientSearch" type="text" class="form-control" aria-describedby="inputGroup-sizing-lg">
+        @*<button class="btn btn-primary">GO!</button>*@
+    </div>
+</div>
+
+<table class="table-bordered table-striped w-100">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ItemName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatorId)
+            </th>
+            <th>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr data-calories="@item.Calories" data-protein="@item.Protein" data-carbs="@item.Carbs" data-fat="@item.Fat">
+                <td>
+                    <a href="#" class="js__show-nutrition">
+                        @Html.DisplayFor(modelItem => item.ItemName)
+                    </a>
+
+                    (@Html.DisplayFor(modelItem => item.DefaultMeasurement))
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatorId)
+                </td>
+                <td>
+                    <i class="material-icons">@(item.IsVerified ? "checkmark" : "")</i>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
