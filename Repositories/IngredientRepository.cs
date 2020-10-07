@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyBulkApps.Data.EFCore;
 using MyBulkMealsApp.Models;
+using SQLitePCL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,11 @@ namespace MyBulkMealsApp.Repositories {
     {
         public IngredientRepository(MyBulkMealsAppContext context) : base(context)
         {
+        }
+
+        public async Task<List<Measurement>> GetMeasurements()
+        {
+            return await context.Measurement.ToListAsync();
         }
 
     }

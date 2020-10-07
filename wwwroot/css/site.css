@@ -100,3 +100,32 @@ body {
     padding-top: 48px;
     font-size: 1.5em;
 }
+
+.item-page__details {
+    max-width: 720px;
+    margin: auto;
+}
+
+.color--bg--primary {
+    background-color: #1861ac;
+}
+
+.color--bg--white {
+    background-color: white;
+}
+
+.color--bg--darken {
+    background-color: #000000AA;
+}
+
+.color--font--white {
+    color: white !important;
+}
+
+.min-height--1 {
+    min-height: calc(100vh - 128px);
+}
+
+.input--modified {
+    background-color: palegoldenrod;
+}

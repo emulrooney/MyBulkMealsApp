@@ -45,13 +45,13 @@ namespace MyBulkMealsApp.Controllers
         }
 
         // GET: {controller}/Create
-        public IActionResult Create()
+        public async virtual Task<IActionResult> Create()
         {
             return View();
         }
 
         // GET: {controller}/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async virtual Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {

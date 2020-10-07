@@ -28,6 +28,7 @@ namespace MyBulkMealsApp.Models
         public virtual DbSet<Ingredient> Ingredient { get; set; }
         public virtual DbSet<MealPlan> MealPlan { get; set; }
         public virtual DbSet<MealPlanEntry> MealPlanEntry { get; set; }
+        public virtual DbSet<Measurement> Measurement { get; set; }
         public virtual DbSet<Recipe> Recipe { get; set; }
         public virtual DbSet<UserItem> UserItem { get; set; }
         public virtual DbSet<UserSavedItem> UserSavedItem { get; set; }
@@ -143,16 +144,15 @@ namespace MyBulkMealsApp.Models
 
             modelBuilder.Entity<Ingredient>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ItemName)
                     .IsRequired()
                     .HasMaxLength(128)
                     .IsUnicode(false);
 
-                entity.Property(e => e.MeasurementType)
+                entity.Property(e => e.MeasurementId)
                     .IsRequired()
-                    .HasMaxLength(50)
                     .IsUnicode(false);
             });
 
@@ -177,7 +177,7 @@ namespace MyBulkMealsApp.Models
 
             modelBuilder.Entity<Recipe>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ImageUrl)
                     .HasMaxLength(256)
@@ -195,7 +195,7 @@ namespace MyBulkMealsApp.Models
 
             modelBuilder.Entity<UserItem>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedTime).HasColumnType("datetime");
 

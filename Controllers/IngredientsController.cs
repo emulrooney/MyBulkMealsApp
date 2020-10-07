@@ -24,7 +24,7 @@ namespace MyBulkMealsApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MeasurementType,BaseMeasurement,Calories,Protein,Carbs,Fat,Id,ItemName,CreatorId,IsVerified,IsPublic,VerificationSubmissionTime,IsAmendment")] Ingredient ingredient)
+        public async Task<IActionResult> Create([Bind("MeasurementId,BaseMeasurement,Calories,Protein,Carbs,Fat,ItemName,IsPublic")] Ingredient ingredient)
         {
             if (ModelState.IsValid)
             {
@@ -35,12 +35,25 @@ namespace MyBulkMealsApp.Controllers
             return View(ingredient);
         }
 
+        public async override Task<IActionResult> Create()
+        {
+            ViewData["Measurements"] = await repository.GetMeasurements();
+            return await base.Create();
+        }
+
+
+        public async override Task<IActionResult> Edit(int? id)
+        {
+            ViewData["Measurements"] = await repository.GetMeasurements();
+            return await base.Edit(id);
+        }
+
         // POST: Ingredients/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MeasurementType,BaseMeasurement,Calories,Protein,Carbs,Fat,ItemName,CreatedTime,CreatorId,IsVerified,IsPublic,VerificationSubmissionTime,IsAmendment")] Ingredient ingredient)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,MeasurementType,BaseMeasurement,Calories,Protein,Carbs,Fat,ItemName,IsVerified,IsPublic")] Ingredient ingredient)
         {
             if (id != ingredient.Id)
             {
