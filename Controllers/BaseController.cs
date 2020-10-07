@@ -13,15 +13,17 @@ namespace MyBulkMealsApp.Controllers
        where TRepository : IRepository<TEntity>
     {
         protected readonly TRepository repository;
+        int pageSize = 20; //temp
 
         public BaseController(TRepository repository)
         {
             this.repository = repository;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNumber = 1)
         {
-            return View(await repository.GetAll());
+            var list = await PaginatedList<TEntity>.CreateAsync(await repository.GetAll(), pageNumber, pageSize);
+            return View(list);
         }
 
         // GET: {controller}/Details/5

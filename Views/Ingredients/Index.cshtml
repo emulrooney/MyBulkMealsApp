@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MyBulkMealsApp.Models.Ingredient>
+﻿@model MyBulkMealsApp.Data.PaginatedList<MyBulkMealsApp.Models.Ingredient>
 
 @{
     ViewData["Title"] = "Index";
@@ -86,13 +86,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ItemName)
+                Ingredient Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedTime)
+                Created
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatorId)
+                Creator
             </th>
             <th>
             </th>
@@ -128,6 +128,26 @@
         }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
 
 <p>
     <a asp-action="Create">Create New</a>
