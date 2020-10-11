@@ -196,3 +196,4 @@ C:\Users\evanm\source\repos\MyBulkMealsApp\obj\Debug\netcoreapp3.1\Razor\Views\R
 C:\Users\evanm\source\repos\MyBulkMealsApp\obj\Debug\netcoreapp3.1\Razor\Views\Recipes\Details.cshtml.g.cs
 C:\Users\evanm\source\repos\MyBulkMealsApp\obj\Debug\netcoreapp3.1\Razor\Views\Recipes\Edit.cshtml.g.cs
 C:\Users\evanm\source\repos\MyBulkMealsApp\obj\Debug\netcoreapp3.1\Razor\Views\Recipes\Index.cshtml.g.cs
+C:\Users\evanm\source\repos\MyBulkMealsApp\obj\Debug\netcoreapp3.1\Razor\Views\Ingredients\Amend.cshtml.g.cs

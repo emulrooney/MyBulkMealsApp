@@ -8,7 +8,8 @@ namespace MyBulkMealsApp.Models
 {
     public partial class Ingredient : UserItem
     {
-        public int MeasurementId { get; set; }
+        public int MeasurementId { get; set; } = 0;
+
         [DisplayName("Measurement")]
         public double BaseMeasurement { get; set; }
         public short? Calories { get; set; }
@@ -16,7 +17,8 @@ namespace MyBulkMealsApp.Models
         public short? Carbs { get; set; }
         public short? Fat { get; set; }
 
-        public Measurement Measurement;
+        [Required]
+        public Measurement Measurement { get; set; }
 
         public string DefaultMeasurement { 
             get 
@@ -32,7 +34,10 @@ namespace MyBulkMealsApp.Models
         {
             get
             {
-                return "" + BaseMeasurement + Measurement.Name;
+                if (Measurement != null)
+                    return "" + BaseMeasurement + Measurement.Name;
+                else
+                    return "";
             }
         }
     }

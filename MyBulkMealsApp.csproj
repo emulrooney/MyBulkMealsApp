@@ -6,25 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\Migrations\20200915181857_Sept15_DBUpdate.cs" />
-    <Compile Remove="Data\Migrations\20200915181857_Sept15_DBUpdate.Designer.cs" />
-    <Compile Remove="Data\Migrations\20201007011434_Rebuild-inheritance-Oct6.cs" />
-    <Compile Remove="Data\Migrations\20201007011434_Rebuild-inheritance-Oct6.Designer.cs" />
-    <Compile Remove="Data\Migrations\20201007011950_FurtherMods_Oct6.cs" />
-    <Compile Remove="Data\Migrations\20201007011950_FurtherMods_Oct6.Designer.cs" />
-    <Compile Remove="Data\Migrations\20201007152038_AddMeasurementTable_Oct7.cs" />
-    <Compile Remove="Data\Migrations\20201007152038_AddMeasurementTable_Oct7.Designer.cs" />
-    <Compile Remove="Data\Migrations\20201007152322_AddMeasurementTable_Oct7_2.cs" />
-    <Compile Remove="Data\Migrations\20201007152322_AddMeasurementTable_Oct7_2.Designer.cs" />
-    <Compile Remove="Data\Migrations\20201007152648_AddMeasurement_Oct7.cs" />
-    <Compile Remove="Data\Migrations\20201007152648_AddMeasurement_Oct7.Designer.cs" />
-    <Compile Remove="Data\Migrations\20201007152843_AddMeasurementTable_Oct6.cs" />
-    <Compile Remove="Data\Migrations\20201007152843_AddMeasurementTable_Oct6.Designer.cs" />
-    <Compile Remove="Data\Migrations\20201007172935_AddKey_2_Oct7.cs" />
-    <Compile Remove="Data\Migrations\20201007172935_AddKey_2_Oct7.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.7" />
