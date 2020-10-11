@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace MyBulkMealsApp.Repositories {
-    public class IngredientRepository : EfCoreRepository<Ingredient, MyBulkMealsAppContext>
+    public class IngredientRepository : BaseRepository<Ingredient, MyBulkMealsAppContext>
     {
         public IngredientRepository(MyBulkMealsAppContext context) : base(context)
         {

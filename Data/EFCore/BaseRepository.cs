@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace MyBulkApps.Data.EFCore
 {
-    public abstract class EfCoreRepository<TEntity, TContext> : IRepository<TEntity>
+    public abstract class BaseRepository<TEntity, TContext> : IRepository<TEntity>
         where TEntity : class, IEntity
         where TContext : DbContext
     {
         protected readonly TContext context;
-        public EfCoreRepository(TContext context)
+        public BaseRepository(TContext context)
         {
             this.context = context;
         }

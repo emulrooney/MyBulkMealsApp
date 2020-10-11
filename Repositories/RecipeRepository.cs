@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace MyBulkMealsApp.Repositories {
-    public class RecipeRepository : EfCoreRepository<Recipe, MyBulkMealsAppContext>
+    public class RecipeRepository : BaseRepository<Recipe, MyBulkMealsAppContext>
     {
         public RecipeRepository(MyBulkMealsAppContext context) : base(context)
         {
