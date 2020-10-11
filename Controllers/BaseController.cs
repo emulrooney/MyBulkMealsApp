@@ -26,6 +26,13 @@ namespace MyBulkMealsApp.Controllers
             return View(list);
         }
 
+        public async Task<IActionResult> Results(string keyword, int pageNumber = 1)
+        {
+            var list = await PaginatedList<TEntity>.CreateAsync(await repository.GetByKeyword(keyword), pageNumber, pageSize);
+            return View("Index", list);
+        }
+
+
         // GET: {controller}/Details/5
         public async Task<IActionResult> Details(int? id)
         {

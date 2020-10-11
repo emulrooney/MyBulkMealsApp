@@ -13,6 +13,12 @@ namespace MyBulkMealsApp.Repositories {
         {
         }
 
+        public override async Task<List<Recipe>> GetByKeyword(string keyword)
+        {
+            return await context.Recipe.Where(r => r.ItemName.Contains(keyword)
+            || r.Instructions.Contains(keyword)).ToListAsync();
+        }
+
         public async Task<List<Recipe>> GetTopRecipes(int recipesCount)
         {
             var recipes = await context.Recipe.OrderByDescending(r => r.Views).Take(recipesCount).ToListAsync();

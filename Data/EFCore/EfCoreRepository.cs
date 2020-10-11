@@ -42,6 +42,11 @@ namespace MyBulkApps.Data.EFCore
             return await context.Set<TEntity>().FindAsync(id);
         }
 
+        public virtual async Task<List<TEntity>> GetByKeyword(string keyword)
+        {
+            return await context.Set<TEntity>().Where(i => i.ItemName.Contains(keyword)).ToListAsync();
+        }
+
         public virtual async Task<List<TEntity>> GetAll()
         {
             return await context.Set<TEntity>().ToListAsync();

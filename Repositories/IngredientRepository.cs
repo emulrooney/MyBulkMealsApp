@@ -20,7 +20,6 @@ namespace MyBulkMealsApp.Repositories {
             var incInclude = ing.Include(i => i.Measurement);
 
             return await incInclude.ToListAsync();
-
         }
 
         public async Task<List<Measurement>> GetMeasurements()

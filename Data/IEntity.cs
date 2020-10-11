@@ -8,5 +8,7 @@ namespace MyBulkMealsApp.Data
     public interface IEntity
     {
         int Id { get; set; }
+        string ItemName { get; set; }
+
     }
 }
