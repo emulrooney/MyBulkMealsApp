@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyBulkMealsApp.Data;
 using MyBulkMealsApp.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,6 +59,13 @@ namespace MyBulkApps.Data.EFCore
         public virtual async Task<List<TEntity>> GetAll()
         {
             return await context.Set<TEntity>().ToListAsync();
+        }
+
+        public virtual async Task<List<TEntity>> GetRandom(int quantity)
+        {
+            //Throwaway GUID used for ordering
+            var list = context.Set<TEntity>().OrderBy(e => Guid.NewGuid());
+            return await list.Take(quantity).ToListAsync();
         }
 
         /// <summary>

@@ -20,6 +20,8 @@ namespace MyBulkMealsApp.Controllers
             this.repository = repository;
         }
 
+        /* Types of Index Page */
+
         public async Task<IActionResult> Index(int pageNumber = 1)
         {
             var list = await PaginatedList<TEntity>.CreateAsync(await repository.GetAll(), pageNumber, pageSize);
@@ -39,6 +41,13 @@ namespace MyBulkMealsApp.Controllers
             return View("Index", list);
         } 
 
+        public async Task<IActionResult> Random(int quantity)
+        {
+            var list = await PaginatedList<TEntity>.CreateAsync(await repository.GetRandom(quantity), 1, 20);
+            return View("Index", list);
+        }
+
+        /* Individual Pages */
 
         // GET: {controller}/Details/5
         public async Task<IActionResult> Details(int? id)
