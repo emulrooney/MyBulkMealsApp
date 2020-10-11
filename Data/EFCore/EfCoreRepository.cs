@@ -47,6 +47,14 @@ namespace MyBulkApps.Data.EFCore
             return await context.Set<TEntity>().Where(i => i.ItemName.Contains(keyword)).ToListAsync();
         }
 
+        public virtual async Task<List<TEntity>> GetByCreationTime(bool descending)
+        {
+            if (descending)
+                return await context.Set<TEntity>().OrderByDescending(e => e.CreatedTime).ToListAsync();
+            else
+                return await context.Set<TEntity>().OrderBy(e => e.CreatedTime).ToListAsync();
+        }
+
         public virtual async Task<List<TEntity>> GetAll()
         {
             return await context.Set<TEntity>().ToListAsync();

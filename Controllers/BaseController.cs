@@ -13,7 +13,7 @@ namespace MyBulkMealsApp.Controllers
        where TRepository : IRepository<TEntity>
     {
         protected readonly TRepository repository;
-        int pageSize = 20; //temp
+        protected int pageSize = 20; //temp
 
         public BaseController(TRepository repository)
         {
@@ -31,6 +31,13 @@ namespace MyBulkMealsApp.Controllers
             var list = await PaginatedList<TEntity>.CreateAsync(await repository.GetByKeyword(keyword), pageNumber, pageSize);
             return View("Index", list);
         }
+
+        public async Task<IActionResult> Newest(int pageNumber = 1)
+        {
+            var list = await PaginatedList<TEntity>.CreateAsync(await repository.GetByCreationTime(true), pageNumber, pageSize);
+            ViewData["showCreatedTime"] = true;
+            return View("Index", list);
+        } 
 
 
         // GET: {controller}/Details/5

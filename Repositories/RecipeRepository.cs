@@ -19,6 +19,14 @@ namespace MyBulkMealsApp.Repositories {
             || r.Instructions.Contains(keyword)).ToListAsync();
         }
 
+        public async Task<List<Recipe>> GetByViews(bool descending = true)
+        {
+            if (descending)
+                return await context.Recipe.OrderByDescending(r => r.Views).ToListAsync();
+            else
+                return await context.Recipe.OrderBy(r => r.Views).ToListAsync();
+        }
+
         public async Task<List<Recipe>> GetTopRecipes(int recipesCount)
         {
             var recipes = await context.Recipe.OrderByDescending(r => r.Views).Take(recipesCount).ToListAsync();

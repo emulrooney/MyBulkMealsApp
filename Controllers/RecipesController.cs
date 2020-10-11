@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MyBulkMealsApp.Data;
 using MyBulkMealsApp.Models;
 using MyBulkMealsApp.Repositories;
 
@@ -17,6 +18,12 @@ namespace MyBulkMealsApp.Controllers
         public RecipesController(RecipeRepository repo) : base(repo)
         {
             _repo = repo;
+        }
+
+        public async Task<IActionResult> Popular(int pageNumber = 1)
+        {
+            var list = await PaginatedList<Recipe>.CreateAsync(await repository.GetByViews(true), pageNumber, pageSize);
+            return View("Index", list);
         }
 
         // POST: Recipes/Create

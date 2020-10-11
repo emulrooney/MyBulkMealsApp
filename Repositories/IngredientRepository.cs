@@ -22,6 +22,11 @@ namespace MyBulkMealsApp.Repositories {
             return await incInclude.ToListAsync();
         }
 
+        public override async Task<List<Ingredient>> GetByCreationTime(bool descending)
+        {
+            return await context.Set<Ingredient>().Include(i => i.Measurement).OrderByDescending(e => e.CreatedTime).ToListAsync();
+        }
+
         public async Task<List<Measurement>> GetMeasurements()
         {
             return await context.Measurement.ToListAsync();

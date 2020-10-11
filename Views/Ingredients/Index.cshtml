@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    bool showCreatedTime = (ViewData["ShowCreatedTime"] != null && (bool)ViewData["ShowCreatedTime"]);
 }
 
 <script>
@@ -61,10 +63,7 @@
         <a class="btn btn-outline-info">Saved Ingredients</a>
     </li>
     <li class="list-inline-item">
-        <a class="btn btn-outline-info">Most Viewed</a>
-    </li>
-    <li class="list-inline-item">
-        <a class="btn btn-outline-info">Newest</a>
+        <a class="btn btn-outline-info" asp-action="Newest">Newest</a>
     </li>
     <li class="list-inline-item">
         <a class="btn btn-outline-info">Random</a>
@@ -92,12 +91,12 @@
             <th>
                 Ingredient Name
             </th>
-            <th>
-                Created
-            </th>
-            <th>
-                Creator
-            </th>
+            @if (showCreatedTime)
+            {
+                <th>
+                    Created At
+                </th>
+            }
             <th>
             </th>
             <th></th>
@@ -106,29 +105,32 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr data-calories="@item.Calories" data-protein="@item.Protein" data-carbs="@item.Carbs" data-fat="@item.Fat">
-                <td>
-                    <a href="#" class="js__show-nutrition">
-                        @Html.DisplayFor(modelItem => item.ItemName)
-                    </a>
+        <tr data-calories="@item.Calories" data-protein="@item.Protein" data-carbs="@item.Carbs" data-fat="@item.Fat">
+            <td>
+                <a href="#" class="js__show-nutrition">
+                    @Html.DisplayFor(modelItem => item.ItemName)
+                </a>
 
-                    (@Html.DisplayFor(modelItem => item.DefaultMeasurement))
-                </td>
+                (@Html.DisplayFor(modelItem => item.DefaultMeasurement))
+            </td>
+            @if (showCreatedTime)
+            {
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedTime)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CreatorId)
-                </td>
-                <td>
-                    <i class="material-icons">@(item.IsVerified ? "checkmark" : "")</i>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatorId)
+            </td>
+            <td>
+                <i class="material-icons">@(item.IsVerified ? "checkmark" : "")</i>
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

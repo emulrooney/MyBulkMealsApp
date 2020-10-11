@@ -9,6 +9,9 @@ namespace MyBulkMealsApp.Data
     {
         int Id { get; set; }
         string ItemName { get; set; }
+    
+        DateTime CreatedTime { get; set; }
+
 
     }
 }

@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    bool showCreatedTime = (ViewData["ShowCreatedTime"] != null && (bool)ViewData["ShowCreatedTime"]);
 }
 
 <h1>Recipes</h1>
@@ -14,10 +16,10 @@
         <a class="btn btn-outline-info">My Recipes</a>
     </li>
     <li class="list-inline-item">
-        <a class="btn btn-outline-info">Most Viewed</a>
+        <a class="btn btn-outline-info" asp-action="Popular">Most Viewed</a>
     </li>
     <li class="list-inline-item">
-        <a class="btn btn-outline-info">Newest</a>
+        <a class="btn btn-outline-info" asp-action="Newest">Newest</a>
     </li>
     <li class="list-inline-item">
         <a class="btn btn-outline-info">Random</a>
@@ -44,28 +46,42 @@
                 Recipe Name
             </th>
             <th>
+            @*Verified*@
             </th>
+
+            @if (showCreatedTime)
+            {
+                <th>
+                    Created At
+                </th>
+            }
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+        <tr>
+            <td>
+                <a href="#" class="js__show-nutrition">
+                    @Html.DisplayFor(modelItem => item.ItemName)
+                </a>
+            </td>
+            <td>
+                <i class="material-icons">@(item.IsVerified ? "checkmark" : "")</i>
+            </td>
+            @if (showCreatedTime)
+            {
                 <td>
-                    <a href="#" class="js__show-nutrition">
-                        @Html.DisplayFor(modelItem => item.ItemName)
-                    </a>
+                    @Html.DisplayFor(modelItem => item.CreatedTime)
                 </td>
-                <td>
-                    <i class="material-icons">@(item.IsVerified ? "checkmark" : "")</i>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
+            }
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

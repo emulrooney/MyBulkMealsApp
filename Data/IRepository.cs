@@ -10,6 +10,7 @@ namespace MyBulkMealsApp.Data
     {
         Task<List<T>> GetAll();
         Task<List<T>> GetByKeyword(string keyword);
+        Task<List<T>> GetByCreationTime(bool descending);
         Task<T> Get(int id);
         Task<T> Add(T entity);
         Task<T> Update(T entity);
