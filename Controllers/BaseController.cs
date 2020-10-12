@@ -2,62 +2,70 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyBulkMealsApp.Data;
 
 namespace MyBulkMealsApp.Controllers
 {
+    [Authorize]
     public abstract class BaseController<TEntity, TRepository> : Controller
        where TEntity : class, IEntity
        where TRepository : IRepository<TEntity>
     {
-        protected readonly TRepository repository;
+        protected readonly TRepository _repo;
+        protected readonly UserManager<IdentityUser> _userManager;
+
         protected int pageSize = 20; //temp
 
-        public BaseController(TRepository repository)
+        public BaseController(TRepository repository, UserManager<IdentityUser> userManager)
         {
-            this.repository = repository;
+            this._repo = repository;
+            this._userManager = userManager;
         }
 
         /* Types of Index Page */
 
+        [AllowAnonymous]
         public async Task<IActionResult> Index(int pageNumber = 1)
         {
-            var list = await PaginatedList<TEntity>.CreateAsync(await repository.GetAll(), pageNumber, pageSize);
+            var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetAll(), pageNumber, pageSize);
             return View(list);
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Results(string keyword, int pageNumber = 1)
         {
-            var list = await PaginatedList<TEntity>.CreateAsync(await repository.GetByKeyword(keyword), pageNumber, pageSize);
+            var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetByKeyword(keyword), pageNumber, pageSize);
             return View("Index", list);
         }
 
         public async Task<IActionResult> Newest(int pageNumber = 1)
         {
-            var list = await PaginatedList<TEntity>.CreateAsync(await repository.GetByCreationTime(true), pageNumber, pageSize);
+            var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetByCreationTime(true), pageNumber, pageSize);
             ViewData["showCreatedTime"] = true;
             return View("Index", list);
         } 
 
         public async Task<IActionResult> Random(int quantity)
         {
-            var list = await PaginatedList<TEntity>.CreateAsync(await repository.GetRandom(quantity), 1, 20);
+            var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetRandom(quantity), 1, 20);
             return View("Index", list);
         }
 
         /* Individual Pages */
 
         // GET: {controller}/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public virtual async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var recipe = await repository.Get((int)id);
+            var recipe = await _repo.Get((int)id);
 
             if (recipe == null)
             {
@@ -81,7 +89,7 @@ namespace MyBulkMealsApp.Controllers
                 return NotFound();
             }
 
-            var recipe = await repository.Get((int)id);
+            var recipe = await _repo.Get((int)id);
             if (recipe == null)
             {
                 return NotFound();
@@ -99,7 +107,7 @@ namespace MyBulkMealsApp.Controllers
                 return NotFound();
             }
 
-            var recipe = await repository.Get((int)id);
+            var recipe = await _repo.Get((int)id);
             if (recipe == null)
             {
                 return NotFound();
@@ -113,13 +121,13 @@ namespace MyBulkMealsApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await repository.Delete(id);
+            await _repo.Delete(id);
             return RedirectToAction(nameof(Index));
         }
 
         protected bool ItemExists(int id)
         {
-            return repository.Get(id) != null;
+            return _repo.Get(id) != null;
         }
 
     }

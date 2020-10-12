@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,7 @@ namespace MyBulkMealsApp.Controllers
     {
         private readonly IngredientRepository _repo;
 
-        public IngredientsController(IngredientRepository repo) : base(repo)
+        public IngredientsController(IngredientRepository repo, UserManager<IdentityUser> userManager) : base(repo, userManager)
         {
             _repo = repo;
         }
@@ -26,6 +27,9 @@ namespace MyBulkMealsApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MeasurementId,BaseMeasurement,Calories,Protein,Carbs,Fat,ItemName,IsPublic")] Ingredient ingredient)
         {
+            var user = _userManager.GetUserAsync(HttpContext.User);
+            ingredient.CreatorId = user.Id;
+
             if (ModelState.IsValid)
             {
                 await _repo.Add(ingredient);
@@ -37,14 +41,14 @@ namespace MyBulkMealsApp.Controllers
 
         public async override Task<IActionResult> Create()
         {
-            ViewData["Measurements"] = await repository.GetMeasurements();
+            ViewData["Measurements"] = await base._repo.GetMeasurements();
             return await base.Create();
         }
 
 
         public async override Task<IActionResult> Edit(int? id)
         {
-            ViewData["Measurements"] = await repository.GetMeasurements();
+            ViewData["Measurements"] = await base._repo.GetMeasurements();
             return await base.Edit(id);
         }
 

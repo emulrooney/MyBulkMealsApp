@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,18 +13,19 @@ using MyBulkMealsApp.Repositories;
 
 namespace MyBulkMealsApp.Controllers
 {
+
     public class RecipesController : BaseController<Recipe, RecipeRepository>
     {
         private readonly RecipeRepository _repo;
 
-        public RecipesController(RecipeRepository repo) : base(repo)
+        public RecipesController(RecipeRepository repo, UserManager<IdentityUser> userManager) : base(repo, userManager)
         {
             _repo = repo;
         }
-
+        
         public async Task<IActionResult> Popular(int pageNumber = 1)
         {
-            var list = await PaginatedList<Recipe>.CreateAsync(await repository.GetByViews(true), pageNumber, pageSize);
+            var list = await PaginatedList<Recipe>.CreateAsync(await base._repo.GetByViews(true), pageNumber, pageSize);
             return View("Index", list);
         }
 
@@ -31,11 +34,15 @@ namespace MyBulkMealsApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ImageUrl,BaseServings,Instructions,Time,Views,ItemName,CreatedTime,CreatorId,IsVerified,IsPublic,VerificationSubmissionTime,IsAmendment")] Recipe recipe)
+        public async Task<IActionResult> Create([Bind("ImageUrl,BaseServings,Instructions,Time,Views,ItemName,CreatedTime,IsVerified,IsPublic,IsAmendment")] Recipe recipe)
         {
+            var user = _userManager.GetUserAsync(HttpContext.User);
+            recipe.CreatorId = user.Id;
+
             if (ModelState.IsValid)
             {
                 await _repo.Add(recipe);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(recipe);

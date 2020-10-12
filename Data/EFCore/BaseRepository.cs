@@ -38,7 +38,7 @@ namespace MyBulkApps.Data.EFCore
             return entity;
         }
 
-        public async Task<TEntity> Get(int id)
+        public virtual async Task<TEntity> Get(int id)
         {
             return await context.Set<TEntity>().FindAsync(id);
         }

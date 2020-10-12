@@ -16,12 +16,15 @@ namespace MyBulkMealsApp.Models
         [DisplayName("Creation Time")]
         public DateTime CreatedTime { get; set; }
         public int CreatorId { get; set; }
+
         [DisplayName("Verified Item")]
         public bool IsVerified { get; set; }
         [DisplayName("Visible to Public")]
         public bool IsPublic { get; set; }
         public DateTime? VerificationSubmissionTime { get; set; }
         public bool IsAmendment { get; set; }
+
+        public AspNetUsers Creator { get; set; }
 
         public UserItem()
         {

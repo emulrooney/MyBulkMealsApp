@@ -31,14 +31,14 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" href="./MealPlans">Schedule</a>
+                                <a class="nav-link text-dark" href="~/MealPlans">Schedule</a>
                             </li>
                         }
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="./Recipes">Recipes</a>
+                            <a class="nav-link text-dark" asp-controller="Recipes" asp-action="Index">Recipes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" href="./Ingredients">Ingredients</a>
+                            <a class="nav-link text-dark" asp-controller="Ingredients" asp-action="Index">Ingredients</a>
                         </li>
 
 
@@ -48,7 +48,7 @@
         </nav>
     </header>
 
-    <main role="main" class="container pb-3 color--bg--white min-height--1">
+    <main role="main" class="container pb-3 pt-3 color--bg--white min-height--1">
         @RenderBody()
     </main>
     <footer class="border-top footer text-muted color--bg--darken color--font--white">
