@@ -8,6 +8,14 @@
   <ItemGroup>
     <Compile Remove="Migrations\20201012143457_UserNameAndRecipeCreator_Oct12.cs" />
     <Compile Remove="Migrations\20201012143457_UserNameAndRecipeCreator_Oct12.Designer.cs" />
+    <Compile Remove="Migrations\20201012162637_AddApplicationUser_Oct12.cs" />
+    <Compile Remove="Migrations\20201012162637_AddApplicationUser_Oct12.Designer.cs" />
+    <Compile Remove="Migrations\20201012162728_AddCreator_Oct12.cs" />
+    <Compile Remove="Migrations\20201012162728_AddCreator_Oct12.Designer.cs" />
+    <Compile Remove="Migrations\20201012163123_CreatorIdToString_Oct12.cs" />
+    <Compile Remove="Migrations\20201012163123_CreatorIdToString_Oct12.Designer.cs" />
+    <Compile Remove="Migrations\20201012175623_Fix_Oct12.cs" />
+    <Compile Remove="Migrations\20201012175623_Fix_Oct12.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

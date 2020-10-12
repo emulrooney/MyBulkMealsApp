@@ -13,11 +13,9 @@ namespace MyBulkMealsApp.Controllers
 {
     public class IngredientsController : BaseController<Ingredient, IngredientRepository>
     {
-        private readonly IngredientRepository _repo;
 
-        public IngredientsController(IngredientRepository repo, UserManager<IdentityUser> userManager) : base(repo, userManager)
+        public IngredientsController(IngredientRepository repo, UserManager<ApplicationUser> userManager) : base(repo, userManager)
         {
-            _repo = repo;
         }
 
         // POST: Ingredients/Create
@@ -27,7 +25,7 @@ namespace MyBulkMealsApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MeasurementId,BaseMeasurement,Calories,Protein,Carbs,Fat,ItemName,IsPublic")] Ingredient ingredient)
         {
-            var user = _userManager.GetUserAsync(HttpContext.User);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
             ingredient.CreatorId = user.Id;
 
             if (ModelState.IsValid)

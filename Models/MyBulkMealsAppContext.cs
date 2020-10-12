@@ -1,11 +1,12 @@
 ﻿using System;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace MyBulkMealsApp.Models
 {
-    public partial class MyBulkMealsAppContext : DbContext
+    public partial class MyBulkMealsAppContext : IdentityDbContext<ApplicationUser>
     {
         public MyBulkMealsAppContext()
         {
@@ -16,14 +17,15 @@ namespace MyBulkMealsApp.Models
         {
         }
 
-        public virtual DbSet<AspNetRoleClaims> AspNetRoleClaims { get; set; }
-        public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
-        public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
-        public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
-        public virtual DbSet<AspNetUserRoles> AspNetUserRoles { get; set; }
-        public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
-        public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
-        public virtual DbSet<IdentityUser> IdentityUsers { get; set; }
+        //public virtual DbSet<AspNetRoleClaims> AspNetRoleClaims { get; set; }
+        //public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
+        //public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
+        //public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
+        //public virtual DbSet<AspNetUserRoles> AspNetUserRoles { get; set; }
+        //public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
+        //public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
+        //public virtual DbSet<IdentityUser> IdentityUsers { get; set; }
+        public virtual DbSet<IdentityRole> IdentityRole { get; set; }
         public virtual DbSet<IdentityUserClaim<string>> IdentityUserClaims { get; set; }
         public virtual DbSet<Ingredient> Ingredient { get; set; }
         public virtual DbSet<MealPlan> MealPlan { get; set; }
@@ -44,6 +46,8 @@ namespace MyBulkMealsApp.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<AspNetRoleClaims>(entity =>
             {
                 entity.HasIndex(e => e.RoleId);

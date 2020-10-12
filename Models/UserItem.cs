@@ -15,7 +15,7 @@ namespace MyBulkMealsApp.Models
         public string ItemName { get; set; }
         [DisplayName("Creation Time")]
         public DateTime CreatedTime { get; set; }
-        public int CreatorId { get; set; }
+        public string CreatorId { get; set; }
 
         [DisplayName("Verified Item")]
         public bool IsVerified { get; set; }
@@ -24,7 +24,7 @@ namespace MyBulkMealsApp.Models
         public DateTime? VerificationSubmissionTime { get; set; }
         public bool IsAmendment { get; set; }
 
-        public AspNetUsers Creator { get; set; }
+        public ApplicationUser Creator { get; set; }
 
         public UserItem()
         {

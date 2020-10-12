@@ -32,10 +32,11 @@ namespace MyBulkMealsApp
             services.AddDbContext<MyBulkMealsAppContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            _ = services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<MyBulkMealsAppContext>();
-            services.AddControllersWithViews();
-            services.AddRazorPages();
+            services.AddIdentity<ApplicationUser, IdentityRole>(
+                options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<MyBulkMealsAppContext>()
+                .AddDefaultUI()
+                .AddDefaultTokenProviders();
 
             //REPOS
             services.AddScoped<RecipeRepository>();

@@ -16,11 +16,9 @@ namespace MyBulkMealsApp.Controllers
 
     public class RecipesController : BaseController<Recipe, RecipeRepository>
     {
-        private readonly RecipeRepository _repo;
 
-        public RecipesController(RecipeRepository repo, UserManager<IdentityUser> userManager) : base(repo, userManager)
+        public RecipesController(RecipeRepository repo, UserManager<ApplicationUser> userManager) : base(repo, userManager)
         {
-            _repo = repo;
         }
         
         public async Task<IActionResult> Popular(int pageNumber = 1)
@@ -36,7 +34,7 @@ namespace MyBulkMealsApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ImageUrl,BaseServings,Instructions,Time,Views,ItemName,CreatedTime,IsVerified,IsPublic,IsAmendment")] Recipe recipe)
         {
-            var user = _userManager.GetUserAsync(HttpContext.User);
+            var user = await _userManager.GetUserAsync(HttpContext.User);
             recipe.CreatorId = user.Id;
 
             if (ModelState.IsValid)

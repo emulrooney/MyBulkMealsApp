@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyBulkMealsApp.Data;
+using MyBulkMealsApp.Models;
 
 namespace MyBulkMealsApp.Controllers
 {
@@ -16,11 +17,11 @@ namespace MyBulkMealsApp.Controllers
        where TRepository : IRepository<TEntity>
     {
         protected readonly TRepository _repo;
-        protected readonly UserManager<IdentityUser> _userManager;
+        protected readonly UserManager<ApplicationUser> _userManager;
 
         protected int pageSize = 20; //temp
 
-        public BaseController(TRepository repository, UserManager<IdentityUser> userManager)
+        public BaseController(TRepository repository, UserManager<ApplicationUser> userManager)
         {
             this._repo = repository;
             this._userManager = userManager;
