@@ -16,6 +16,8 @@
     <Compile Remove="Migrations\20201012163123_CreatorIdToString_Oct12.Designer.cs" />
     <Compile Remove="Migrations\20201012175623_Fix_Oct12.cs" />
     <Compile Remove="Migrations\20201012175623_Fix_Oct12.Designer.cs" />
+    <Compile Remove="Migrations\20201013145119_RestoreRecipeIngredient_Oct13.cs" />
+    <Compile Remove="Migrations\20201013145119_RestoreRecipeIngredient_Oct13.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

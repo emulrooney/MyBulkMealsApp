@@ -16,8 +16,9 @@ namespace MyBulkMealsApp.Data
 
         private static ApplicationUser testAdmin = new ApplicationUser()
         {
-            //FirstName = "Test",
-            //LastName = "Admin",
+            FirstName = "Test",
+            LastName = "Admin",
+            Location = "Earth",
             UserName = "admin@test.com",
             Email = "admin@test.com",
             PhoneNumber = "111-111-1111",
@@ -27,8 +28,9 @@ namespace MyBulkMealsApp.Data
 
         private static ApplicationUser testPlayer = new ApplicationUser()
         {
-            //FirstName = "Demo",
-            //LastName = "User",
+            FirstName = "Demo",
+            LastName = "User",
+            Location = "Hamilton, ON",
             UserName = "user@test.com",
             Email = "user@test.com",
             PhoneNumber = "222-222-2222",

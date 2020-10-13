@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyBulkMealsApp.Models;
 
 namespace MyBulkMealsApp.Migrations
 {
     [DbContext(typeof(MyBulkMealsAppContext))]
-    partial class MyBulkMealsAppContextModelSnapshot : ModelSnapshot
+    [Migration("20201013142243_CustomizeUser_Oct13")]
+    partial class CustomizeUser_Oct13
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -498,31 +500,6 @@ namespace MyBulkMealsApp.Migrations
                     b.ToTable("Measurement");
                 });
 
-            modelBuilder.Entity("MyBulkMealsApp.Models.RecipeIngredient", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("IngredientId")
-                        .HasColumnType("int");
-
-                    b.Property<double>("MeasurementAmount")
-                        .HasColumnType("float");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IngredientId");
-
-                    b.HasIndex("RecipeId");
-
-                    b.ToTable("RecipeIngredient");
-                });
-
             modelBuilder.Entity("MyBulkMealsApp.Models.UserItem", b =>
                 {
                     b.Property<int>("Id")
@@ -612,7 +589,12 @@ namespace MyBulkMealsApp.Migrations
                     b.Property<short?>("Protein")
                         .HasColumnType("smallint");
 
+                    b.Property<int?>("RecipeId")
+                        .HasColumnType("int");
+
                     b.HasIndex("MeasurementId");
+
+                    b.HasIndex("RecipeId");
 
                     b.HasDiscriminator().HasValue("Ingredient");
                 });
@@ -745,21 +727,6 @@ namespace MyBulkMealsApp.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MyBulkMealsApp.Models.RecipeIngredient", b =>
-                {
-                    b.HasOne("MyBulkMealsApp.Models.Ingredient", "Ingredient")
-                        .WithMany()
-                        .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MyBulkMealsApp.Models.Recipe", "Recipe")
-                        .WithMany("Ingredients")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("MyBulkMealsApp.Models.UserItem", b =>
                 {
                     b.HasOne("MyBulkMealsApp.Models.ApplicationUser", "Creator")
@@ -774,6 +741,10 @@ namespace MyBulkMealsApp.Migrations
                         .HasForeignKey("MeasurementId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MyBulkMealsApp.Models.Recipe", null)
+                        .WithMany("Ingredients")
+                        .HasForeignKey("RecipeId");
                 });
 #pragma warning restore 612, 618
         }
