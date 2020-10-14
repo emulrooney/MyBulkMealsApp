@@ -9,34 +9,42 @@ using System.Threading.Tasks;
 namespace MyBulkMealsApp.Repositories {
     public class RecipeRepository : BaseRepository<Recipe, MyBulkMealsAppContext>
     {
+        public override IQueryable<Recipe> Collection
+        {
+            get
+            {
+                return context.Set<Recipe>()
+                .OfType<Recipe>()
+                .Include(i => i.Creator);
+            }
+        }
+
         public RecipeRepository(MyBulkMealsAppContext context) : base(context)
         {
         }
 
         public override async Task<Recipe> Get(int id)
         {
-            return await context.Set<Recipe>()
-                .Include(i => i.Creator)
-                .FirstOrDefaultAsync(i => i.Id == id);
+            return await Collection.FirstOrDefaultAsync(i => i.Id == id);
         }
 
         public override async Task<List<Recipe>> GetByKeyword(string keyword)
         {
-            return await context.Recipe.Where(r => r.ItemName.Contains(keyword)
-            || r.Instructions.Contains(keyword)).ToListAsync();
+            return await Collection
+                .Where(r => r.ItemName.Contains(keyword) || r.Instructions.Contains(keyword)).ToListAsync();
         }
 
         public async Task<List<Recipe>> GetByViews(bool descending = true)
         {
             if (descending)
-                return await context.Recipe.OrderByDescending(r => r.Views).ToListAsync();
+                return await Collection.OrderByDescending(r => r.Views).ToListAsync();
             else
-                return await context.Recipe.OrderBy(r => r.Views).ToListAsync();
+                return await Collection.OrderBy(r => r.Views).ToListAsync();
         }
 
         public async Task<List<Recipe>> GetTopRecipes(int recipesCount)
         {
-            var recipes = await context.Recipe.OrderByDescending(r => r.Views).Take(recipesCount).ToListAsync();
+            var recipes = await Collection.OrderByDescending(r => r.Views).Take(recipesCount).ToListAsync();
             return recipes;
         }
     }

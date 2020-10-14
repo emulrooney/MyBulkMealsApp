@@ -16,7 +16,9 @@
         <hr class="my-4">
         @if (SignInManager.IsSignedIn(User))
         {
-            <p class="lead">Hello @User.Identity.Name!</p>
+            <p class="lead">Hello 
+                <strong>@(UserManager.GetUserAsync(User).Result.FirstName ?? @User.Identity.Name)</strong>!
+            </p>
 
             <a class="btn btn-secondary btn-lg" href="~/Recipes" role="button">Recipes</a>
             <a class="btn btn-secondary btn-lg" href="~/Ingredients" role="button">Ingredients</a>

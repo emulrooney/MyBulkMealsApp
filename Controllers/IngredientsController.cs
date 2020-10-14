@@ -29,11 +29,6 @@ namespace MyBulkMealsApp.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ingredient.CreatorId = userId;
 
-            var errors = ModelState
-    .Where(x => x.Value.Errors.Count > 0)
-    .Select(x => new { x.Key, x.Value.Errors })
-    .ToArray();
-
             if (ModelState.IsValid)
             {
                 await _repo.Add(ingredient);

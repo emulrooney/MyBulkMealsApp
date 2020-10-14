@@ -120,7 +120,7 @@
                 </td>
             }
             <td>
-                @Html.DisplayFor(modelItem => item.CreatorId)
+                @Html.DisplayFor(modelItem => item.Creator.FullName)
             </td>
             <td>
                 <i class="material-icons">@(item.IsVerified ? "checkmark" : "")</i>

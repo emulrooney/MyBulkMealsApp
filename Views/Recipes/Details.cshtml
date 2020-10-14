@@ -17,7 +17,7 @@
             <i class="material-icons">checkmark</i>
         }
     </h1>
-    <h2>Author: @Model.Creator.UserName </h2>
+    <h2>Author: @Model.Creator.FullName </h2>
     <span class="font-italic">
         Viewed @Html.DisplayFor(model => model.Views) times.
     </span>
@@ -81,13 +81,13 @@
         <div class="tab-pane fade" id="nutrition" role="tabpanel" aria-labelledby="nutritionTab">
             <dl class="list-unstyled">
                 <dd>Calories</dd>
-                <dt>100</dt>
+                <dt>@Model.TotalCalories</dt>
                 <dd>Protein</dd>
-                <dt>100</dt>
+                <dt>@Model.TotalProtein</dt>
                 <dd>Carbs</dd>
-                <dt>100</dt>
+                <dt>@Model.TotalCarbs</dt>
                 <dd>Fat</dd>
-                <dt>100</dt>
+                <dt>@Model.TotalFat</dt>
             </dl>
         </div>
     </div>
