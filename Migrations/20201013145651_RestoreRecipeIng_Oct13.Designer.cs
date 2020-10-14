@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyBulkMealsApp.Models;
 
-namespace MyBulkMealsApp.Data.Migrations
+namespace MyBulkMealsApp.Migrations
 {
     [DbContext(typeof(MyBulkMealsAppContext))]
-    [Migration("20200916133112_Sept16_IdentityUserUpdate")]
-    partial class Sept16_IdentityUserUpdate
+    [Migration("20201013145651_RestoreRecipeIng_Oct13")]
+    partial class RestoreRecipeIng_Oct13
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,138 @@ namespace MyBulkMealsApp.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("NormalizedName")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("MyBulkMealsApp.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -30,13 +161,24 @@ namespace MyBulkMealsApp.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -45,10 +187,12 @@ namespace MyBulkMealsApp.Data.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -66,11 +210,20 @@ namespace MyBulkMealsApp.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 
-                    b.ToTable("IdentityUsers");
+                    b.HasIndex("NormalizedEmail")
+                        .HasName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("MyBulkMealsApp.Models.AspNetRoleClaims", b =>
@@ -94,7 +247,7 @@ namespace MyBulkMealsApp.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims");
+                    b.ToTable("AspNetRoleClaims1");
                 });
 
             modelBuilder.Entity("MyBulkMealsApp.Models.AspNetRoles", b =>
@@ -120,7 +273,7 @@ namespace MyBulkMealsApp.Data.Migrations
                         .HasName("RoleNameIndex")
                         .HasFilter("([NormalizedName] IS NOT NULL)");
 
-                    b.ToTable("AspNetRoles");
+                    b.ToTable("AspNetRoles1");
                 });
 
             modelBuilder.Entity("MyBulkMealsApp.Models.AspNetUserClaims", b =>
@@ -144,7 +297,7 @@ namespace MyBulkMealsApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims");
+                    b.ToTable("AspNetUserClaims1");
                 });
 
             modelBuilder.Entity("MyBulkMealsApp.Models.AspNetUserLogins", b =>
@@ -168,7 +321,7 @@ namespace MyBulkMealsApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins");
+                    b.ToTable("AspNetUserLogins1");
                 });
 
             modelBuilder.Entity("MyBulkMealsApp.Models.AspNetUserRoles", b =>
@@ -183,7 +336,7 @@ namespace MyBulkMealsApp.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles");
+                    b.ToTable("AspNetUserRoles1");
                 });
 
             modelBuilder.Entity("MyBulkMealsApp.Models.AspNetUserTokens", b =>
@@ -204,7 +357,7 @@ namespace MyBulkMealsApp.Data.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens");
+                    b.ToTable("AspNetUserTokens1");
                 });
 
             modelBuilder.Entity("MyBulkMealsApp.Models.AspNetUsers", b =>
@@ -268,44 +421,7 @@ namespace MyBulkMealsApp.Data.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("([NormalizedUserName] IS NOT NULL)");
 
-                    b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("MyBulkMealsApp.Models.Ingredient", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<double>("BaseMeasurement")
-                        .HasColumnType("float");
-
-                    b.Property<short?>("Calories")
-                        .HasColumnType("smallint");
-
-                    b.Property<short?>("Carbs")
-                        .HasColumnType("smallint");
-
-                    b.Property<short?>("Fat")
-                        .HasColumnType("smallint");
-
-                    b.Property<string>("ItemName")
-                        .IsRequired()
-                        .HasColumnType("varchar(128)")
-                        .HasMaxLength(128)
-                        .IsUnicode(false);
-
-                    b.Property<string>("MeasurementType")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
-
-                    b.Property<short?>("Protein")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Ingredient");
+                    b.ToTable("AspNetUsers1");
                 });
 
             modelBuilder.Entity("MyBulkMealsApp.Models.MealPlan", b =>
@@ -316,11 +432,11 @@ namespace MyBulkMealsApp.Data.Migrations
                     b.Property<int>("CreatorId")
                         .HasColumnType("int");
 
-                    b.Property<byte>("EndDay")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("EndDay")
+                        .HasColumnType("int");
 
-                    b.Property<byte>("MealsPerDay")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("MealsPerDay")
+                        .HasColumnType("int");
 
                     b.Property<string>("PlanName")
                         .IsRequired()
@@ -328,11 +444,11 @@ namespace MyBulkMealsApp.Data.Migrations
                         .HasMaxLength(128)
                         .IsUnicode(false);
 
-                    b.Property<byte>("StartDay")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("StartDay")
+                        .HasColumnType("int");
 
-                    b.Property<byte>("TotalDays")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("TotalDays")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -366,51 +482,30 @@ namespace MyBulkMealsApp.Data.Migrations
                     b.ToTable("MealPlanEntry");
                 });
 
-            modelBuilder.Entity("MyBulkMealsApp.Models.Recipe", b =>
+            modelBuilder.Entity("MyBulkMealsApp.Models.Measurement", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<byte?>("BaseServings")
-                        .IsRequired()
-                        .HasColumnType("tinyint");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("varchar(256)")
-                        .HasMaxLength(256)
-                        .IsUnicode(false);
-
-                    b.Property<string>("Instructions")
-                        .HasColumnType("varchar(4096)")
-                        .HasMaxLength(4096)
-                        .IsUnicode(false);
-
-                    b.Property<string>("ItemName")
-                        .IsRequired()
-                        .HasColumnType("varchar(128)")
-                        .HasMaxLength(128)
-                        .IsUnicode(false);
-
-                    b.Property<string>("Step")
-                        .HasColumnType("varchar(4096)")
-                        .HasMaxLength(4096)
-                        .IsUnicode(false);
-
-                    b.Property<byte?>("Time")
-                        .HasColumnType("tinyint");
-
-                    b.Property<int?>("Views")
-                        .HasColumnType("int");
+                    b.Property<string>("Symbol")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Recipe");
+                    b.ToTable("Measurement");
                 });
 
             modelBuilder.Entity("MyBulkMealsApp.Models.RecipeIngredient", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("IngredientId")
                         .HasColumnType("int");
@@ -423,35 +518,42 @@ namespace MyBulkMealsApp.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IngredientId");
+
+                    b.HasIndex("RecipeId");
+
                     b.ToTable("RecipeIngredient");
                 });
 
             modelBuilder.Entity("MyBulkMealsApp.Models.UserItem", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CopyOf")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("CreatorId")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<byte[]>("IsAmendment")
-                        .HasColumnType("binary(1)")
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsAmendment")
+                        .HasColumnType("bit")
                         .IsFixedLength(true)
                         .HasMaxLength(1);
 
-                    b.Property<byte[]>("IsPublic")
-                        .HasColumnType("binary(1)")
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("bit")
                         .IsFixedLength(true)
                         .HasMaxLength(1);
 
-                    b.Property<byte[]>("IsVerified")
-                        .HasColumnType("binary(1)")
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("bit")
                         .IsFixedLength(true)
                         .HasMaxLength(1);
 
@@ -461,12 +563,16 @@ namespace MyBulkMealsApp.Data.Migrations
                         .HasMaxLength(128)
                         .IsUnicode(false);
 
-                    b.Property<DateTime?>("VerificationSubmission")
+                    b.Property<DateTime?>("VerificationSubmissionTime")
                         .HasColumnType("datetime");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatorId");
+
                     b.ToTable("UserItem");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("UserItem");
                 });
 
             modelBuilder.Entity("MyBulkMealsApp.Models.UserSavedItem", b =>
@@ -483,6 +589,111 @@ namespace MyBulkMealsApp.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserSavedItem");
+                });
+
+            modelBuilder.Entity("MyBulkMealsApp.Models.Ingredient", b =>
+                {
+                    b.HasBaseType("MyBulkMealsApp.Models.UserItem");
+
+                    b.Property<double>("BaseMeasurement")
+                        .HasColumnType("float");
+
+                    b.Property<short?>("Calories")
+                        .HasColumnType("smallint");
+
+                    b.Property<short?>("Carbs")
+                        .HasColumnType("smallint");
+
+                    b.Property<short?>("Fat")
+                        .HasColumnType("smallint");
+
+                    b.Property<int>("MeasurementId")
+                        .HasColumnType("int")
+                        .IsUnicode(false);
+
+                    b.Property<short?>("Protein")
+                        .HasColumnType("smallint");
+
+                    b.HasIndex("MeasurementId");
+
+                    b.HasDiscriminator().HasValue("Ingredient");
+                });
+
+            modelBuilder.Entity("MyBulkMealsApp.Models.Recipe", b =>
+                {
+                    b.HasBaseType("MyBulkMealsApp.Models.UserItem");
+
+                    b.Property<int>("BaseServings")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("varchar(256)")
+                        .HasMaxLength(256)
+                        .IsUnicode(false);
+
+                    b.Property<string>("Instructions")
+                        .HasColumnType("varchar(4096)")
+                        .HasMaxLength(4096)
+                        .IsUnicode(false);
+
+                    b.Property<int>("Time")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Views")
+                        .HasColumnType("int");
+
+                    b.HasDiscriminator().HasValue("Recipe");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("MyBulkMealsApp.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("MyBulkMealsApp.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyBulkMealsApp.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("MyBulkMealsApp.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MyBulkMealsApp.Models.AspNetRoleClaims", b =>
@@ -532,6 +743,37 @@ namespace MyBulkMealsApp.Data.Migrations
                     b.HasOne("MyBulkMealsApp.Models.AspNetUsers", "User")
                         .WithMany("AspNetUserTokens")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MyBulkMealsApp.Models.RecipeIngredient", b =>
+                {
+                    b.HasOne("MyBulkMealsApp.Models.Ingredient", "Ingredient")
+                        .WithMany()
+                        .HasForeignKey("IngredientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyBulkMealsApp.Models.Recipe", "Recipe")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MyBulkMealsApp.Models.UserItem", b =>
+                {
+                    b.HasOne("MyBulkMealsApp.Models.ApplicationUser", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorId");
+                });
+
+            modelBuilder.Entity("MyBulkMealsApp.Models.Ingredient", b =>
+                {
+                    b.HasOne("MyBulkMealsApp.Models.Measurement", "Measurement")
+                        .WithMany()
+                        .HasForeignKey("MeasurementId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

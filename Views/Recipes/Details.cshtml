@@ -2,59 +2,99 @@
 
 @{
     ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<div class="item-page__details">
 
-<div>
-    <h4>Recipe</h4>
-    <hr />
+    <h1>@Html.DisplayFor(model => model.ItemName)
+        @if (Model.IsAmendment)
+        {
+            <span>(Amendment)</span>
+        }
+        @if (Model.IsVerified)
+        {
+            <i class="material-icons">checkmark</i>
+        }
+    </h1>
+    <h2>Author: @Model.Creator.UserName </h2>
+    <span class="font-italic">
+        Viewed @Html.DisplayFor(model => model.Views) times.
+    </span>
+
+
+    @if (Model.ImageUrl != null)
+    {
+        <div class="recipe__splash">
+            <img src="@Model.ImageUrl" alt="@Model.ItemName Image" />
+        </div>
+    }
+
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ItemName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ItemName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageUrl)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.BaseServings)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.BaseServings)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Instructions)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Instructions)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Step)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Step)
-        </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Time)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-2">
             @Html.DisplayFor(model => model.Time)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Views)
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Ingredients)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Views)
+        <dd class="col-sm-2">
+            @Html.DisplayFor(model => (model.Ingredients != null ? model.Ingredients.Count : 0))
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BaseServings)
+        </dt>
+        <dd class="col-sm-2">
+            @Html.DisplayFor(model => model.BaseServings)
+            <div class="recipe__servings">
+                <button aria-label="Reduce Servings"><</button>
+                <button aria-label="Increase Servings">></button>
+            </div>
         </dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+    <ul class="nav nav-tabs" id="recipeTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="homeTab" data-toggle="tab" href="#ingredients" role="tab" aria-controls="home" aria-selected="true">Ingredients</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="stepsTab" data-toggle="tab" href="#steps" role="tab" aria-controls="profile" aria-selected="false">Steps</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="nutritionTab" data-toggle="tab" href="#nutrition" role="tab" aria-controls="contact" aria-selected="false">Nutrition</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="editTab" data-toggle="tab" role="button" >Copy and Edit</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="ingredients" role="tabpanel" aria-labelledby="ingredientsTab">
+            Ingredients list
+        </div>
+        <div class="tab-pane fade" id="steps" role="tabpanel" aria-labelledby="stepsTab">
+            @Model.Instructions
+        </div>
+        <div class="tab-pane fade" id="nutrition" role="tabpanel" aria-labelledby="nutritionTab">
+            <dl class="list-unstyled">
+                <dd>Calories</dd>
+                <dt>100</dt>
+                <dd>Protein</dd>
+                <dt>100</dt>
+                <dd>Carbs</dd>
+                <dt>100</dt>
+                <dd>Fat</dd>
+                <dt>100</dt>
+            </dl>
+        </div>
+    </div>
+
+    <div> 
+        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
+
 </div>

@@ -6,8 +6,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\Migrations\20200915181857_Sept15_DBUpdate.cs" />
-    <Compile Remove="Data\Migrations\20200915181857_Sept15_DBUpdate.Designer.cs" />
+    <Compile Remove="Migrations\20201012143457_UserNameAndRecipeCreator_Oct12.cs" />
+    <Compile Remove="Migrations\20201012143457_UserNameAndRecipeCreator_Oct12.Designer.cs" />
+    <Compile Remove="Migrations\20201012162637_AddApplicationUser_Oct12.cs" />
+    <Compile Remove="Migrations\20201012162637_AddApplicationUser_Oct12.Designer.cs" />
+    <Compile Remove="Migrations\20201012162728_AddCreator_Oct12.cs" />
+    <Compile Remove="Migrations\20201012162728_AddCreator_Oct12.Designer.cs" />
+    <Compile Remove="Migrations\20201012163123_CreatorIdToString_Oct12.cs" />
+    <Compile Remove="Migrations\20201012163123_CreatorIdToString_Oct12.Designer.cs" />
+    <Compile Remove="Migrations\20201012175623_Fix_Oct12.cs" />
+    <Compile Remove="Migrations\20201012175623_Fix_Oct12.Designer.cs" />
+    <Compile Remove="Migrations\20201013145119_RestoreRecipeIngredient_Oct13.cs" />
+    <Compile Remove="Migrations\20201013145119_RestoreRecipeIngredient_Oct13.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +32,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
   <ItemGroup>

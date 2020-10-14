@@ -1,71 +1,110 @@
-﻿@model IEnumerable<MyBulkMealsApp.Models.Recipe>
+﻿@model MyBulkMealsApp.Data.PaginatedList<MyBulkMealsApp.Models.Recipe>
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    bool showCreatedTime = (ViewData["ShowCreatedTime"] != null && (bool)ViewData["ShowCreatedTime"]);
 }
 
-<h1>Index</h1>
+<h1>Recipes</h1>
+<hr />
+ 
+<h2>Popular Searches</h2>
+<ul class="list-inline">
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info">My Recipes</a>
+    </li>
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info" asp-action="Popular">Most Viewed</a>
+    </li>
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info" asp-action="Newest">Newest</a>
+    </li>
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info" asp-action="Random" asp-route-quantity="20">Random</a>
+    </li>
+</ul>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<div class="m-4">
+    <label for="ingredientSearch">Quick Search by Keyword</label>
+    <div class="input-group input-group-lg">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-lg">
+                <i class="material-icons">search</i>
+            </span>
+        </div>
+        <input id="ingredientSearch" name="keyword" type="text" class="form-control" aria-describedby="inputGroup-sizing-lg">
+        @*<button class="btn btn-primary">GO!</button>*@
+    </div>
+</div>
+
+<table class="table-bordered table-striped w-100">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ItemName)
+                Recipe Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
+            @*Verified*@
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BaseServings)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Instructions)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Step)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Time)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Views)
-            </th>
+
+            @if (showCreatedTime)
+            {
+                <th>
+                    Created At
+                </th>
+            }
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model)
+        {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ItemName)
+                <a asp-action="Details" asp-route-id="@item.Id">
+                    @Html.DisplayFor(modelItem => item.ItemName)
+                </a>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
+                <i class="material-icons">@(item.IsVerified ? "checkmark" : "")</i>
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BaseServings)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Instructions)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Step)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Time)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Views)
-            </td>
+            @if (showCreatedTime)
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedTime)
+                </td>
+            }
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+
+<div>
+    <a asp-action="Create">Create New</a>
+</div>

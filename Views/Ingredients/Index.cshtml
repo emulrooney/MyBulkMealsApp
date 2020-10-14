@@ -1,64 +1,129 @@
-﻿@model IEnumerable<MyBulkMealsApp.Models.Ingredient>
+﻿@model MyBulkMealsApp.Data.PaginatedList<MyBulkMealsApp.Models.Ingredient>
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    bool showCreatedTime = (ViewData["ShowCreatedTime"] != null && (bool)ViewData["ShowCreatedTime"]);
 }
 
-<h1>Index</h1>
+<script>
+    $(document).ready(function () {
+        $(".js__show-nutrition").on("click", function () {
+            row = $(this).closest("tr");
+            title = $(this).html();
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+            $("#ingredientModal .modal-title").html(title);
+            $("#modalCalories").html(row.data("calories"));
+            $("#modalProtein").html(row.data("protein"));
+            $("#modalCarbs").html(row.data("carbs"));
+            $("#modalFat").html(row.data("fat"));
+
+            $("#ingredientModal").modal('show');
+        });
+    });
+</script>
+
+<div id="ingredientModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-unstyled">
+                    <li>Calories: <span id="modalCalories"></span></li>
+                    <li>Protein: <span id="modalProtein"></span></li>
+                    <li>Carbs: <span id="modalCarbs"></span></li>
+                    <li>Fat: <span id="modalFat"></span></li>
+
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-primary">Save to My Ingredients</button>
+                <button type="button" class="btn btn-sm btn-info">Propose Amendment</button>
+                <button type="button" class="btn btn-sm btn-info">Make Copy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h1>Ingredients</h1>
+
+<hr />
+<h2>Popular Searches</h2>
+<ul class="list-inline">
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info">My Ingredients</a>
+    </li>
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info">Saved Ingredients</a>
+    </li>
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info" asp-action="Newest">Newest</a>
+    </li>
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info" asp-action="Random" asp-route-quantity="20">Random</a>
+    </li>
+</ul>
+
+<div class="m-4">
+    <label for="ingredientSearch">Quick Search by Keyword</label>
+    <form asp-action="Results">
+        <div class="input-group input-group-lg">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-lg">
+                    <i class="material-icons">search</i>
+                </span>
+            </div>
+            <input id="ingredientSearch" type="text" name="keyword" class="form-control" aria-describedby="inputGroup-sizing-lg">
+            <button class="btn btn-primary">GO!</button>
+        </div>
+    </form>
+</div>
+
+<table class="table-bordered table-striped w-100">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ItemName)
+                Ingredient Name
             </th>
+            @if (showCreatedTime)
+            {
+                <th>
+                    Created At
+                </th>
+            }
             <th>
-                @Html.DisplayNameFor(model => model.MeasurementType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BaseMeasurement)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Calories)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Protein)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Carbs)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fat)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
+        @foreach (var item in Model)
+        {
+        <tr data-calories="@item.Calories" data-protein="@item.Protein" data-carbs="@item.Carbs" data-fat="@item.Fat">
             <td>
-                @Html.DisplayFor(modelItem => item.ItemName)
+                <a href="#" class="js__show-nutrition">
+                    @Html.DisplayFor(modelItem => item.ItemName)
+                </a>
+
+                (@Html.DisplayFor(modelItem => item.DefaultMeasurement))
+            </td>
+            @if (showCreatedTime)
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedTime)
+                </td>
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatorId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MeasurementType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BaseMeasurement)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Calories)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Protein)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Carbs)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fat)
+                <i class="material-icons">@(item.IsVerified ? "checkmark" : "")</i>
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -66,6 +131,30 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
-}
+        }
     </tbody>
 </table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>

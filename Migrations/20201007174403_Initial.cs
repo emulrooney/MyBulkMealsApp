@@ -1,10 +1,9 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace MyBulkMealsApp.Data.Migrations
+namespace MyBulkMealsApp.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -48,11 +47,149 @@ namespace MyBulkMealsApp.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "IdentityUserClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(nullable: true),
+                    ClaimType = table.Column<string>(nullable: true),
+                    ClaimValue = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IdentityUserClaims", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "IdentityUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    UserName = table.Column<string>(nullable: true),
+                    NormalizedUserName = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
+                    NormalizedEmail = table.Column<string>(nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
+                    PasswordHash = table.Column<string>(nullable: true),
+                    SecurityStamp = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    AccessFailedCount = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IdentityUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MealPlan",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    PlanName = table.Column<string>(unicode: false, maxLength: 128, nullable: false),
+                    CreatorId = table.Column<int>(nullable: false),
+                    MealsPerDay = table.Column<int>(nullable: false),
+                    TotalDays = table.Column<int>(nullable: false),
+                    StartDay = table.Column<int>(nullable: false),
+                    EndDay = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MealPlan", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "MealPlanEntry",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    IsException = table.Column<byte[]>(fixedLength: true, maxLength: 1, nullable: true),
+                    Quantity = table.Column<byte>(nullable: false),
+                    MealPlanId = table.Column<int>(nullable: false),
+                    RecipeId = table.Column<int>(nullable: false),
+                    Day = table.Column<byte>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MealPlanEntry", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Measurement",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    Symbol = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Measurement", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserItem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ItemName = table.Column<string>(unicode: false, maxLength: 128, nullable: false),
+                    CreatedTime = table.Column<DateTime>(type: "datetime", nullable: false),
+                    CreatorId = table.Column<int>(nullable: false),
+                    IsVerified = table.Column<bool>(fixedLength: true, maxLength: 1, nullable: false),
+                    IsPublic = table.Column<bool>(fixedLength: true, maxLength: 1, nullable: false),
+                    VerificationSubmissionTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    IsAmendment = table.Column<bool>(fixedLength: true, maxLength: 1, nullable: false),
+                    Discriminator = table.Column<string>(nullable: false),
+                    MeasurementId = table.Column<int>(unicode: false, nullable: true),
+                    BaseMeasurement = table.Column<double>(nullable: true),
+                    Calories = table.Column<short>(nullable: true),
+                    Protein = table.Column<short>(nullable: true),
+                    Carbs = table.Column<short>(nullable: true),
+                    Fat = table.Column<short>(nullable: true),
+                    RecipeId = table.Column<int>(nullable: true),
+                    ImageUrl = table.Column<string>(unicode: false, maxLength: 256, nullable: true),
+                    BaseServings = table.Column<int>(nullable: true),
+                    Instructions = table.Column<string>(unicode: false, maxLength: 4096, nullable: true),
+                    Time = table.Column<int>(nullable: true),
+                    Views = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserItem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserItem_UserItem_RecipeId",
+                        column: x => x.RecipeId,
+                        principalTable: "UserItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserSavedItem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    UserItemId = table.Column<int>(nullable: false),
+                    SavedBy = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserSavedItem", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -73,7 +210,7 @@ namespace MyBulkMealsApp.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -163,7 +300,7 @@ namespace MyBulkMealsApp.Data.Migrations
                 table: "AspNetRoles",
                 column: "NormalizedName",
                 unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
+                filter: "([NormalizedName] IS NOT NULL)");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -190,7 +327,12 @@ namespace MyBulkMealsApp.Data.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
+                filter: "([NormalizedUserName] IS NOT NULL)");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserItem_RecipeId",
+                table: "UserItem",
+                column: "RecipeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -209,6 +351,27 @@ namespace MyBulkMealsApp.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "IdentityUserClaims");
+
+            migrationBuilder.DropTable(
+                name: "IdentityUsers");
+
+            migrationBuilder.DropTable(
+                name: "MealPlan");
+
+            migrationBuilder.DropTable(
+                name: "MealPlanEntry");
+
+            migrationBuilder.DropTable(
+                name: "Measurement");
+
+            migrationBuilder.DropTable(
+                name: "UserItem");
+
+            migrationBuilder.DropTable(
+                name: "UserSavedItem");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

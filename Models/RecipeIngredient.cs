@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace MyBulkMealsApp.Models
 {
@@ -8,10 +10,13 @@ namespace MyBulkMealsApp.Models
     {
         [Key]
         public int Id { get; set; }
-        [Required]
+
         public int IngredientId { get; set; }
-        [Required]
         public int RecipeId { get; set; }
+
+        public Ingredient Ingredient { get; set; }
+        public Recipe Recipe { get; set; }
+
         public double MeasurementAmount { get; set; }
-    }
+   }
 }

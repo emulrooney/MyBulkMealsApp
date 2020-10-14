@@ -1,11 +1,12 @@
 ﻿using System;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace MyBulkMealsApp.Models
 {
-    public partial class MyBulkMealsAppContext : DbContext
+    public partial class MyBulkMealsAppContext : IdentityDbContext<ApplicationUser>
     {
         public MyBulkMealsAppContext()
         {
@@ -16,20 +17,21 @@ namespace MyBulkMealsApp.Models
         {
         }
 
-        public virtual DbSet<AspNetRoleClaims> AspNetRoleClaims { get; set; }
-        public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
-        public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
-        public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
-        public virtual DbSet<AspNetUserRoles> AspNetUserRoles { get; set; }
-        public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
-        public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
-        public virtual DbSet<IdentityUser> IdentityUsers { get; set; }
+        //public virtual DbSet<AspNetRoleClaims> AspNetRoleClaims { get; set; }
+        //public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
+        //public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
+        //public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
+        //public virtual DbSet<AspNetUserRoles> AspNetUserRoles { get; set; }
+        //public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
+        //public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
+        //public virtual DbSet<IdentityUser> IdentityUsers { get; set; }
+        public virtual DbSet<IdentityRole> IdentityRole { get; set; }
         public virtual DbSet<IdentityUserClaim<string>> IdentityUserClaims { get; set; }
         public virtual DbSet<Ingredient> Ingredient { get; set; }
         public virtual DbSet<MealPlan> MealPlan { get; set; }
         public virtual DbSet<MealPlanEntry> MealPlanEntry { get; set; }
+        public virtual DbSet<Measurement> Measurement { get; set; }
         public virtual DbSet<Recipe> Recipe { get; set; }
-        public virtual DbSet<RecipeIngredient> RecipeIngredient { get; set; }
         public virtual DbSet<UserItem> UserItem { get; set; }
         public virtual DbSet<UserSavedItem> UserSavedItem { get; set; }
 
@@ -44,6 +46,8 @@ namespace MyBulkMealsApp.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<AspNetRoleClaims>(entity =>
             {
                 entity.HasIndex(e => e.RoleId);
@@ -144,16 +148,15 @@ namespace MyBulkMealsApp.Models
 
             modelBuilder.Entity<Ingredient>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ItemName)
                     .IsRequired()
                     .HasMaxLength(128)
                     .IsUnicode(false);
 
-                entity.Property(e => e.MeasurementType)
+                entity.Property(e => e.MeasurementId)
                     .IsRequired()
-                    .HasMaxLength(50)
                     .IsUnicode(false);
             });
 
@@ -178,7 +181,7 @@ namespace MyBulkMealsApp.Models
 
             modelBuilder.Entity<Recipe>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.ImageUrl)
                     .HasMaxLength(256)
@@ -192,20 +195,11 @@ namespace MyBulkMealsApp.Models
                     .IsRequired()
                     .HasMaxLength(128)
                     .IsUnicode(false);
-
-                entity.Property(e => e.Step)
-                    .HasMaxLength(4096)
-                    .IsUnicode(false);
-            });
-
-            modelBuilder.Entity<RecipeIngredient>(entity =>
-            {
-                entity.Property(e => e.Id).ValueGeneratedNever();
             });
 
             modelBuilder.Entity<UserItem>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedTime).HasColumnType("datetime");
 
@@ -226,7 +220,7 @@ namespace MyBulkMealsApp.Models
                     .HasMaxLength(128)
                     .IsUnicode(false);
 
-                entity.Property(e => e.VerificationSubmission).HasColumnType("datetime");
+                entity.Property(e => e.VerificationSubmissionTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<UserSavedItem>(entity =>

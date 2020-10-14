@@ -2,51 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MyBulkMealsApp.Data;
 using MyBulkMealsApp.Models;
+using MyBulkMealsApp.Repositories;
 
 namespace MyBulkMealsApp.Controllers
 {
-    public class IngredientsController : Controller
+    public class IngredientsController : BaseController<Ingredient, IngredientRepository>
     {
-        private readonly MyBulkMealsAppContext _context;
 
-        public IngredientsController(MyBulkMealsAppContext context)
+        public IngredientsController(IngredientRepository repo, UserManager<ApplicationUser> userManager) : base(repo, userManager)
         {
-            _context = context;
-        }
-
-        // GET: Ingredients
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Ingredient.ToListAsync());
-        }
-
-        // GET: Ingredients/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ingredient = await _context.Ingredient
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ingredient == null)
-            {
-                return NotFound();
-            }
-
-            return View(ingredient);
-        }
-
-        // GET: Ingredients/Create
-        public IActionResult Create()
-        {
-            return View();
         }
 
         // POST: Ingredients/Create
@@ -54,31 +23,31 @@ namespace MyBulkMealsApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ItemName,MeasurementType,BaseMeasurement,Calories,Protein,Carbs,Fat")] Ingredient ingredient)
+        public async Task<IActionResult> Create([Bind("MeasurementId,BaseMeasurement,Calories,Protein,Carbs,Fat,ItemName,IsPublic")] Ingredient ingredient)
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            ingredient.CreatorId = user.Id;
+
             if (ModelState.IsValid)
             {
-                _context.Add(ingredient);
-                await _context.SaveChangesAsync();
+                await _repo.Add(ingredient);
                 return RedirectToAction(nameof(Index));
             }
+
             return View(ingredient);
         }
 
-        // GET: Ingredients/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async override Task<IActionResult> Create()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            ViewData["Measurements"] = await base._repo.GetMeasurements();
+            return await base.Create();
+        }
 
-            var ingredient = await _context.Ingredient.FindAsync(id);
-            if (ingredient == null)
-            {
-                return NotFound();
-            }
-            return View(ingredient);
+
+        public async override Task<IActionResult> Edit(int? id)
+        {
+            ViewData["Measurements"] = await base._repo.GetMeasurements();
+            return await base.Edit(id);
         }
 
         // POST: Ingredients/Edit/5
@@ -86,7 +55,7 @@ namespace MyBulkMealsApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ItemName,MeasurementType,BaseMeasurement,Calories,Protein,Carbs,Fat")] Ingredient ingredient)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,MeasurementType,BaseMeasurement,Calories,Protein,Carbs,Fat,ItemName,IsVerified,IsPublic")] Ingredient ingredient)
         {
             if (id != ingredient.Id)
             {
@@ -97,8 +66,7 @@ namespace MyBulkMealsApp.Controllers
             {
                 try
                 {
-                    _context.Update(ingredient);
-                    await _context.SaveChangesAsync();
+                    await _repo.Update(ingredient);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -116,38 +84,9 @@ namespace MyBulkMealsApp.Controllers
             return View(ingredient);
         }
 
-        // GET: Ingredients/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ingredient = await _context.Ingredient
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (ingredient == null)
-            {
-                return NotFound();
-            }
-
-            return View(ingredient);
-        }
-
-        // POST: Ingredients/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var ingredient = await _context.Ingredient.FindAsync(id);
-            _context.Ingredient.Remove(ingredient);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
         private bool IngredientExists(int id)
         {
-            return _context.Ingredient.Any(e => e.Id == id);
+            return _repo.Get(id) != null;
         }
     }
 }

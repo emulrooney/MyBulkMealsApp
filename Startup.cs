@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyBulkMealsApp.Models;
+using MyBulkMealsApp.Repositories;
 
 namespace MyBulkMealsApp
 {
@@ -31,10 +32,15 @@ namespace MyBulkMealsApp
             services.AddDbContext<MyBulkMealsAppContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            _ = services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<MyBulkMealsAppContext>();
-            services.AddControllersWithViews();
-            services.AddRazorPages();
+            services.AddIdentity<ApplicationUser, IdentityRole>(
+                options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<MyBulkMealsAppContext>()
+                .AddDefaultUI()
+                .AddDefaultTokenProviders();
+
+            //REPOS
+            services.AddScoped<RecipeRepository>();
+            services.AddScoped<IngredientRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
