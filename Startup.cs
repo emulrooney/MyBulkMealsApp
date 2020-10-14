@@ -41,6 +41,7 @@ namespace MyBulkMealsApp
             //REPOS
             services.AddScoped<RecipeRepository>();
             services.AddScoped<IngredientRepository>();
+            services.AddScoped<MeasurementHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

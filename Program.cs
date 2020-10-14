@@ -25,8 +25,12 @@ namespace MyBulkMealsApp
             DbInitializer.AppSecrets = secrets;
 
             using (var scope = host.Services.CreateScope())
-                DbInitializer.SeedUsersAndRoles(scope.ServiceProvider).Wait();
+                DbInitializer.SeedDatabase(scope.ServiceProvider).Wait();
+            
+            
+            
             host.Run();
+
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

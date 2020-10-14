@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,10 +24,15 @@ namespace MyBulkMealsApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MeasurementId,BaseMeasurement,Calories,Protein,Carbs,Fat,ItemName,IsPublic")] Ingredient ingredient)
+        public async Task<IActionResult> Create([Bind("MeasurementId,BaseMeasurement,CreatorId,Calories,Protein,Carbs,Fat,ItemName,IsPublic")] Ingredient ingredient)
         {
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            ingredient.CreatorId = user.Id;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ingredient.CreatorId = userId;
+
+            var errors = ModelState
+    .Where(x => x.Value.Errors.Count > 0)
+    .Select(x => new { x.Key, x.Value.Errors })
+    .ToArray();
 
             if (ModelState.IsValid)
             {
@@ -34,6 +40,7 @@ namespace MyBulkMealsApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewData["Measurements"] = await base._repo.GetMeasurements();
             return View(ingredient);
         }
 

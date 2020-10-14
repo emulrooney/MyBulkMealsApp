@@ -20,7 +20,9 @@ namespace MyBulkMealsApp.Models
 
         public int TotalCalories { get
             {
-                return (int)(Ingredients.Sum(i => i.Ingredient.Calories * i.MeasurementAmount));
+                if (Ingredients != null)
+                    return (int)(Ingredients.Sum(i => i.Ingredient.Calories * i.MeasurementAmount));
+                return 0;
             }
         }
 
@@ -28,7 +30,9 @@ namespace MyBulkMealsApp.Models
         {
             get
             {
-                return (int)(Ingredients.Sum(i => i.Ingredient.Protein * i.MeasurementAmount));
+                if (Ingredients != null)
+                    return (int)(Ingredients.Sum(i => i.Ingredient.Protein * i.MeasurementAmount));
+                return 0;
             }
         }
 
@@ -36,7 +40,9 @@ namespace MyBulkMealsApp.Models
         {
             get
             {
-                return (int)(Ingredients.Sum(i => i.Ingredient.Carbs * i.MeasurementAmount));
+                if (Ingredients != null)
+                    return (int)(Ingredients.Sum(i => i.Ingredient.Carbs * i.MeasurementAmount));
+                return 0;
             }
         }
 
@@ -44,7 +50,9 @@ namespace MyBulkMealsApp.Models
         {
             get
             {
-                return (int)(Ingredients.Sum(i => i.Ingredient.Fat * i.MeasurementAmount));
+                if (Ingredients != null)
+                    return (int)(Ingredients.Sum(i => i.Ingredient.Fat * i.MeasurementAmount));
+                return 0;
             }
         }
 
