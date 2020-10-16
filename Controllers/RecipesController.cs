@@ -16,11 +16,13 @@ namespace MyBulkMealsApp.Controllers
 
     public class RecipesController : BaseController<Recipe, RecipeRepository>
     {
+        private readonly IngredientRepository ingredients;
 
-        public RecipesController(RecipeRepository repo, UserManager<ApplicationUser> userManager) : base(repo, userManager)
+        public RecipesController(RecipeRepository repo, IngredientRepository ingredients, UserManager<ApplicationUser> userManager) : base(repo, userManager)
         {
+            this.ingredients = ingredients;
         }
-        
+
         public async Task<IActionResult> Popular(int pageNumber = 1)
         {
             var list = await PaginatedList<Recipe>.CreateAsync(await base._repo.GetByViews(true), pageNumber, pageSize);
@@ -32,8 +34,10 @@ namespace MyBulkMealsApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ImageUrl,BaseServings,Instructions,Time,Views,ItemName,CreatedTime,IsVerified,IsPublic,IsAmendment")] Recipe recipe)
+        public async Task<IActionResult> Create([Bind("ImageUrl,BaseServings,Instructions,Time,Views,ItemName,CreatedTime,IsVerified,IsPublic,IsAmendment")] Recipe recipe, string recipeIds)
         {
+            
+
             var user = await _userManager.GetUserAsync(HttpContext.User);
             recipe.CreatorId = user.Id;
 
@@ -78,6 +82,22 @@ namespace MyBulkMealsApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(recipe);
+        }
+
+        public async Task<JsonResult> AutocompleteIngredients(string term) 
+        {
+            var foundIngredients = await ingredients.GetByKeyword(term, 6);
+
+            return Json(foundIngredients.Select(i => new { 
+                label = i.ItemName, //assigning as label lets us use default jquery-ui
+                i.Id,
+                i.Calories,
+                i.Protein,
+                i.Carbs,
+                i.Fat,
+                i.BaseMeasurement,
+                i.DefaultMeasurement
+            }).ToArray());
         }
 
         private bool RecipeExists(int id)

@@ -5,150 +5,172 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="item-page__details">
+<script>
+    var ingredientsList = [];
+    var nutrition = {
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0
+    };
 
+    function updateNutrition() {
+        nutrition = {
+            calories: 0,
+            protein: 0,
+            carbs: 0,
+            fat: 0
+        };
+
+        for (const i in ingredientsList) {
+            nutrition.calories += ingredientsList[i].calories;
+            nutrition.protein += ingredientsList[i].protein;
+            nutrition.carbs += ingredientsList[i].carbs;
+            nutrition.fat += ingredientsList[i].fat;
+        }
+
+        for (const n in nutrition) {
+            $(".nutrition__" + n).text(nutrition[n]);
+        }
+    }
+
+    function addIngredient(i) {
+        @* Stupid check to deal with .map not working with single item*@
+        if ((ingredientsList.length > 0 && ingredientsList[0].id == i.id) || i.id in ingredientsList.map(ing => ing.id)) {
+            console.log("Already in list.");
+            return;
+        }
+
+        ingredientsList.push(i);
+        $(".recipe__ingredients-count").html(ingredientsList.length);
+        $(".recipe__ingredients").append(`
+<li class="ingredient__item" data-id="${i.id}">
+    <a href="~/Ingredients/${i.id}">${i.label}</a>
+    <button type="button" data-id="${i.id}" class="btn btn-sm btn-outline-warning ingredient__item--remove" aria-label="Remove ${i.label}">
+        <i class="material-icons">close</i>
+    </button>
+</li>
+`);
+        $("#ingredientsList").val(JSON.stringify(ingredientsList.map(i => i.id)));
+        updateNutrition();
+    }
+
+    function removeIngredient(element) {
+        let id = $(element).data("id");
+        for (const i in ingredientsList) {
+            if (ingredientsList[i].id == id) {
+                ingredientsList.splice(ingredientsList.map(ing => ing.id).indexOf(id));
+                $(element).parents("li").remove();
+                updateNutrition();
+                return;
+            }
+        }
+    }
+
+    $(document).ready(function () {
+        @* Auto complete ingredient lookup *@
+        $("#recipeAddIngredient").autocomplete({
+            source: "AutocompleteIngredients",
+            minLength: 3,
+            select: function (event, ui) {
+                addIngredient(ui.item);
+            }
+        });
+
+        $(document).on('click', ".ingredient__item--remove", function () {
+            removeIngredient($(this));
+        });
+
+        $(".recipe__servings--up").on("click", function () {
+            var currentValue = parseInt($(".recipe__servings__value").first().val());
+            $(".recipe__servings__value").val(currentValue + 1);
+        });
+
+        $(".recipe__servings--down").on("click", function () {
+            var currentValue = parseInt($(".recipe__servings__value").first().val());
+            $(".recipe__servings__value").val(Math.max(currentValue - 1, 0));
+        });
+
+    });
+</script>
+<div class="item-page__details">
     <h1>
-        Editing: @Html.DisplayFor(model => model.ItemName)
+        Creating a new recipe
     </h1>
 
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Time)
-        </dt>
-        <dd class="col-sm-2">
-            <label asp-for="Time" class="d-none" />
-            <input asp-for="Time" class="form-control" />
-            <span asp-validation-for="Time" class="text-danger"></span>
-        </dd>
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Time)
+            </dt>
+            <dd class="col-sm-2">
+                <label asp-for="Time" class="d-none" />
+                <input asp-for="Time" class="form-control" />
+                <span asp-validation-for="Time" class="text-danger"></span>
+            </dd>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Ingredients)
-        </dt>
-        <dd class="col-sm-2">
-            @Html.DisplayFor(model => (model.Ingredients != null ? model.Ingredients.Count : 0))
-        </dd>
+            <dt class="col-sm-2">
+                <input type="hidden" name="ingredientsList" id="ingredientsList" />
+                @Html.DisplayNameFor(model => model.Ingredients)
+            </dt>
+            <dd class="col-sm-2 recipe__ingredients-count">
+                0
+            </dd>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BaseServings)
-        </dt>
-        <dd class="col-sm-2">
-            @Html.DisplayFor(model => model.BaseServings)
-            <div class="recipe__servings">
-                <button aria-label="Reduce Servings"><</button>
-                <button aria-label="Increase Servings">></button>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.BaseServings)
+            </dt>
+            <dd class="col-sm-2">
+                <input class="recipe__servings__value form-text" min="0" value="0" asp-for="BaseServings" />
+                <div class="recipe__servings">
+                    <button type="button" class="btn btn-sm btn-info recipe__servings--down" aria-label="Reduce Servings"><</button>
+                    <button type="button" class="btn btn-sm btn-info recipe__servings--up" aria-label="Increase Servings">></button>
+                </div>
+            </dd>
+        </dl>
+
+        <ul class="nav nav-tabs" id="recipeTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="homeTab" data-toggle="tab" href="#ingredients" role="tab" aria-controls="home" aria-selected="true">Ingredients</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="stepsTab" data-toggle="tab" href="#steps" role="tab" aria-controls="profile" aria-selected="false">Steps</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="nutritionTab" data-toggle="tab" href="#nutrition" role="tab" aria-controls="contact" aria-selected="false">Nutrition</a>
+            </li>
+        </ul>
+        <div class="tab-content pt-4">
+            <div class="tab-pane fade show active" id="ingredients" role="tabpanel" aria-labelledby="ingredientsTab">
+                <label for="addIngredient">Add new ingredient:</label>
+                <input type="text" name="addIngredient" id="recipeAddIngredient" />
+                <h4>Current Ingredients:</h4>
+                <ul class="recipe__ingredients"></ul>
             </div>
-        </dd>
-    </dl>
-
-    <ul class="nav nav-tabs" id="recipeTabs" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="homeTab" data-toggle="tab" href="#ingredients" role="tab" aria-controls="home" aria-selected="true">Ingredients</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="stepsTab" data-toggle="tab" href="#steps" role="tab" aria-controls="profile" aria-selected="false">Steps</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="nutritionTab" data-toggle="tab" href="#nutrition" role="tab" aria-controls="contact" aria-selected="false">Nutrition</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="editTab" data-toggle="tab" role="button">Copy and Edit</a>
-        </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="ingredients" role="tabpanel" aria-labelledby="ingredientsTab">
-            Ingredients list
+            <div class="tab-pane fade" id="steps" role="tabpanel" aria-labelledby="stepsTab">
+                <div class="form-group">
+                    <label asp-for="@Model.Instructions"></label>
+                    <textarea asp-for="@Model.Instructions" class="form-control" rows="24" cols="160"></textarea>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nutrition" role="tabpanel" aria-labelledby="nutritionTab">
+                <dl class="row col-xs-12 col-md-8 col-4 pt-2">
+                    <dd class="pt-1 col-11">Calories</dd>
+                    <dt class="mb-2 col-1 nutrition__calories btn btn-outline-info">0</dt>
+                    <dd class="pt-1 col-11">Protein</dd>
+                    <dt class="mb-2 col-1 nutrition__protein btn btn-outline-info">0</dt>
+                    <dd class="pt-1 col-11">Carbs</dd>
+                    <dt class="mb-2 col-1 nutrition__carbs btn btn-outline-info">0</dt>
+                    <dd class="pt-1 col-11">Fat</dd>
+                    <dt class="mb-2 col-1 nutrition__fat btn btn-outline-info">0</dt>
+                </dl>
+            </div>
         </div>
-        <div class="tab-pane fade" id="steps" role="tabpanel" aria-labelledby="stepsTab">
-            <div class="form-group">
-                <label asp-for="@Model.BaseServings" ></label>
-                <textarea asp-for="@Model.Instructions" class="form-control" rows="24" cols="240"></textarea>
-            </div>
+
+        <div>
+            <a asp-action="Index">Back to List</a>
         </div>
-        <div class="tab-pane fade" id="nutrition" role="tabpanel" aria-labelledby="nutritionTab">
-            <dl class="list-unstyled">
-                <dd>Calories</dd>
-                <dt></dt>
-                <dd>Protein</dd>
-                <dt></dt>
-                <dd>Carbs</dd>
-                <dt></dt>
-                <dd>Fat</dd>
-                <dt></dt>
-            </dl>
-        </div>
-    </div>
 
-    <div>
-        <a asp-action="Index">Back to List</a>
-    </div>
-
+    </form>
 </div>
-
-
-
-
-
-
-
-
-<h1>Create</h1>
-
-<h4>Recipe</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BaseServings" class="control-label"></label>
-                <input asp-for="BaseServings" class="form-control" />
-                <span asp-validation-for="BaseServings" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Instructions" class="control-label"></label>
-                <input asp-for="Instructions" class="form-control" />
-                <span asp-validation-for="Instructions" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Views" class="control-label"></label>
-                <input asp-for="Views" class="form-control" />
-                <span asp-validation-for="Views" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="CreatorId" class="control-label"></label>
-                <input asp-for="CreatorId" class="form-control" />
-                <span asp-validation-for="CreatorId" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsVerified" /> @Html.DisplayNameFor(model => model.IsVerified)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsPublic" /> @Html.DisplayNameFor(model => model.IsPublic)
-                </label>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsAmendment" /> @Html.DisplayNameFor(model => model.IsAmendment)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
