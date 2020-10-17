@@ -66,6 +66,38 @@ namespace MyBulkMealsApp.Controllers
             return View(recipe);
         }
 
+        // GET: {controller}/Edit/5
+        public override async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var recipe = await _repo.Get((int)id);
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["IngredientsList"] = JsonConvert.SerializeObject(
+                recipe.Ingredients.Select(i => i.Ingredient).Select(i => new
+                {
+                    label = i.ItemName, //assigning as label lets us use default jquery-ui
+                    i.Id,
+                    i.Calories,
+                    i.Protein,
+                    i.Carbs,
+                    i.Fat,
+                    i.BaseMeasurement,
+                    currentMeasurement = i.BaseMeasurement,
+                    symbol = i.Measurement.Symbol
+                }).ToList(),
+                Formatting.Indented);
+            return View(recipe);
+        }
+
+
         // POST: Recipes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -97,6 +129,7 @@ namespace MyBulkMealsApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(recipe);
         }
 

@@ -7,54 +7,35 @@
     var ingredientsCount = Model.Ingredients != null ? Model.Ingredients.Count : 0;
 }
 
+ 
 <div class="item-page__details">
-
-    <h1>@Html.DisplayFor(model => model.ItemName)
-        @if (Model.IsAmendment)
-        {
-            <span>(Amendment)</span>
-        }
-        @if (Model.IsVerified)
-        {
-            <i class="fa fa-check-circle"></i>
-        }
+    <h1>
+        @Model.ItemName
     </h1>
-    <h2>Author: @Model.Creator.FullName </h2>
-    <span class="font-italic">
-        Viewed @Html.DisplayFor(model => model.Views) times.
-    </span>
-
-
-    @if (Model.ImageUrl != null)
-    {
-        <div class="recipe__splash">
-            <img src="@Model.ImageUrl" alt="@Model.ItemName Image" />
-        </div>
-    }
 
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Time)
         </dt>
         <dd class="col-sm-2">
-            @Html.DisplayFor(model => model.Time)
+            <input asp-for="Time" class="form-control" disabled />
         </dd>
 
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Ingredients)
         </dt>
-        <dd class="col-sm-2">
-            @Html.DisplayFor(model => ingredientsCount)
+        <dd class="col-sm-2 recipe__ingredients-count">
+            @ingredientsCount
         </dd>
 
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.BaseServings)
         </dt>
         <dd class="col-sm-2">
-            @Html.DisplayFor(model => model.BaseServings)
+            <input class="recipe__servings__value form-text" min="0" asp-for="BaseServings" />
             <div class="recipe__servings">
-                <button aria-label="Reduce Servings"><</button>
-                <button aria-label="Increase Servings">></button>
+                <button type="button" class="btn btn-sm btn-info recipe__servings--down" aria-label="Reduce Servings"><</button>
+                <button type="button" class="btn btn-sm btn-info recipe__servings--up" aria-label="Increase Servings">></button>
             </div>
         </dd>
     </dl>
@@ -66,37 +47,50 @@
         <li class="nav-item">
             <a class="nav-link" id="stepsTab" data-toggle="tab" href="#steps" role="tab" aria-controls="profile" aria-selected="false">Steps</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" id="nutritionTab" data-toggle="tab" href="#nutrition" role="tab" aria-controls="contact" aria-selected="false">Nutrition</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="editTab" data-toggle="tab" role="button" >Copy and Edit</a>
-        </li>
     </ul>
-    <div class="tab-content" id="myTabContent">
+    <div class="tab-content pt-4">
         <div class="tab-pane fade show active" id="ingredients" role="tabpanel" aria-labelledby="ingredientsTab">
-            Ingredients list
+            <div class="row">
+                <div class="col-sm-12 col-lg-4">
+                    <dl class="row">
+                        <dd class="pt-1 col-9">Calories</dd>
+                        <dt class="mb-2 col-2 nutrition__calories btn btn-outline-info">@Model.TotalCalories</dt>
+                        <dd class="pt-1 col-9">Protein</dd>
+                        <dt class="mb-2 col-2 nutrition__protein btn btn-outline-info">@Model.TotalProtein</dt>
+                        <dd class="pt-1 col-9">Carbs</dd>
+                        <dt class="mb-2 col-2 nutrition__carbs btn btn-outline-info">@Model.TotalCarbs</dt>
+                        <dd class="pt-1 col-9">Fat</dd>
+                        <dt class="mb-2 col-2 nutrition__fat btn btn-outline-info">@Model.TotalFat</dt>
+                    </dl>
+                </div>
+                <div class="col-sm-12 col-lg-8">
+
+                    <h4>Current Ingredients:</h4>
+                    <ol class="recipe__ingredients list-group mb-3">
+                        @foreach (var ingredient in Model.Ingredients)
+                        {
+                            <li class="ingredient__item list-group-item" data-id="@ingredient.Id">
+                                <div class="input-group row">
+                                    <a class="col-4 font-size--1point5" target="_blank" href="~/Ingredients/@ingredient.Id">@ingredient.Ingredient.ItemName</a>
+                                    <input type="number" disabled class="ingredient__item__quantity form-control col-7" value="@ingredient.MeasurementAmount}" aria-label="quantity">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">@ingredient.Ingredient.Measurement.Symbol</span>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ol>
+                </div>
+            </div>
         </div>
         <div class="tab-pane fade" id="steps" role="tabpanel" aria-labelledby="stepsTab">
-            @Model.Instructions
-        </div>
-        <div class="tab-pane fade" id="nutrition" role="tabpanel" aria-labelledby="nutritionTab">
-            <dl class="list-unstyled">
-                <dd>Calories</dd>
-                <dt>@Model.TotalCalories</dt>
-                <dd>Protein</dd>
-                <dt>@Model.TotalProtein</dt>
-                <dd>Carbs</dd>
-                <dt>@Model.TotalCarbs</dt>
-                <dd>Fat</dd>
-                <dt>@Model.TotalFat</dt>
-            </dl>
+            <div class="form-group">
+                <label asp-for="@Model.Instructions"></label>
+                <textarea disabled asp-for="@Model.Instructions" class="form-control" rows="24" cols="160"></textarea>
+            </div>
         </div>
     </div>
 
-    <div> 
-        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-        <a asp-action="Index">Back to List</a>
-    </div>
-
+    <button type="button" class="recipe__submit btn btn-lg btn-success" asp-action="Details" asp-route-id="@Model.Id">Edit Recipe</button>
+    <a asp-action="Index" class="btn btn-lg btn-outline-secondary">Back to List</a>
 </div>

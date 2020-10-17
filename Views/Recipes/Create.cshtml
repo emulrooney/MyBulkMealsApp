@@ -117,7 +117,7 @@
 
             if (ingredientsList[id].baseMeasurement != modValue)
                 $(this).addClass("input--modified");
-            else 
+            else
                 $(this).removeClass("input--modified");
         });
 
@@ -145,14 +145,22 @@
     <form asp-action="Create" id="recipeForm">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group row">
-            <label asp-for="ItemName" class ="col-sm-3 col-form-label">Recipe Name:</label>
+            <label asp-for="ItemName" class="col-sm-3 col-form-label">Recipe Name:</label>
             <div class="col-sm-9">
                 <input type="text" class="form-control" asp-for="ItemName" placeholder="My new recipe!">
+                <span asp-validation-for="ItemName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label asp-for="ImageUrl" class="col-sm-3 col-form-label" class="control-label">Image URL:</label>
+            <div class="col-sm-9">
+                <input asp-for="ImageUrl" class="form-control" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
             </div>
         </div>
         <dl class="row">
             <dt class="col-sm-2">
-                @Html.DisplayNameFor(model=> model.Time)
+                @Html.DisplayNameFor(model => model.Time)
             </dt>
             <dd class="col-sm-2">
                 <input asp-for="Time" value="10" class="form-control" />
