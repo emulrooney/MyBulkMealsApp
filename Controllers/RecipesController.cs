@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using MyBulkMealsApp.Data;
 using MyBulkMealsApp.Models;
 using MyBulkMealsApp.Repositories;
+using Newtonsoft.Json;
 
 namespace MyBulkMealsApp.Controllers
 {
@@ -34,15 +36,29 @@ namespace MyBulkMealsApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ImageUrl,BaseServings,Instructions,Time,Views,ItemName,CreatedTime,IsVerified,IsPublic,IsAmendment")] Recipe recipe, string recipeIds)
+        public async Task<IActionResult> Create([Bind("ImageUrl,BaseServings,Instructions,Time,Views,ItemName,CreatedTime,IsVerified,IsPublic,IsAmendment")] Recipe recipe, string ingredientsList)
         {
+            var typeDefinition = new[] { new { IngredientId = 0, Quantity = 0 } };
+            var ingredients = JsonConvert.DeserializeAnonymousType(ingredientsList, typeDefinition);
             
+            List<RecipeIngredient> recipeIngredients = new List<RecipeIngredient>();
+
+            foreach (var i in ingredients)
+            {
+                recipeIngredients.Add(new RecipeIngredient()
+                {
+                    IngredientId = i.IngredientId,
+                    RecipeId = recipe.Id,
+                    MeasurementAmount = i.Quantity
+                });
+            }
 
             var user = await _userManager.GetUserAsync(HttpContext.User);
             recipe.CreatorId = user.Id;
 
             if (ModelState.IsValid)
             {
+                recipe.Ingredients = recipeIngredients;
                 await _repo.Add(recipe);
 
                 return RedirectToAction(nameof(Index));
@@ -96,7 +112,7 @@ namespace MyBulkMealsApp.Controllers
                 i.Carbs,
                 i.Fat,
                 i.BaseMeasurement,
-                i.DefaultMeasurement
+                symbol = i.Measurement.Symbol
             }).ToArray());
         }
 

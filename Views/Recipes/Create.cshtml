@@ -41,17 +41,28 @@
             return;
         }
 
+        i["_calories"] = i["calories"];
+        i["_protein"] = i["protein"];
+        i["_carbs"] = i["carbs"];
+        i["_fat"] = i["fat"];
+
         ingredientsList.push(i);
+
         $(".recipe__ingredients-count").html(ingredientsList.length);
         $(".recipe__ingredients").append(`
-<li class="ingredient__item" data-id="${i.id}">
-    <a href="~/Ingredients/${i.id}">${i.label}</a>
-    <button type="button" data-id="${i.id}" class="btn btn-sm btn-outline-warning ingredient__item--remove" aria-label="Remove ${i.label}">
-        <i class="material-icons">close</i>
-    </button>
+<li class="ingredient__item list-group-item" data-id="${i.id}">
+    <div class="input-group row">
+        <a class="col-4 font-size--1point5" target="_blank" href="~/Ingredients/${i.id}">${i.label}</a>
+        <input type="number" min="0" class="ingredient__item__quantity form-control col-7" value="${i.baseMeasurement}" aria-label="quantity">
+        <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2">${i.symbol}</span>
+        </div>
+        <button type="button" data-id="${i.id}" class="btn btn-sm btn-info col-1 ml-1 ingredient__item--remove" aria-label="Remove ${i.label}">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
 </li>
 `);
-        $("#ingredientsList").val(JSON.stringify(ingredientsList.map(i => i.id)));
         updateNutrition();
     }
 
@@ -65,6 +76,17 @@
                 return;
             }
         }
+    }
+
+    function createRecipeIdValues() {
+        var hiddenValueArray = [];
+
+        $(".ingredient__item").each(function () {
+            hiddenValueArray.push({
+                id: parseInt($(this).data("id")),
+                quantity: parseFloat($(this).find(".ingredient__item__quantity").val())
+            });
+        });
     }
 
     $(document).ready(function () {
@@ -81,6 +103,23 @@
             removeIngredient($(this));
         });
 
+        @* Adjust based on quantities*@
+        $(document).on("blur", ".ingredient__item__quantity", function () {
+            let id = $(".ingredient__item__quantity").index(this);
+            let modValue = parseInt($(this).val());
+            let quantityModifier = modValue / ingredientsList[id].baseMeasurement;
+
+            ingredientsList[id].calories = Math.round(ingredientsList[id]._calories * quantityModifier);
+            ingredientsList[id].protein = Math.round(ingredientsList[id]._protein * quantityModifier);
+            ingredientsList[id].carbs = Math.round(ingredientsList[id]._carbs * quantityModifier);
+            ingredientsList[id].fat = Math.round(ingredientsList[id]._fat * quantityModifier);
+
+            if (ingredientsList[id].baseMeasurement != modValue)
+                $(this).addClass("input--modified");
+            else 
+                $(this).removeClass("input--modified");
+        });
+
         $(".recipe__servings--up").on("click", function () {
             var currentValue = parseInt($(".recipe__servings__value").first().val());
             $(".recipe__servings__value").val(currentValue + 1);
@@ -91,6 +130,10 @@
             $(".recipe__servings__value").val(Math.max(currentValue - 1, 0));
         });
 
+        $(".recipe__submit").on("click", function () {
+
+
+        });
     });
 </script>
 <div class="item-page__details">
@@ -137,16 +180,34 @@
             <li class="nav-item">
                 <a class="nav-link" id="stepsTab" data-toggle="tab" href="#steps" role="tab" aria-controls="profile" aria-selected="false">Steps</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" id="nutritionTab" data-toggle="tab" href="#nutrition" role="tab" aria-controls="contact" aria-selected="false">Nutrition</a>
-            </li>
         </ul>
         <div class="tab-content pt-4">
             <div class="tab-pane fade show active" id="ingredients" role="tabpanel" aria-labelledby="ingredientsTab">
-                <label for="addIngredient">Add new ingredient:</label>
-                <input type="text" name="addIngredient" id="recipeAddIngredient" />
-                <h4>Current Ingredients:</h4>
-                <ul class="recipe__ingredients"></ul>
+                <div class="form-group row">
+                    <label for="addIngredient" class="col-sm-3 col-form-label">Add new ingredient:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="addIngredient" id="recipeAddIngredient" placeholder="Ingredient Keyword">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-lg-4">
+                        <dl class="row">
+                            <dd class="pt-1 col-9">Calories</dd>
+                            <dt class="mb-2 col-2 nutrition__calories btn btn-outline-info">0</dt>
+                            <dd class="pt-1 col-9">Protein</dd>
+                            <dt class="mb-2 col-2 nutrition__protein btn btn-outline-info">0</dt>
+                            <dd class="pt-1 col-9">Carbs</dd>
+                            <dt class="mb-2 col-2 nutrition__carbs btn btn-outline-info">0</dt>
+                            <dd class="pt-1 col-9">Fat</dd>
+                            <dt class="mb-2 col-2 nutrition__fat btn btn-outline-info">0</dt>
+                        </dl>
+                    </div>
+                    <div class="col-sm-12 col-lg-8">
+
+                        <h4>Current Ingredients:</h4>
+                        <ol class="recipe__ingredients list-group mb-3"></ol>
+                    </div>
+                </div>
             </div>
             <div class="tab-pane fade" id="steps" role="tabpanel" aria-labelledby="stepsTab">
                 <div class="form-group">
@@ -154,23 +215,10 @@
                     <textarea asp-for="@Model.Instructions" class="form-control" rows="24" cols="160"></textarea>
                 </div>
             </div>
-            <div class="tab-pane fade" id="nutrition" role="tabpanel" aria-labelledby="nutritionTab">
-                <dl class="row col-xs-12 col-md-8 col-4 pt-2">
-                    <dd class="pt-1 col-11">Calories</dd>
-                    <dt class="mb-2 col-1 nutrition__calories btn btn-outline-info">0</dt>
-                    <dd class="pt-1 col-11">Protein</dd>
-                    <dt class="mb-2 col-1 nutrition__protein btn btn-outline-info">0</dt>
-                    <dd class="pt-1 col-11">Carbs</dd>
-                    <dt class="mb-2 col-1 nutrition__carbs btn btn-outline-info">0</dt>
-                    <dd class="pt-1 col-11">Fat</dd>
-                    <dt class="mb-2 col-1 nutrition__fat btn btn-outline-info">0</dt>
-                </dl>
-            </div>
         </div>
 
-        <div>
-            <a asp-action="Index">Back to List</a>
-        </div>
+        <button type="button" class="recipe__submit btn btn-lg btn-success">Submit Recipe</button>
+        <a asp-action="Index" class="btn btn-lg btn-outline-secondary">Back to List</a>
 
     </form>
 </div>
