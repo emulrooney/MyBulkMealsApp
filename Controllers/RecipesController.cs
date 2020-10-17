@@ -84,12 +84,12 @@ namespace MyBulkMealsApp.Controllers
                 recipe.Ingredients.Select(i => i.Ingredient).Select(i => new
                 {
                     label = i.ItemName, //assigning as label lets us use default jquery-ui
-                    i.Id,
-                    i.Calories,
-                    i.Protein,
-                    i.Carbs,
-                    i.Fat,
-                    i.BaseMeasurement,
+                    id = i.Id,
+                    calories = i.Calories,
+                    protein = i.Protein,
+                    carbs = i.Carbs,
+                    fat = i.Fat,
+                    baseMeasurement = i.BaseMeasurement,
                     currentMeasurement = i.BaseMeasurement,
                     symbol = i.Measurement.Symbol
                 }).ToList(),
@@ -133,6 +133,8 @@ namespace MyBulkMealsApp.Controllers
             return View(recipe);
         }
 
+        [Route("Recipes/AutocompleteIngredients")]
+        [Route("Recipes/Edit/AutocompleteIngredients")]
         public async Task<JsonResult> AutocompleteIngredients(string term) 
         {
             var foundIngredients = await ingredients.GetByKeyword(term, 6);
