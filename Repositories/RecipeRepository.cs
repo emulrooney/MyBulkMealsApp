@@ -26,14 +26,14 @@ namespace MyBulkMealsApp.Repositories {
         public async Task<Recipe> Get(int id, bool withIngredients)
         {
             if (withIngredients)
-                return await Collection.Include(r => r.Ingredients).FirstOrDefaultAsync(i => i.Id == id);
+                return await Collection.Include(r => r.Ingredients).ThenInclude(ri => ri.Ingredient).FirstOrDefaultAsync(i => i.Id == id);
             else
                 return await Get(id);
         }
 
         public override async Task<Recipe> Get(int id)
         {
-            return await Collection.Include(r => r.Ingredients).FirstOrDefaultAsync(i => i.Id == id);
+            return await Collection.Include(r => r.Ingredients).ThenInclude(ri => ri.Ingredient).FirstOrDefaultAsync(i => i.Id == id);
         }
 
         public override async Task<List<Recipe>> GetByKeyword(string keyword)

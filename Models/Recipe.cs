@@ -20,9 +20,16 @@ namespace MyBulkMealsApp.Models
 
         public int TotalCalories { get
             {
+                int calories = 0;
                 if (Ingredients != null)
-                    return (int)(Ingredients.Sum(i => i.Ingredient.Calories * i.MeasurementAmount));
-                return 0;
+                {
+                    foreach (var i in Ingredients )
+                    {
+                        Console.WriteLine(i);
+                        calories += (int)(i.Ingredient.Calories * i.MeasurementAmount);
+                    }
+                }
+                return calories;
             }
         }
 

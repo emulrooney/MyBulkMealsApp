@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var ingredientsCount = Model.Ingredients != null ? Model.Ingredients.Count : 0;
 }
 
 <div class="item-page__details">
@@ -42,7 +44,7 @@
             @Html.DisplayNameFor(model => model.Ingredients)
         </dt>
         <dd class="col-sm-2">
-            @Html.DisplayFor(model => (model.Ingredients != null ? model.Ingredients.Count : 0))
+            @Html.DisplayFor(model => ingredientsCount)
         </dd>
 
         <dt class="col-sm-2">

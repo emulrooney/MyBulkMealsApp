@@ -38,7 +38,7 @@ namespace MyBulkMealsApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ImageUrl,BaseServings,Instructions,Time,Views,ItemName,CreatedTime,IsVerified,IsPublic,IsAmendment")] Recipe recipe, string ingredientsList)
         {
-            var typeDefinition = new[] { new { IngredientId = 0, Quantity = 0 } };
+            var typeDefinition = new[] { new { Id = 0, Quantity = 0 } };
             var ingredients = JsonConvert.DeserializeAnonymousType(ingredientsList, typeDefinition);
             
             List<RecipeIngredient> recipeIngredients = new List<RecipeIngredient>();
@@ -47,7 +47,7 @@ namespace MyBulkMealsApp.Controllers
             {
                 recipeIngredients.Add(new RecipeIngredient()
                 {
-                    IngredientId = i.IngredientId,
+                    IngredientId = i.Id,
                     RecipeId = recipe.Id,
                     MeasurementAmount = i.Quantity
                 });
@@ -112,6 +112,7 @@ namespace MyBulkMealsApp.Controllers
                 i.Carbs,
                 i.Fat,
                 i.BaseMeasurement,
+                currentMeasurement = i.BaseMeasurement,
                 symbol = i.Measurement.Symbol
             }).ToArray());
         }
