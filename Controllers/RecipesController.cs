@@ -31,6 +31,23 @@ namespace MyBulkMealsApp.Controllers
             return View("Index", list);
         }
 
+        public override async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var recipe = await _repo.GetAndView((int)id);
+
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+
+            return View(recipe);
+        }
+
         // POST: Recipes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
