@@ -50,6 +50,13 @@ namespace MyBulkMealsApp.Controllers
             return View("Index", list);
         } 
 
+        public async Task<IActionResult> Created()
+        {
+            var created = await _repo.GetCreatedBy(_userManager.GetUserAsync(User).Result.Id);
+            var list = await PaginatedList<TEntity>.CreateAsync(created, 1, 20);
+            return View("Index", list);
+        }
+
         public async Task<IActionResult> Random(int quantity)
         {
             var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetRandom(quantity), 1, 20);
