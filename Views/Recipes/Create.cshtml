@@ -231,6 +231,21 @@
             </div>
         </div>
 
+        <div>
+            <h3>Settings</h3>
+            <div class="form-group form-check form-check-inline">
+                @if (User.IsInRole("Admin"))
+                {
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsVerified" checked /> @Html.DisplayNameFor(model => model.IsVerified)
+                    </label>
+                }
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsPublic" /> @Html.DisplayNameFor(model => model.IsPublic)
+                </label>
+            </div>
+        </div>
+
         <button type="button" class="recipe__submit btn btn-lg btn-success">Submit Recipe</button>
         <a asp-action="Index" class="btn btn-lg btn-outline-secondary">Back to List</a>
 

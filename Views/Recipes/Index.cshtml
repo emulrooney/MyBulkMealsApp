@@ -68,7 +68,10 @@
                 </a>
             </td>
             <td>
-                <i class="material-icons">@(item.IsVerified ? "fa fa-check-circle" : "")</i>
+                @if (item.IsVerified)
+                {
+                    <i class="fa fa-check-circle"></i>
+                }
             </td>
             @if (showCreatedTime)
             {
