@@ -31,7 +31,7 @@
     <div class="input-group input-group-lg">
         <div class="input-group-prepend">
             <span class="input-group-text" id="inputGroup-sizing-lg">
-                <i class="material-icons">search</i>
+                <i class="fa fa-search"></i>
             </span>
         </div>
         <input id="ingredientSearch" name="keyword" type="text" class="form-control" aria-describedby="inputGroup-sizing-lg">
@@ -68,7 +68,10 @@
                 </a>
             </td>
             <td>
-                <i class="material-icons">@(item.IsVerified ? "checkmark" : "")</i>
+                @if (item.IsVerified)
+                {
+                    <i class="fa fa-check-circle"></i>
+                }
             </td>
             @if (showCreatedTime)
             {

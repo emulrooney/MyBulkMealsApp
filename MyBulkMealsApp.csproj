@@ -20,6 +20,8 @@
     <Compile Remove="Migrations\20201013145119_RestoreRecipeIngredient_Oct13.Designer.cs" />
     <Compile Remove="Migrations\20201014185627_Updates_Oct14.cs" />
     <Compile Remove="Migrations\20201014185627_Updates_Oct14.Designer.cs" />
+    <Compile Remove="Migrations\20201018143008_Tweaks_Oct18.cs" />
+    <Compile Remove="Migrations\20201018143008_Tweaks_Oct18.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

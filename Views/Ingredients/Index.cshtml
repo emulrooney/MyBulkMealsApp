@@ -76,7 +76,7 @@
         <div class="input-group input-group-lg">
             <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroup-sizing-lg">
-                    <i class="material-icons">search</i>
+                    <i class="fa fa-search"></i>
                 </span>
             </div>
             <input id="ingredientSearch" type="text" name="keyword" class="form-control" aria-describedby="inputGroup-sizing-lg">
@@ -120,14 +120,16 @@
                 </td>
             }
             <td>
-                @Html.DisplayFor(modelItem => item.CreatorId)
+                @Html.DisplayFor(modelItem => item.Creator.FullName)
             </td>
             <td>
-                <i class="material-icons">@(item.IsVerified ? "checkmark" : "")</i>
+                @if (item.IsVerified)
+                {
+                    <i class="fa fa-check-circle"></i>
+                }
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>

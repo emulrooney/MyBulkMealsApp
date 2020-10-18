@@ -35,6 +35,7 @@ a {
 html {
   font-size: 14px;
 }
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -128,4 +129,8 @@ body {
 
 .input--modified {
     background-color: palegoldenrod;
+}
+
+.font-size--1point5 {
+    font-size: 1.5em;
 }

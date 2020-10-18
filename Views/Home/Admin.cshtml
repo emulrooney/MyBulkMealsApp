@@ -1,0 +1,79 @@
+﻿@{
+    List<Recipe> unverifiedRecipes = (List<Recipe>)ViewData["UnverifiedRecipes"];
+    List<Ingredient> unverifiedIngredients = (List<Ingredient>)ViewData["UnverifiedIngredients"];
+}
+
+<script>
+    $(document).ready(function () {
+        $(".verify__button").on("click", function () {
+            let id = parseInt($(this).data("id"));
+            let itemType = $(this).data("type");
+
+            $.ajax({
+                url: "VerifyItem",
+                data: { id: id, itemType: itemType },
+                success: function (data) {
+                    $(".verify__last-item").text("Verified: " + $(".js__name--" + id).text() + ".");
+                    $(".js__li--" + id).remove();
+
+                    if ($(".list__" + itemType).length == 0) {
+                        $(".list__" + itemType + "--none").removeClass("d-none");
+                    }
+                },
+                error: function () {
+                    $(".verify__last-item").text("Something went wrong. Try again later!");
+                }
+            });
+        });
+    });
+</script>
+
+<h1>Administration</h1>
+<div class="row">
+    <div class="col-lg-8 col-s-12">
+        <p>Charts go here!</p>
+    </div>
+    <div class="col-lg-4 col-s-12">
+        <span class="verify__last-item"></span>
+
+        <ul class="nav nav-tabs nav-fill" role="tablist">
+            <li class="nav-item">
+                <a id="recipesTab" class="nav-link active" data-toggle="tab" href="#recipes" role="tab" aria-controls="recipes" aria-selected="true">Recipes</a>
+            </li>
+            <li class="nav-item">
+                <a id="ingredientsTab" class="nav-link" data-toggle="tab" href="#ingredients" role="tab" aria-controls="ingredients" aria-selected="false">Ingredients</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="recipes" role="tabpanel" aria-labelledby="recipesTab">
+                <ol class="list-group">
+                    @foreach (var r in unverifiedRecipes)
+                    {
+                        <li class="list-group-item list__recipe js__li--@r.Id">
+                            <button type="button" class="btn btn-sm btn-success verify__button float-right" data-type="recipe" data-id="@r.Id">
+                                <i class="fa fa-thumbs-up"></i>
+                            </button>
+                            <span class="js__name--@r.Id">@r.ItemName by @r.Creator.FullName</span>
+                        </li>
+                    }
+                </ol>
+                <div class="@(unverifiedRecipes.Count > 0 ? "d-none " : "")alert alert-success list__recipe--none">All recipes are verified! You're all caught up!</div>
+            </div>
+            <div class="tab-pane fade" id="ingredients" role="tabpanel" aria-labelledby="ingredientsTab">
+                <ol class="list-group">
+                    @foreach (var r in unverifiedIngredients)
+                    {
+                        <li class="list-group-item list__ingredient js__li--@r.Id">
+                            <button type="button" class="btn btn-sm btn-success verify__button float-right" data-type="ingredient" data-id="@r.Id">
+                                <i class="fa fa-thumbs-up"></i>
+                            </button>
+                            <span class="js__name--@r.Id">@r.ItemName by @r.Creator.FullName</span>
+                        </li>
+                    }
+                </ol>
+                <div class="@(unverifiedIngredients.Count >  0 ? "d-none " : "")alert alert-success list__ingredient--none">All ingredients are verified! You're all caught up!</div>
+            </div>
+        </div>
+    </div>
+</div>

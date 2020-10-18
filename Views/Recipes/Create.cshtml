@@ -5,72 +5,249 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
+<script>
+    var ingredientsList = [];
+    var nutrition = {
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0
+    };
 
-<h4>Recipe</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
+    function updateNutrition() {
+        nutrition = {
+            calories: 0,
+            protein: 0,
+            carbs: 0,
+            fat: 0
+        };
+
+        for (const i in ingredientsList) {
+            nutrition.calories += ingredientsList[i].calories;
+            nutrition.protein += ingredientsList[i].protein;
+            nutrition.carbs += ingredientsList[i].carbs;
+            nutrition.fat += ingredientsList[i].fat;
+        }
+
+        for (const n in nutrition) {
+            $(".nutrition__" + n).text(nutrition[n]);
+        }
+    }
+
+    function addIngredient(i) {
+        @* Stupid check to deal with .map not working with single item*@
+        if ((ingredientsList.length > 0 && ingredientsList[0].id == i.id) || i.id in ingredientsList.map(ing => ing.id)) {
+            console.log("Already in list.");
+            return;
+        }
+
+        i["_calories"] = i["calories"];
+        i["_protein"] = i["protein"];
+        i["_carbs"] = i["carbs"];
+        i["_fat"] = i["fat"];
+
+        ingredientsList.push(i);
+
+        $(".recipe__ingredients-count").html(ingredientsList.length);
+        $(".recipe__ingredients").append(`
+<li class="ingredient__item list-group-item" data-id="${i.id}">
+    <div class="input-group row">
+        <a class="col-4 font-size--1point5" target="_blank" href="~/Ingredients/${i.id}">${i.label}</a>
+        <input type="number" min="0" class="ingredient__item__quantity form-control col-7" value="${i.baseMeasurement}" aria-label="quantity">
+        <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2">${i.symbol}</span>
+        </div>
+        <button type="button" data-id="${i.id}" class="btn btn-sm btn-info col-1 ml-1 ingredient__item--remove" aria-label="Remove ${i.label}">
+            <i class="fa fa-times"></i>
+        </button>
+    </div>
+</li>
+`);
+        updateNutrition();
+    }
+
+    function removeIngredient(element) {
+        let id = $(element).data("id");
+        for (const i in ingredientsList) {
+            if (ingredientsList[i].id == id) {
+                ingredientsList.splice(ingredientsList.map(ing => ing.id).indexOf(id));
+                $(element).parents("li").remove();
+                updateNutrition();
+                return;
+            }
+        }
+    }
+
+    function createRecipeIdValues() {
+        var hiddenValueArray = [];
+
+        $(".ingredient__item").each(function () {
+            hiddenValueArray.push({
+                id: parseInt($(this).data("id")),
+                quantity: parseFloat($(this).find(".ingredient__item__quantity").val())
+            });
+        });
+    }
+
+    $(document).ready(function () {
+        @* Auto complete ingredient lookup *@
+        $("#recipeAddIngredient").autocomplete({
+            source: "AutocompleteIngredients",
+            minLength: 3,
+            select: function (event, ui) {
+                addIngredient(ui.item);
+            }
+        });
+
+        $(document).on('click', ".ingredient__item--remove", function () {
+            removeIngredient($(this));
+        });
+
+        @* Adjust based on quantities*@
+        $(document).on("blur", ".ingredient__item__quantity", function () {
+            let id = $(".ingredient__item__quantity").index(this);
+            let modValue = parseInt($(this).val());
+            let quantityModifier = modValue / ingredientsList[id].baseMeasurement;
+
+            ingredientsList[id].calories = Math.round(ingredientsList[id]._calories * quantityModifier);
+            ingredientsList[id].protein = Math.round(ingredientsList[id]._protein * quantityModifier);
+            ingredientsList[id].carbs = Math.round(ingredientsList[id]._carbs * quantityModifier);
+            ingredientsList[id].fat = Math.round(ingredientsList[id]._fat * quantityModifier);
+            ingredientsList[id].currentMeasurement = modValue;
+
+            if (ingredientsList[id].baseMeasurement != modValue)
+                $(this).addClass("input--modified");
+            else
+                $(this).removeClass("input--modified");
+        });
+
+        $(".recipe__servings--up").on("click", function () {
+            var currentValue = parseInt($(".recipe__servings__value").first().val());
+            $(".recipe__servings__value").val(currentValue + 1);
+        });
+
+        $(".recipe__servings--down").on("click", function () {
+            var currentValue = parseInt($(".recipe__servings__value").first().val());
+            $(".recipe__servings__value").val(Math.max(currentValue - 1, 0));
+        });
+
+        $(".recipe__submit").on("click", function () {
+            $("#ingredientsList").val(JSON.stringify(ingredientsList.map(i => ({ id: i.id, quantity: i.currentMeasurement }))));
+            $("#recipeForm").submit();
+        });
+    });
+</script>
+<div class="item-page__details">
+    <h1>
+        Creating a new recipe
+    </h1>
+
+    <form asp-action="Create" id="recipeForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group row">
+            <label asp-for="ItemName" class="col-sm-3 col-form-label">Recipe Name:</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" asp-for="ItemName" placeholder="My new recipe!">
+                <span asp-validation-for="ItemName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label asp-for="ImageUrl" class="col-sm-3 col-form-label" class="control-label">Image URL:</label>
+            <div class="col-sm-9">
                 <input asp-for="ImageUrl" class="form-control" />
                 <span asp-validation-for="ImageUrl" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="BaseServings" class="control-label"></label>
-                <input asp-for="BaseServings" class="form-control" />
-                <span asp-validation-for="BaseServings" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Instructions" class="control-label"></label>
-                <input asp-for="Instructions" class="form-control" />
-                <span asp-validation-for="Instructions" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Time" class="control-label"></label>
-                <input asp-for="Time" class="form-control" />
+        </div>
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Time)
+            </dt>
+            <dd class="col-sm-2">
+                <input asp-for="Time" value="10" class="form-control" />
                 <span asp-validation-for="Time" class="text-danger"></span>
+            </dd>
+
+            <dt class="col-sm-2">
+                <input type="hidden" name="ingredientsList" id="ingredientsList" />
+                @Html.DisplayNameFor(model => model.Ingredients)
+            </dt>
+            <dd class="col-sm-2 recipe__ingredients-count">
+                0
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.BaseServings)
+            </dt>
+            <dd class="col-sm-2">
+                <input class="recipe__servings__value form-text" min="0" value="0" asp-for="BaseServings" />
+                <div class="recipe__servings">
+                    <button type="button" class="btn btn-sm btn-info recipe__servings--down" aria-label="Reduce Servings"><</button>
+                    <button type="button" class="btn btn-sm btn-info recipe__servings--up" aria-label="Increase Servings">></button>
+                </div>
+            </dd>
+        </dl>
+
+        <ul class="nav nav-tabs" id="recipeTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="homeTab" data-toggle="tab" href="#ingredients" role="tab" aria-controls="home" aria-selected="true">Ingredients</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="stepsTab" data-toggle="tab" href="#steps" role="tab" aria-controls="profile" aria-selected="false">Steps</a>
+            </li>
+        </ul>
+        <div class="tab-content pt-4">
+            <div class="tab-pane fade show active" id="ingredients" role="tabpanel" aria-labelledby="ingredientsTab">
+                <div class="form-group row">
+                    <label for="addIngredient" class="col-sm-3 col-form-label">Add new ingredient:</label>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" name="addIngredient" id="recipeAddIngredient" placeholder="Ingredient Keyword">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-lg-4">
+                        <dl class="row">
+                            <dd class="pt-1 col-9">Calories</dd>
+                            <dt class="mb-2 col-2 nutrition__calories btn btn-outline-info">0</dt>
+                            <dd class="pt-1 col-9">Protein</dd>
+                            <dt class="mb-2 col-2 nutrition__protein btn btn-outline-info">0</dt>
+                            <dd class="pt-1 col-9">Carbs</dd>
+                            <dt class="mb-2 col-2 nutrition__carbs btn btn-outline-info">0</dt>
+                            <dd class="pt-1 col-9">Fat</dd>
+                            <dt class="mb-2 col-2 nutrition__fat btn btn-outline-info">0</dt>
+                        </dl>
+                    </div>
+                    <div class="col-sm-12 col-lg-8">
+
+                        <h4>Current Ingredients:</h4>
+                        <ol class="recipe__ingredients list-group mb-3"></ol>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Views" class="control-label"></label>
-                <input asp-for="Views" class="form-control" />
-                <span asp-validation-for="Views" class="text-danger"></span>
+            <div class="tab-pane fade" id="steps" role="tabpanel" aria-labelledby="stepsTab">
+                <div class="form-group">
+                    <label asp-for="@Model.Instructions"></label>
+                    <textarea asp-for="@Model.Instructions" class="form-control" rows="24" cols="160"></textarea>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="ItemName" class="control-label"></label>
-                <input asp-for="ItemName" class="form-control" />
-                <span asp-validation-for="ItemName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatorId" class="control-label"></label>
-                <input asp-for="CreatorId" class="form-control" />
-                <span asp-validation-for="CreatorId" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsVerified" /> @Html.DisplayNameFor(model => model.IsVerified)
-                </label>
-            </div>
-            <div class="form-group form-check">
+        </div>
+
+        <div>
+            <h3>Settings</h3>
+            <div class="form-group form-check form-check-inline">
+                @if (User.IsInRole("Admin"))
+                {
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsVerified" checked /> @Html.DisplayNameFor(model => model.IsVerified)
+                    </label>
+                }
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsPublic" /> @Html.DisplayNameFor(model => model.IsPublic)
                 </label>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsAmendment" /> @Html.DisplayNameFor(model => model.IsAmendment)
-                </label>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+        </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+        <button type="button" class="recipe__submit btn btn-lg btn-success">Submit Recipe</button>
+        <a asp-action="Index" class="btn btn-lg btn-outline-secondary">Back to List</a>
 
+    </form>
+</div>

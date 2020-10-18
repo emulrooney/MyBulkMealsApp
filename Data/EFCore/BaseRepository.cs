@@ -13,6 +13,17 @@ namespace MyBulkApps.Data.EFCore
         where TContext : DbContext
     {
         protected readonly TContext context;
+
+        public virtual IQueryable<TEntity> Collection
+        {
+            get
+            {
+                return context.Set<TEntity>()
+                .OfType<TEntity>();
+            }
+        }
+
+
         public BaseRepository(TContext context)
         {
             this.context = context;
@@ -21,6 +32,22 @@ namespace MyBulkApps.Data.EFCore
         {
             context.Set<TEntity>().Add(entity);
             await context.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<TEntity> Verify(int id)
+        {
+            var entity = await context.Set<TEntity>().FindAsync(id);
+            if (entity == null)
+            {
+                return entity;
+            }
+
+            entity.IsVerified = true;
+            entity.VerificationSubmissionTime = DateTime.Now;
+
+            await context.SaveChangesAsync();
+
             return entity;
         }
 
@@ -45,27 +72,32 @@ namespace MyBulkApps.Data.EFCore
 
         public virtual async Task<List<TEntity>> GetByKeyword(string keyword)
         {
-            return await context.Set<TEntity>().Where(i => i.ItemName.Contains(keyword)).ToListAsync();
+            return await Collection.Where(i => i.ItemName.Contains(keyword)).ToListAsync();
         }
+
+        public virtual async Task<List<TEntity>> GetByKeyword(string keyword, int quantity)
+        {
+            return await Collection.Where(i => i.ItemName.Contains(keyword)).Take(quantity).ToListAsync();
+        }
+
 
         public virtual async Task<List<TEntity>> GetByCreationTime(bool descending)
         {
             if (descending)
-                return await context.Set<TEntity>().OrderByDescending(e => e.CreatedTime).ToListAsync();
+                return await Collection.OrderByDescending(e => e.CreatedTime).ToListAsync();
             else
-                return await context.Set<TEntity>().OrderBy(e => e.CreatedTime).ToListAsync();
+                return await Collection.OrderBy(e => e.CreatedTime).ToListAsync();
         }
 
         public virtual async Task<List<TEntity>> GetAll()
         {
-            return await context.Set<TEntity>().ToListAsync();
+            return await Collection.ToListAsync();
         }
 
         public virtual async Task<List<TEntity>> GetRandom(int quantity)
         {
             //Throwaway GUID used for ordering
-            var list = context.Set<TEntity>().OrderBy(e => Guid.NewGuid());
-            return await list.Take(quantity).ToListAsync();
+            return await Collection.OrderBy(e => Guid.NewGuid()).Take(quantity).ToListAsync();
         }
 
         /// <summary>
@@ -87,7 +119,7 @@ namespace MyBulkApps.Data.EFCore
 
         public async Task<int> Count()
         {
-            return await context.Set<TEntity>().CountAsync();
+            return await Collection.CountAsync();
         }
 
     }
