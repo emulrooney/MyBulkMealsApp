@@ -35,6 +35,22 @@ namespace MyBulkApps.Data.EFCore
             return entity;
         }
 
+        public async Task<TEntity> Verify(int id)
+        {
+            var entity = await context.Set<TEntity>().FindAsync(id);
+            if (entity == null)
+            {
+                return entity;
+            }
+
+            entity.IsVerified = true;
+            entity.VerificationSubmissionTime = DateTime.Now;
+
+            await context.SaveChangesAsync();
+
+            return entity;
+        }
+
         public async Task<TEntity> Delete(int id)
         {
             var entity = await context.Set<TEntity>().FindAsync(id);

@@ -12,6 +12,8 @@ namespace MyBulkMealsApp.Data
     
         DateTime CreatedTime { get; set; }
 
+        bool IsVerified { get; set; }
+        DateTime? VerificationSubmissionTime { get; set; }
 
     }
 }
