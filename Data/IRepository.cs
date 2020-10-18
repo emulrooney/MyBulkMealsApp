@@ -12,7 +12,7 @@ namespace MyBulkMealsApp.Data
         Task<List<T>> GetByKeyword(string keyword);
         Task<List<T>> GetByCreationTime(bool descending);
         Task<List<T>> GetRandom(int quantity);
-
+        Task<List<T>> GetCreatedBy(string id);
 
         Task<T> Get(int id);
         Task<T> Add(T entity);

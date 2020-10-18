@@ -75,6 +75,11 @@ namespace MyBulkApps.Data.EFCore
             return await Collection.Where(i => i.ItemName.Contains(keyword)).ToListAsync();
         }
 
+        public virtual async Task<List<TEntity>> GetCreatedBy(string userId)
+        {
+            return await Collection.Where(i => i.CreatorId == userId).ToListAsync();
+        }
+
         public virtual async Task<List<TEntity>> GetByKeyword(string keyword, int quantity)
         {
             return await Collection.Where(i => i.ItemName.Contains(keyword)).Take(quantity).ToListAsync();

@@ -56,9 +56,12 @@
 <hr />
 <h2>Popular Searches</h2>
 <ul class="list-inline">
-    <li class="list-inline-item">
-        <a class="btn btn-outline-info">My Ingredients</a>
-    </li>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="list-inline-item">
+           <a class="btn btn-outline-info" asp-action="Created">My Created Ingredients</a>
+        </li>
+    }
     <li class="list-inline-item">
         <a class="btn btn-outline-info">Saved Ingredients</a>
     </li>
