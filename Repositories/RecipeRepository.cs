@@ -23,16 +23,13 @@ namespace MyBulkMealsApp.Repositories {
         {
         }
 
-        public async Task<Recipe> Get(int id, bool withIngredients)
+        public async Task<Recipe> GetAndView(int id)
         {
-            if (withIngredients)
-                return await Collection
-                    .Include(r => r.Ingredients)
-                    .ThenInclude(ri => ri.Ingredient)
-                    .ThenInclude(i => i.Measurement)
-                    .FirstOrDefaultAsync(i => i.Id == id);
-            else
-                return await Get(id);
+            var recipe = await Get(id);
+            recipe.Views++;
+            await context.SaveChangesAsync();
+
+            return recipe;
         }
 
         public override async Task<Recipe> Get(int id)
@@ -62,6 +59,11 @@ namespace MyBulkMealsApp.Repositories {
         {
             var recipes = await Collection.OrderByDescending(r => r.Views).Take(recipesCount).ToListAsync();
             return recipes;
+        }
+
+        public async Task<List<Recipe>> GetAllUnverified()
+        {
+            return await Collection.OrderByDescending(e => e.CreatedTime).Where(e => !e.IsVerified).ToListAsync();
         }
     }
 }

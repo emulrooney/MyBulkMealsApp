@@ -13,6 +13,7 @@ namespace MyBulkMealsApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+
         private readonly RecipeRepository _recipeRepository;
         private readonly IngredientRepository _ingredientRepository;
 
@@ -35,6 +36,14 @@ namespace MyBulkMealsApp.Controllers
 
         public IActionResult Privacy()
         {
+            return View();
+        }
+
+        public async Task<IActionResult> Admin()
+        {
+            ViewData["UnverifiedRecipes"] = await _recipeRepository.GetAllUnverified();
+            ViewData["UnverifiedIngredients"] = await _ingredientRepository.GetAllUnverified();
+
             return View();
         }
 

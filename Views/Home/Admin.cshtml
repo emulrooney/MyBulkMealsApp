@@ -1,0 +1,49 @@
+﻿@{
+    List<Recipe> unverifiedRecipes = (List<Recipe>)ViewData["UnverifiedRecipes"];
+    List<Ingredient> unverifiedIngredients = (List<Ingredient>)ViewData["UnverifiedIngredients"];
+}
+
+<script>
+
+
+
+</script>
+
+<h1>Administration</h1>
+<div class="row">
+    <div class="col-lg-5 col-s-12">
+        <p>Charts go here!</p>
+    </div>
+    <div class="col-lg-7 col-s-12">
+        <div class="row">
+            <div class="col-6">
+                <h2>Recipes</h2>
+                <ol class="list-group">
+                    @foreach (var r in unverifiedRecipes)
+                    {
+                        <li class="list-group-item">
+                            <button type="button" class="btn btn-sm btn-success verify--recipe float-right" data-id="@r.Id">
+                                <i class="fa fa-thumbs-up"></i>
+                            </button>
+                            @r.ItemName by @r.Creator.FullName
+                        </li>
+                    }
+                </ol>
+            </div>
+            <div class="col-6">
+                <h2>Ingredients</h2>
+                <ol class="list-group">
+                    @foreach (var r in unverifiedIngredients)
+                    {
+                        <li class="list-group-item">
+                            <button type="button" class="btn btn-sm btn-success verify--recipe float-right" data-id="@r.Id">
+                                <i class="fa fa-thumbs-up"></i>
+                            </button>
+                            @r.ItemName by @r.Creator.FullName
+                        </li>
+                    }
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>

@@ -39,5 +39,10 @@ namespace MyBulkMealsApp.Repositories {
             return await context.Measurement.ToListAsync();
         }
 
+        public async Task<List<Ingredient>> GetAllUnverified()
+        {
+            return await Collection.OrderByDescending(e => e.CreatedTime).Where(e => !e.IsVerified).ToListAsync();
+        }
+
     }
 }
