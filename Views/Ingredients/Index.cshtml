@@ -1,4 +1,6 @@
-﻿@model MyBulkMealsApp.Data.PaginatedList<MyBulkMealsApp.Models.Ingredient>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@model MyBulkMealsApp.Data.PaginatedList<MyBulkMealsApp.Models.Ingredient>
 
 @{
     ViewData["Title"] = "Index";
@@ -59,7 +61,7 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="list-inline-item">
-           <a class="btn btn-outline-info" asp-action="Created">My Created Ingredients</a>
+            <a class="btn btn-outline-info" asp-action="Created">My Created Ingredients</a>
         </li>
     }
     <li class="list-inline-item">
@@ -108,34 +110,34 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr data-calories="@item.Calories" data-protein="@item.Protein" data-carbs="@item.Carbs" data-fat="@item.Fat">
-            <td>
-                <a href="#" class="js__show-nutrition">
-                    @Html.DisplayFor(modelItem => item.ItemName)
-                </a>
-
-                (@Html.DisplayFor(modelItem => item.DefaultMeasurement))
-            </td>
-            @if (showCreatedTime)
-            {
+            <tr data-calories="@item.Calories" data-protein="@item.Protein" data-carbs="@item.Carbs" data-fat="@item.Fat">
                 <td>
-                    @Html.DisplayFor(modelItem => item.CreatedTime)
+                    <a href="#" class="js__show-nutrition">
+                        @Html.DisplayFor(modelItem => item.ItemName)
+                    </a>
+
+                    (@Html.DisplayFor(modelItem => item.DefaultMeasurement))
                 </td>
-            }
-            <td>
-                @Html.DisplayFor(modelItem => item.Creator.FullName)
-            </td>
-            <td>
-                @if (item.IsVerified)
+                @if (showCreatedTime)
                 {
-                    <i class="fa fa-check-circle"></i>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedTime)
+                    </td>
                 }
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Creator.FullName)
+                </td>
+                <td>
+                    @if (item.IsVerified)
+                    {
+                        <i class="fa fa-check-circle"></i>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
