@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MyBulkApps.Data.EFCore;
+using MyBulkApps.Data;
 using MyBulkMealsApp.Models;
 using System;
 using System.Collections.Generic;

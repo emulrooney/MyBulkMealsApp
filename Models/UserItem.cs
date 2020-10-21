@@ -26,6 +26,19 @@ namespace MyBulkMealsApp.Models
 
         public ApplicationUser Creator { get; set; }
 
+        /// <summary>
+        /// Rather than using Creator.FullName, this is a little safer because it offers a fall back if a creator isn't set (for some reason)
+        /// </summary>
+        public string CreatorName { get
+            {
+                if (Creator != null)
+                    return Creator.FullName;
+                else
+                    return "MBM Staff";
+
+            }
+        }
+
         public UserItem()
         {
             CreatedTime = DateTime.Now;

@@ -4,9 +4,10 @@ using MyBulkMealsApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 
-namespace MyBulkApps.Data.EFCore
+namespace MyBulkApps.Data
 {
     public abstract class BaseRepository<TEntity, TContext> : IRepository<TEntity>
         where TEntity : class, IEntity
@@ -31,8 +32,17 @@ namespace MyBulkApps.Data.EFCore
         public async Task<TEntity> Add(TEntity entity)
         {
             context.Set<TEntity>().Add(entity);
+            
             await context.SaveChangesAsync();
             return entity;
+        }
+
+        public async Task<List<TEntity>> Add(List<TEntity> entities)
+        {
+            context.Set<TEntity>().AddRange(entities);
+
+            await context.SaveChangesAsync();
+            return entities;
         }
 
         public async Task<TEntity> Verify(int id)

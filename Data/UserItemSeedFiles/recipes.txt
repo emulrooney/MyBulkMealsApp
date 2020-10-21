@@ -1,0 +1,5 @@
+﻿Simple hamburger|1|1. Mix breadcrumbs, ground beef.\n2. Crack egg and add to meat/bread mixture to bond.\n3. Cook in pan until brown all the way through.\n4. Add to bun, add condiments.|1200|4,5,6,8, 23|1, 170, 25, 10, 1
+Deluxe hamburger|1|1. Mix breadcrumbs, ground beef.\n2. Crack egg and add to meat/bread mixture to bond.\n3. Cook in pan until brown all the way through.\n3.5. Add cheese to heated meat. \n4. Add to bun, add condiments.|1200|4,5,6,8,9,10,12, 23|1, 170, 25, 10, 28, 5, 20, 1
+Chicken burger|1|Chicken Burger|1500|4, 6, 7, 11, 13, 23|1, 80, 170, 25, 50, 1
+Salad, garden|2|1. Slice tomato and onion into small pieces.\n2. Mix oil and vinegar.\n3. Add small amount of mustard for the oil and vinegar to bond.\n4. Toss lettuce, tomato, onion in oil and vinegar dressing.|300|11, 12, 18, 19|200,100,70,50
+Salad, grilled chicken|2|1. Grill chicken breast, ~5 minutes a side. 2. Slice tomato and onion into small pieces.\n3. Mix oil and vinegar.\n4. Add small amount of mustard for the oil and vinegar to bond.\n5. Toss lettuce, tomato, onion in oil and vinegar dressing.|1600|11, 12, 7, 18, 19|200,200,125,50,100

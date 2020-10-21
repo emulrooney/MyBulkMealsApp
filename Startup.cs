@@ -38,7 +38,7 @@ namespace MyBulkMealsApp
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
-            //REPOS
+            //REPOS & OTHER HELPFUL CLASSES
             services.AddScoped<RecipeRepository>();
             services.AddScoped<IngredientRepository>();
             services.AddScoped<MeasurementHandler>();

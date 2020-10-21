@@ -65,7 +65,7 @@ namespace MyBulkMealsApp.Controllers
                 recipeIngredients.Add(new RecipeIngredient()
                 {
                     IngredientId = i.Id,
-                    RecipeId = recipe.Id,
+                    //RecipeId = recipe.Id,
                     MeasurementAmount = i.Quantity
                 });
             }

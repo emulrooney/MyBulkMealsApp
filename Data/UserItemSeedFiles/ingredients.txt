@@ -1,0 +1,23 @@
+﻿Water|2|250|0|0|0|0
+Rice, white, cooked|1|100|130|3|28|0
+Rice, brown, cooked|1|100|111|3|23|1
+Hamburger bun, Wonderbread|5|1|140|4|26|2
+Ground beef, cooked, lean (85%)|1|85|218|24|0|13
+Breadcrumbs, generic|1|100|395|13|72|5
+Chicken breast, generic|1|100|165|31|0|4
+Ketchup, tbsp|1|10|10|0|2|0
+Cheddar cheese, slice|1|28|113|7|0|9
+Mustard, French's (1 tsp)|1|5|0|0|0|0
+Lettuce, iceberg|1|100|14|1|3|0
+Lettuce, romaine|1|100|17|1|3|0
+Mayonaise, Hellman's|2|15|90|0|0|10
+Apple, Granny Smith|5|1|97|1|23|0
+Milk, white, 1%|2|250|100|9|12|3
+Milk, white, 2%|2|250|130|9|12|5
+Juice, orange|2|200|90|1|20|0
+Tomato, beefsteak|1|100|24|1|17|0
+Onion, red|1|25|10|0|0|0
+Pickles, dill|5|1|3|0|0|0
+Cooking oil, olive, extra-virgin|2|100|884|0|0|100
+Vinegar|2|100|0|0|0|0
+Egg, large, white|5|1|90|7|8|11
