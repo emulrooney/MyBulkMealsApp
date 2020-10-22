@@ -57,7 +57,7 @@ namespace MyBulkMealsApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MeasurementType,BaseMeasurement,Calories,Protein,Carbs,Fat,ItemName,IsVerified,IsPublic")] Ingredient ingredient)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,BaseMeasurement,Calories,Protein,Carbs,Fat,ItemName,IsVerified,IsPublic")] Ingredient ingredient, int measurementId)
         {
             if (id != ingredient.Id)
             {
@@ -68,6 +68,7 @@ namespace MyBulkMealsApp.Controllers
             {
                 try
                 {
+                    ingredient.MeasurementId = measurementId;
                     await _repo.Update(ingredient);
                 }
                 catch (DbUpdateConcurrencyException)

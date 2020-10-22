@@ -24,6 +24,10 @@
     <Compile Remove="Migrations\20201018143008_Tweaks_Oct18.Designer.cs" />
     <Compile Remove="Migrations\20201021205021_Tweaks_Oct21.cs" />
     <Compile Remove="Migrations\20201021205021_Tweaks_Oct21.Designer.cs" />
+    <Compile Remove="Migrations\20201022011353_Tweaks_Oct21.cs" />
+    <Compile Remove="Migrations\20201022011353_Tweaks_Oct21.Designer.cs" />
+    <Compile Remove="Migrations\20201022011730_Tweaks_Oct21.cs" />
+    <Compile Remove="Migrations\20201022011730_Tweaks_Oct21.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -9,7 +9,6 @@ namespace MyBulkMealsApp.Models
 {
     public partial class Measurement
     {
-        [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Name { get; set; }
