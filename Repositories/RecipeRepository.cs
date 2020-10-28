@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using MyBulkApps.Data;
 using MyBulkMealsApp.Models;
 using System;
@@ -65,5 +66,37 @@ namespace MyBulkMealsApp.Repositories {
         {
             return await Collection.OrderByDescending(e => e.CreatedTime).Where(e => !e.IsVerified).ToListAsync();
         }
+
+        [Authorize("Admin")]
+        public async Task<dynamic[]> GetNewRecipeChartData(DateTime? fromDate = null, DateTime? toDate = null, bool verified = true)
+        {
+            DateTime from = fromDate ?? DateTime.Now.AddDays(-30);
+            DateTime to = toDate ?? DateTime.Now;
+
+            var recipes = await Collection
+                .Where(r => r.IsVerified || verified)
+                .GroupBy(r => r.CreatedTime.Date)
+                .Select(r => new { Day = r.Key, Count = r.Count() })
+                .Where(r => r.Day >= from && r.Day <= to)
+                .OrderBy(r => r.Day)
+                .ToArrayAsync();
+
+            return recipes;
+        }
+
+        public async Task<dynamic[]> GetVerifiedRecipesChartData(DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            DateTime from = fromDate ?? DateTime.Now.AddDays(-30);
+            DateTime to = toDate ?? DateTime.Now;
+
+            var ingredients = await Collection
+                .Where(r => r.CreatedTime >= from && r.CreatedTime <= to)
+                .GroupBy(r => r.IsVerified)
+                .Select(r => new { verified = (r.Key ? "Verified" : "Unverified"), count = r.Count() })
+                .ToArrayAsync();
+
+            return ingredients;
+        }
+
     }
 }

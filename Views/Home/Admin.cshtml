@@ -1,10 +1,181 @@
-﻿@{
+﻿
+
+@{
     List<Recipe> unverifiedRecipes = (List<Recipe>)ViewData["UnverifiedRecipes"];
     List<Ingredient> unverifiedIngredients = (List<Ingredient>)ViewData["UnverifiedIngredients"];
 }
 
+<script src="https://code.highcharts.com/highcharts.js"></script>
+    
 <script>
     $(document).ready(function () {
+        $.ajax({
+            url: "GetVerifiedIngredientsChartData",
+            data: { fromDate: null, toDate: null },
+            success: function (ajaxData) {
+                console.log(ajaxData);
+
+                var chartData = {
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false,
+                        type: 'pie'
+                    },
+                    title: {
+                        text: 'Verified Ingredients'
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                            }
+                        }
+                    },
+                    series: [{
+                        name: 'Verification Status',
+                        colorByPoint: true,
+                        data: [ajaxData.map(d => ({
+                            name: d["verified"],
+                            y: d.count,
+                        }))]
+                    }]
+                };
+
+                console.log(chartData);
+                Highcharts.chart('chartVerifiedIngredients', chartData);
+        },
+            error: function (err) {
+                console.log("Failed JS on recipes chart.")
+                console.log(err);
+            }
+
+
+        })
+
+        $.ajax({
+            url: "GetVerifiedRecipesChartData",
+            data: { fromDate: null, toDate: null },
+            success: function (ajaxData) {
+                console.log(ajaxData);
+
+                var chartData = {
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false,
+                        type: 'pie'
+                    },
+                    title: {
+                        text: 'Verified Recipes'
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                            }
+                        }
+                    },
+                    series: [{
+                        name: 'Verification Status',
+                        colorByPoint: true,
+                        data: [ajaxData.map(d => ({
+                            name: d["verified"],
+                            y: d.count,
+                        }))]
+                    }]
+                };
+
+                console.log(chartData);
+                Highcharts.chart('chartVerifiedRecipes', chartData);
+            },
+            error: function (err) {
+                console.log("Failed JS on verified recipes chart.")
+                console.log(err);
+            }
+
+
+        })
+
+        $.ajax({
+            url: "GetNewRecipesChartData",
+            data: { fromDate: null, toDate: null },
+            success: function (data) {
+                console.log(data);
+
+                var chartData = {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'New Recipes'
+                    },
+                    xAxis: {
+                        categories: data.map(d => d["day"])
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: data.map(d => ({name: d.day, data: [d.count]}) ), @* Have to put count in array, thanks highcharts! *@
+                };
+
+                console.log(chartData);
+
+                Highcharts.chart('newRecipesChart', chartData);
+            },
+            error: function (err) {
+                console.log("Failed JS on recipes chart.")
+                console.log(err);
+            }
+        });
+
+        $.ajax({
+            url: "GetNewIngredientsChartData",
+            data: { fromDate: null, toDate: null },
+            success: function (data) {
+                console.log(data);
+
+                var chartData = {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'New Ingredients'
+                    },
+                    xAxis: {
+                        categories: data.map(d => d["day"])
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: data.map(d => ({ name: d.day, data: [d.count] })),
+                };
+
+            console.log(chartData);
+
+            Highcharts.chart('newIngredientsChart', chartData);
+        },
+            error: function (err) {
+                console.log("Failed JS on Ingredients chart.")
+                console.log(err);
+            }
+        });
+
+
+
+        @* Item Verification *@
         $(".verify__button").on("click", function () {
             let id = parseInt($(this).data("id"));
             let itemType = $(this).data("type");
@@ -31,7 +202,39 @@
 <h1>Administration</h1>
 <div class="row">
     <div class="col-lg-8 col-s-12">
-        <p>Charts go here!</p>
+        <div class="row">
+            <div class="col-6">
+                <div class="admin__chart" style="width: 100%;" id="newRecipesChart">New Recipes</div>
+            </div>
+            <div class="col-6">
+                <div class="admin__chart" style="width: 100%;" id="newIngredientsChart">New Ingredients</div>
+            </div>
+            <div class="col-12">
+                <form>
+                    <div class="form-group mb-2">
+                        <label for="fromDate" class="sr-only">From Date</label>
+                        <input type="date" class="form-control" id="fromDate" />
+                        <label for="toDate" class="sr-only">To Date</label>
+                        <input type="date" class="form-control" id="toDate" />
+                        <button type="button" class="btn btn-primary mb-2">Update Charts</button>
+                        <button type="button" class="btn btn-info mb-2">Set Range to Current Year</button>
+                    </div>
+                    <label for="includeUnverified">Include Unverified Items</label>"
+                    <input type="checkbox" id="includeUnverified" />
+                </form>
+            </div>
+            <div class="col-6">
+                <div class="admin__chart" id="chartVerifiedRecipes"></div>
+                <div class="admin__chart" id="chartVerifiedIngredients"></div>
+            </div>
+            <div class="col-6">
+                <h4>Verification Notifications</h4>
+                <div>Email admin when <input style="width: 50px;" type="number" min="0" id="unverifiedRecipeNotifications" placeholder="100" /> recipes are unverified.</div>
+                <div>Email admin when <input style="width: 50px;" type="number" min="0" id="unverifiedIngredientNotifications" placeholder="100" /> ingredients are unverified.</div>
+            </div>
+
+        </div>
+
     </div>
     <div class="col-lg-4 col-s-12">
         <span class="verify__last-item"></span>
