@@ -12,5 +12,9 @@ namespace MyBulkMealsApp.Models
         public int TotalDays { get; set; }
         public int StartDay { get; set; }
         public int EndDay { get; set; }
+
+        public ICollection<MealPlanEntry> MealPlanEntries { get; set; }
+
+
     }
 }

@@ -20,7 +20,6 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
             <div class="container color--bg--white">
-                @*<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MyBulkMealsApp</a>*@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -33,18 +32,15 @@
                         </li>
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            @if (!User.IsInRole("Admin"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" href="~/MealPlans">Schedule</a>
-                                </li>
-                            }
-                            else
+                            @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-controller="Home" asp-action="Admin">Admin</a>
                                 </li>
                             }
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="~/MealPlans">Schedule</a>
+                            </li>
                         }
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Recipes" asp-action="Index">Recipes</a>

@@ -8,8 +8,10 @@ namespace MyBulkMealsApp.Models
         public int Id { get; set; }
         public byte[] IsException { get; set; }
         public byte Quantity { get; set; }
-        public int MealPlanId { get; set; }
+        //public int MealPlanId { get; set; }
         public int RecipeId { get; set; }
         public byte Day { get; set; }
+
+        public Recipe Recipe { get; set; }
     }
 }

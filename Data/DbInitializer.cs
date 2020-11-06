@@ -16,7 +16,7 @@ namespace MyBulkMealsApp.Data
     {
         public static AppSecrets AppSecrets { get; set; }
 
-        private static ApplicationUser testAdmin = new ApplicationUser()
+        private static readonly ApplicationUser testAdmin = new ApplicationUser()
         {
             FirstName = "Test",
             LastName = "Admin",
@@ -27,7 +27,7 @@ namespace MyBulkMealsApp.Data
             EmailConfirmed = true
         };
 
-        private static ApplicationUser testUser = new ApplicationUser()
+        private static readonly ApplicationUser testUser = new ApplicationUser()
         {
             FirstName = "Demo",
             LastName = "User",
