@@ -1,4 +1,4 @@
-﻿
+﻿@* TODO: Lots of JS for charts could be refactored to be DRY *@
 
 @{
     List<Recipe> unverifiedRecipes = (List<Recipe>)ViewData["UnverifiedRecipes"];
@@ -6,173 +6,192 @@
 }
 
 <script src="https://code.highcharts.com/highcharts.js"></script>
-    
 <script>
     $(document).ready(function () {
-        $.ajax({
-            url: "GetVerifiedIngredientsChartData",
-            data: { fromDate: null, toDate: null },
-            success: function (ajaxData) {
-                console.log(ajaxData);
-
-                var chartData = {
-                    chart: {
-                        plotBackgroundColor: null,
-                        plotBorderWidth: null,
-                        plotShadow: false,
-                        type: 'pie'
-                    },
-                    title: {
-                        text: 'Verified Ingredients'
-                    },
-                    credits: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                        pie: {
-                            allowPointSelect: true,
-                            cursor: 'pointer',
-                            dataLabels: {
-                                enabled: true,
-                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                            }
-                        }
-                    },
-                    series: [{
-                        name: 'Verification Status',
-                        colorByPoint: true,
-                        data: [ajaxData.map(d => ({
-                            name: d["verified"],
-                            y: d.count,
-                        }))]
-                    }]
-                };
-
-                console.log(chartData);
-                Highcharts.chart('chartVerifiedIngredients', chartData);
-        },
-            error: function (err) {
-                console.log("Failed JS on recipes chart.")
-                console.log(err);
-            }
-
-
-        })
-
-        $.ajax({
-            url: "GetVerifiedRecipesChartData",
-            data: { fromDate: null, toDate: null },
-            success: function (ajaxData) {
-                console.log(ajaxData);
-
-                var chartData = {
-                    chart: {
-                        plotBackgroundColor: null,
-                        plotBorderWidth: null,
-                        plotShadow: false,
-                        type: 'pie'
-                    },
-                    title: {
-                        text: 'Verified Recipes'
-                    },
-                    credits: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                        pie: {
-                            allowPointSelect: true,
-                            cursor: 'pointer',
-                            dataLabels: {
-                                enabled: true,
-                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                            }
-                        }
-                    },
-                    series: [{
-                        name: 'Verification Status',
-                        colorByPoint: true,
-                        data: [ajaxData.map(d => ({
-                            name: d["verified"],
-                            y: d.count,
-                        }))]
-                    }]
-                };
-
-                console.log(chartData);
-                Highcharts.chart('chartVerifiedRecipes', chartData);
-            },
-            error: function (err) {
-                console.log("Failed JS on verified recipes chart.")
-                console.log(err);
-            }
-
-
-        })
-
-        $.ajax({
-            url: "GetNewRecipesChartData",
-            data: { fromDate: null, toDate: null },
-            success: function (data) {
-                console.log(data);
-
-                var chartData = {
-                    chart: {
-                        type: 'column'
-                    },
-                    title: {
-                        text: 'New Recipes'
-                    },
-                    xAxis: {
-                        categories: data.map(d => d["day"])
-                    },
-                    credits: {
-                        enabled: false
-                    },
-                    series: data.map(d => ({name: d.day, data: [d.count]}) ), @* Have to put count in array, thanks highcharts! *@
-                };
-
-                console.log(chartData);
-
-                Highcharts.chart('newRecipesChart', chartData);
-            },
-            error: function (err) {
-                console.log("Failed JS on recipes chart.")
-                console.log(err);
-            }
+        
+        $("#updateRange").on("click", function () {
+            let year = new Date().getFullYear();
+            $("#fromDate").val(year + "-01-01");
+            $("#toDate").val(year + "-12-31");
+            $("#updateCharts").trigger("click");
         });
 
-        $.ajax({
-            url: "GetNewIngredientsChartData",
-            data: { fromDate: null, toDate: null },
-            success: function (data) {
-                console.log(data);
+        $("#updateCharts").on("click", function () {
+            let fromDate = $("#fromDate").val() ?? null;
+            let toDate = $("#toDate").val() ?? null;
 
-                var chartData = {
-                    chart: {
-                        type: 'column'
-                    },
-                    title: {
-                        text: 'New Ingredients'
-                    },
-                    xAxis: {
-                        categories: data.map(d => d["day"])
-                    },
-                    credits: {
-                        enabled: false
-                    },
-                    series: data.map(d => ({ name: d.day, data: [d.count] })),
-                };
-
-            console.log(chartData);
-
-            Highcharts.chart('newIngredientsChart', chartData);
-        },
-            error: function (err) {
-                console.log("Failed JS on Ingredients chart.")
-                console.log(err);
-            }
+            getVerifiedIngredientsChart(fromDate, toDate);
+            getVerifiedRecipesChart(fromDate, toDate);
+            getNewRecipesChart(fromDate, toDate);
+            getNewIngredientsChart(fromDate, toDate);
         });
 
+        function getVerifiedIngredientsChart(fromDate, toDate) {
+            $.ajax({
+                url: "GetVerifiedIngredientsChartData",
+                data: { fromDate: fromDate, toDate: toDate },
+                success: function (ajaxData) {
+                    var chartData = {
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            type: 'pie'
+                        },
+                        title: {
+                            text: 'Verified Ingredients'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                                }
+                            }
+                        },
+                        series: [{
+                            name: 'Verification Status',
+                            colorByPoint: true,
+                            data: [ajaxData.map(d => ({
+                                name: d["verified"],
+                                y: d.count,
+                            }))]
+                        }]
+                    };
+
+                    console.log(chartData);
+                    Highcharts.chart('chartVerifiedIngredients', chartData);
+                },
+                error: function (err) {
+                    console.log("Failed JS on recipes chart.")
+                    console.log(err);
+                }
+            });
+        }
+
+
+        function getVerifiedRecipesChart(fromDate, toDate) {
+            $.ajax({
+                url: "GetVerifiedRecipesChartData",
+                data: { fromDate: fromDate, toDate: toDate },
+                success: function (ajaxData) {
+                    console.log(ajaxData);
+
+                    var chartData = {
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            type: 'pie'
+                        },
+                        title: {
+                            text: 'Verified Recipes'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                                }
+                            }
+                        },
+                        series: [{
+                            name: 'Verification Status',
+                            colorByPoint: true,
+                            data: [ajaxData.map(d => ({
+                                name: d["verified"],
+                                y: d.count,
+                            }))]
+                        }]
+                    };
+
+                    console.log(chartData);
+                    Highcharts.chart('chartVerifiedRecipes', chartData);
+                },
+                error: function (err) {
+                    console.log("Failed JS on verified recipes chart.")
+                    console.log(err);
+                }
+            });
+        }
+
+        function getNewRecipesChart(fromDate, toDate) {
+            $.ajax({
+                url: "GetNewRecipesChartData",
+                data: { fromDate: fromDate, toDate: toDate },
+                success: function (data) {
+                    console.log(data);
+
+                    var chartData = {
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: 'New Recipes'
+                        },
+                        xAxis: {
+                            categories: data.map(d => d["day"])
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        series: data.map(d => ({ name: d.day, data: [d.count] })), @* Have to put count in array, thanks highcharts! *@
+                    };
+
+                    console.log(chartData);
+
+                    Highcharts.chart('newRecipesChart', chartData);
+                },
+                error: function (err) {
+                    console.log("Failed JS on recipes chart.")
+                    console.log(err);
+                }
+            });
+        }
+
+        function getNewIngredientsChart(fromDate, toDate) {
+            $.ajax({
+                url: "GetNewIngredientsChartData",
+                data: { fromDate: fromDate, toDate: toDate },
+                success: function (data) {
+                    console.log(data);
+
+                    var chartData = {
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: 'New Ingredients'
+                        },
+                        xAxis: {
+                            categories: data.map(d => d["day"])
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        series: data.map(d => ({ name: d.day, data: [d.count] })),
+                    };
+
+                    console.log(chartData);
+
+                    Highcharts.chart('newIngredientsChart', chartData);
+                },
+                error: function (err) {
+                    console.log("Failed JS on Ingredients chart.")
+                    console.log(err);
+                }
+            });
+        }
 
 
         @* Item Verification *@
@@ -196,7 +215,12 @@
                 }
             });
         });
+
+        @* Instantiate charts with default.  *@
+        $("#updateCharts").trigger("click");
     });
+
+
 </script>
 
 <h1>Administration</h1>
@@ -216,8 +240,8 @@
                         <input type="date" class="form-control" id="fromDate" />
                         <label for="toDate" class="sr-only">To Date</label>
                         <input type="date" class="form-control" id="toDate" />
-                        <button type="button" class="btn btn-primary mb-2">Update Charts</button>
-                        <button type="button" class="btn btn-info mb-2">Set Range to Current Year</button>
+                        <button type="button" id="updateCharts" class="btn btn-primary mb-2">Update Charts</button>
+                        <button type="button" id="updateRange" class="btn btn-info mb-2">Set Range to Current Year</button>
                     </div>
                     <label for="includeUnverified">Include Unverified Items</label>"
                     <input type="checkbox" id="includeUnverified" />
