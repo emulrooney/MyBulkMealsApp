@@ -14,11 +14,11 @@ namespace MyBulkMealsApp.Models
 
         public string FullName { get
             {
-                if (FirstName.Length > 0 && LastName.Length > 0)
+                if (!String.IsNullOrEmpty(FirstName) && !String.IsNullOrEmpty(LastName))
                     return FirstName + " " + LastName;
-                else if (FirstName.Length > 0)
+                else if (!String.IsNullOrEmpty(FirstName))
                     return FirstName;
-                else if (LastName.Length > 0)
+                else if (!String.IsNullOrEmpty(LastName))
                     return LastName;
                 else
                     return UserName;
