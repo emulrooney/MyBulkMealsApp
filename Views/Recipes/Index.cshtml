@@ -1,12 +1,20 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @model MyBulkMealsApp.Data.PaginatedList<MyBulkMealsApp.Models.Recipe>
 @inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     bool showCreatedTime = (ViewData["ShowCreatedTime"] != null && (bool)ViewData["ShowCreatedTime"]);
+    var user = await UserManager.GetUserAsync(User);
+    var currentUserId = user?.Id;
+    bool isAdmin = false;
+    if (user != null)
+    {
+        isAdmin = UserManager.GetRolesAsync(user).Result.FirstOrDefault(c => c.Contains("Admin")) != null;
+    }
 }
 
 <h1>Recipes</h1>
@@ -93,8 +101,12 @@
                     </td>
                 }
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    @if ( (item.CreatorId == currentUserId && !item.IsVerified) || isAdmin)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <span>|</span>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
                 </td>
             </tr>
         }
