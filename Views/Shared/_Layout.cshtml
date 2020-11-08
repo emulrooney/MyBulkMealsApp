@@ -62,10 +62,10 @@
             <div class="row">
                 <div class="col-4">
                     <ul class="list-unstyled">
-                        <li><a href="#">About Us</a></li>
+                        <li><a asp-controller="Home" asp-action="About">About Us</a></li>
                         <li><a asp-controller="Recipes" asp-action="Index">Browse Recipes</a></li>
                         <li><a asp-controller="Ingredients" asp-action="Index">Browse Ingredients</a></li>
-                        <li><a href="#">Contact Us</a></li>
+                        <li><a asp-controller="Home" asp-action="Contact">Contact Us</a></li>
                     </ul>
                 </div>
                 <div class="col-4">
@@ -79,7 +79,7 @@
                             </li>
                             <li>
                                 <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                                    <button type="submit">Logout</button>
+                                    <a href='#' onclick='this.parentNode.submit(); return false;'>Logout</a>
                                 </form>
                             </li>
                         }
