@@ -57,10 +57,10 @@
                         series: [{
                             name: 'Verification Status',
                             colorByPoint: true,
-                            data: [ajaxData.map(d => ({
+                            data: ajaxData.map(d => ({
                                 name: d["verified"],
                                 y: d.count,
-                            }))]
+                            }))
                         }]
                     };
 
@@ -108,10 +108,10 @@
                         series: [{
                             name: 'Verification Status',
                             colorByPoint: true,
-                            data: [ajaxData.map(d => ({
+                            data: ajaxData.map(d => ({
                                 name: d["verified"],
                                 y: d.count,
-                            }))]
+                            }))
                         }]
                     };
 
@@ -236,15 +236,31 @@
             <div class="col-12">
                 <form>
                     <div class="form-group mb-2">
-                        <label for="fromDate" class="sr-only">From Date</label>
-                        <input type="date" class="form-control" id="fromDate" />
-                        <label for="toDate" class="sr-only">To Date</label>
-                        <input type="date" class="form-control" id="toDate" />
-                        <button type="button" id="updateCharts" class="btn btn-primary mb-2">Update Charts</button>
-                        <button type="button" id="updateRange" class="btn btn-info mb-2">Set Range to Current Year</button>
+                        <div class="form-group row">
+                            <label for="fromDate" class="col-2 col-form-label">From Date</label>
+                            <div class="col-10">
+                                <input type="date" class="form-control" id="fromDate" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="fromDate" class="col-2 col-form-label">To Date</label>
+                            <div class="col-10">
+                                <input type="date" class="form-control" id="toDate" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <button type="button" id="updateCharts" class="btn btn-primary w-100 mb-1">Update Charts</button>
+                            </div>
+                            <div class="col-4">
+                                <button type="button" id="updateRange" class="btn btn-info w-100 mb-1">Set Range to Current Year</button>
+                            </div>
+                            <div class="col-4">
+                                <label class="col-form-label" for="includeUnverified">Include Unverified Items</label>
+                                <input class="form-check" type="checkbox" id="includeUnverified"  />
+                            </div>
+                        </div>
                     </div>
-                    <label for="includeUnverified">Include Unverified Items</label>"
-                    <input type="checkbox" id="includeUnverified" />
                 </form>
             </div>
             <div class="col-6">
@@ -253,16 +269,16 @@
             </div>
             <div class="col-6">
                 <h4>Verification Notifications</h4>
-                <div>Email admin when <input style="width: 50px;" type="number" min="0" id="unverifiedRecipeNotifications" placeholder="100" /> recipes are unverified.</div>
-                <div>Email admin when <input style="width: 50px;" type="number" min="0" id="unverifiedIngredientNotifications" placeholder="100" /> ingredients are unverified.</div>
+                <ul class="list-unstyled p-1">
+                    <li>Email admin when <input style="width: 50px;" type="number" min="0" id="unverifiedRecipeNotifications" placeholder="100" /> recipes are unverified.</li>
+                    <li>Email admin when <input style="width: 50px;" type="number" min="0" id="unverifiedIngredientNotifications" placeholder="100" /> ingredients are unverified.</li>
+                </ul>
+                <button class="btn btn-secondary">Save</button>
             </div>
-
         </div>
-
     </div>
     <div class="col-lg-4 col-s-12">
         <span class="verify__last-item"></span>
-
         <ul class="nav nav-tabs nav-fill" role="tablist">
             <li class="nav-item">
                 <a id="recipesTab" class="nav-link active" data-toggle="tab" href="#recipes" role="tab" aria-controls="recipes" aria-selected="true">Recipes</a>
@@ -271,7 +287,6 @@
                 <a id="ingredientsTab" class="nav-link" data-toggle="tab" href="#ingredients" role="tab" aria-controls="ingredients" aria-selected="false">Ingredients</a>
             </li>
         </ul>
-
         <div class="tab-content">
             <div class="tab-pane fade show active" id="recipes" role="tabpanel" aria-labelledby="recipesTab">
                 <ol class="list-group">
@@ -281,7 +296,12 @@
                             <button type="button" class="btn btn-sm btn-success verify__button float-right" data-type="recipe" data-id="@r.Id">
                                 <i class="fa fa-thumbs-up"></i>
                             </button>
-                            <span class="js__name--@r.Id">@r.ItemName by @r.CreatorName</span>
+                            <span class="js__name--@r.Id">
+                                <a href="~/Recipes/Details/@r.Id">
+                                   @r.ItemName
+                                </a>
+                                by @r.CreatorName
+                            </span>
                         </li>
                     }
                 </ol>
@@ -295,7 +315,10 @@
                             <button type="button" class="btn btn-sm btn-success verify__button float-right" data-type="ingredient" data-id="@r.Id">
                                 <i class="fa fa-thumbs-up"></i>
                             </button>
-                            <span class="js__name--@r.Id">@r.ItemName by @r.CreatorName</span>
+                            <span class="js__name--@r.Id">
+                                <a href="~/Ingredients/Details/@r.Id">@r.ItemName</a>
+                                by @r.CreatorName
+                            </span>
                         </li>
                     }
                 </ol>

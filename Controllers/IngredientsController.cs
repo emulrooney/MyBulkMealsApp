@@ -52,6 +52,17 @@ namespace MyBulkMealsApp.Controllers
             return await base.Edit(id);
         }
 
+        public async override Task<IActionResult> Details(int? id)
+        {
+            if (id != null)
+            {
+                var item = await _repo.Get((int)id);
+                return await base.Results(item.ItemName, 1);
+            }
+
+            return await Index(1);
+        }
+
         // POST: Ingredients/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
