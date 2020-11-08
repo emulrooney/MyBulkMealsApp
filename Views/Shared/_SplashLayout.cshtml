@@ -10,6 +10,7 @@
     <title>@ViewData["Title"] - MyBulkMeals</title>
     <link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome-4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 
 </head>
@@ -54,8 +55,49 @@
     <main role="main" class="pb-3">
         @RenderBody()
     </main>
-    <footer class="border-top footer text-muted">
-        <div class="container">
+    <footer class="border-top footer text-muted mt-5 footer--splash">
+        <div class="row">
+            <div class="col-4">
+                <ul class="list-unstyled">
+                    <li><a href="#">About Us</a></li>
+                    <li><a asp-controller="Recipes" asp-action="Index">Browse Recipes</a></li>
+                    <li><a asp-controller="Ingredients" asp-action="Index">Browse Ingredients</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="col-4">
+                <ul class="list-unstyled">
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li>
+                            <a asp-area="Identity" asp-page="/Account/Manage/Index">
+                                <strong>Manage Account</strong>
+                            </a>
+                        </li>
+                        <li>
+                            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <button type="submit">Logout</button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li><a asp-area="Identity" asp-page="/Account/Register">Register</a></li>
+                        <li><a asp-area="Identity" asp-page="/Account/Login">Log-in</a></li>
+                    }
+                </ul>
+            </div>
+            <div class="col-4">
+                <ul class="list-unstyled text-right splash__socials">
+                    <li><a href="#">Pinterest <i aria-hidden="true" class="fa fa-pinterest-square ml-1"></i></a></li>
+                    <li><a href="#">Twitter <i aria-hidden="true" class="fa fa-twitter-square ml-1"></i></a></li>
+                    <li><a href="#">Instagram <i aria-hidden="true" class="fa fa-instagram ml-1"></i></a></li>
+                    <li><a href="#">Facebook <i aria-hidden="true" class="fa fa-facebook-square ml-1"></i></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div>
             &copy; 2020 - MyBulkMealsApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>

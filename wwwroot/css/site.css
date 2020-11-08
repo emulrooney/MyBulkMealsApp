@@ -70,11 +70,11 @@ body {
   margin-bottom: 60px;
 }
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
+  width: 80%;
   white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+  line-height: 2.5em; /* Vertically center the text there */
+  padding-top: 2em;
+  margin: auto;
 }
 
 .home__hero {
@@ -133,4 +133,32 @@ body {
 
 .font-size--1point5 {
     font-size: 1.5em;
+}
+
+.splash__socials i {
+    font-size: 150%;
+    vertical-align: middle;
+}
+
+.footer--main {
+    color: white;
+    font-size: 1.15em;
+    line-height: 1.2em;
+    position: absolute;
+}
+
+.footer .footer--main {
+    max-width: 1140px;
+}
+
+.footer--splash {
+    font-size: 1.5em;
+}
+
+.footer--main a {
+    color: white !important;
+}
+
+.footer--main a:hover {
+    color: #b8fcfa !important;
 }
