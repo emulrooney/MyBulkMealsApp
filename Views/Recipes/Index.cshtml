@@ -14,10 +14,16 @@
 
 <h2>Popular Searches</h2>
 <ul class="list-inline">
+    <li class="list-inline-item">
+        <a class="btn btn-outline-info" asp-action="Index">View All</a>
+    </li>
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="list-inline-item">
             <a class="btn btn-outline-info" asp-action="Created">My Created Recipes</a>
+        </li>
+        <li class="list-inline-item">
+            <a class="btn btn-outline-info" asp-action="Saved">My Saved Recipes</a>
         </li>
     }
     <li class="list-inline-item">
@@ -32,19 +38,21 @@
 </ul>
 
 <div class="m-4">
-    <label for="ingredientSearch">Quick Search by Keyword</label>
-    <div class="input-group input-group-lg">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="inputGroup-sizing-lg">
-                <i class="fa fa-search"></i>
-            </span>
+    <form asp-action="Results">
+        <label for="recipeSearch">Quick Search by Keyword</label>
+        <div class="input-group input-group-lg">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroup-sizing-lg">
+                    <i class="fa fa-search"></i>
+                </span>
+            </div>
+            <input id="recipeSearch" name="keyword" type="text" class="form-control" aria-describedby="inputGroup-sizing-lg">
+            <button class="btn btn-primary">GO!</button>
         </div>
-        <input id="ingredientSearch" name="keyword" type="text" class="form-control" aria-describedby="inputGroup-sizing-lg">
-        @*<button class="btn btn-primary">GO!</button>*@
-    </div>
+    </form>
 </div>
 
-<table class="table-bordered table-striped w-100">
+<table class="table-bordered table-striped w-100 font-size--1point5">
     <thead>
         <tr>
             <th>

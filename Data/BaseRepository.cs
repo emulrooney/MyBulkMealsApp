@@ -124,6 +124,12 @@ namespace MyBulkApps.Data
         {
             return await context.Set<UserItem>().Where(i => i is TUserItem).ToListAsync();
         }
+    
+        //TO DO: handle saving items
+        public virtual async Task<List<TEntity>> GetSavedBy(string userId)
+        {
+            return await Collection.Where(i => i.CreatorId == userId).ToListAsync();
+        }
 
         public async Task<TEntity> Update(TEntity entity)
         {

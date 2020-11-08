@@ -72,12 +72,18 @@
         </div>
     </div>
     <div class="row col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-sm-12">
-        <div class="input-group input-group-lg">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="inputGroup-sizing-lg">Search</span>
+        <h4>Search our recipe database!</h4>
+        @using (Html.BeginForm("Results", "Recipes", FormMethod.Post, null))
+        {
+            <div class="input-group input-group-lg">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </span>
+                </div>
+                <input id="recipeSearchTerm" name="keyword" type="text" class="form-control" aria-label="Recipe Search Term">
+                <button class="btn btn-primary">GO!</button>
             </div>
-            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
-            <button class="btn btn-primary">GO!</button>
-        </div>
+        }
     </div>
 </div>
