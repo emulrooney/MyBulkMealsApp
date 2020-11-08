@@ -8,7 +8,7 @@ namespace MyBulkMealsApp.Data
 {
     public interface IRepository<T> where T : class, IEntity
     {
-        Task<List<T>> GetAll();
+        Task<List<T>> GetAll(ApplicationUser user);
         Task<List<T>> GetByKeyword(string keyword);
         Task<List<T>> GetByCreationTime(bool descending);
         Task<List<T>> GetRandom(int quantity);

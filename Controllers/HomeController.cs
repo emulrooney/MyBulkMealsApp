@@ -63,8 +63,7 @@ namespace MyBulkMealsApp.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Admin()
         {
-            
-
+           
             ViewData["UnverifiedRecipes"] = await _recipeRepository.GetAllUnverified();
             ViewData["UnverifiedIngredients"] = await _ingredientRepository.GetAllUnverified();
 

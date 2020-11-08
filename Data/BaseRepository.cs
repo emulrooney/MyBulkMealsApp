@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using MyBulkMealsApp.Data;
 using MyBulkMealsApp.Models;
 using System;
@@ -14,6 +15,7 @@ namespace MyBulkApps.Data
         where TContext : DbContext
     {
         protected readonly TContext context;
+        protected readonly UserManager<ApplicationUser> userManager;
 
         public virtual IQueryable<TEntity> Collection
         {
@@ -25,9 +27,10 @@ namespace MyBulkApps.Data
         }
 
 
-        public BaseRepository(TContext context)
+        public BaseRepository(TContext context, UserManager<ApplicationUser> userManager)
         {
             this.context = context;
+            this.userManager = userManager;
         }
         public async Task<TEntity> Add(TEntity entity)
         {
@@ -103,10 +106,20 @@ namespace MyBulkApps.Data
             else
                 return await Collection.OrderBy(e => e.CreatedTime).ToListAsync();
         }
-
-        public virtual async Task<List<TEntity>> GetAll()
+         
+        public virtual async Task<List<TEntity>> GetAll(ApplicationUser user)
         {
-            return await Collection.ToListAsync();
+            //TODO clean up
+            if (user != null)
+            {
+                var isAdmin = userManager.GetRolesAsync(user).Result.FirstOrDefault(c => c.Contains("Admin")) != null;
+                return await Collection.Where(i => isAdmin || i.IsPublic || i.CreatorId == user.Id).ToListAsync();
+            } 
+            else
+            {
+                return await Collection.Where(i => i.IsPublic).ToListAsync();
+            }
+
         }
 
         public virtual async Task<List<TEntity>> GetRandom(int quantity)

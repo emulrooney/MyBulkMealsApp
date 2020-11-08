@@ -13,6 +13,7 @@ namespace MyBulkMealsApp.Data
         string CreatorId { get; set; }
         DateTime CreatedTime { get; set; }
 
+        bool IsPublic { get; set; }
         bool IsVerified { get; set; }
         DateTime? VerificationSubmissionTime { get; set; }
 

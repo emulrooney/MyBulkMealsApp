@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyBulkApps.Data;
 using MyBulkMealsApp.Models;
@@ -23,13 +24,8 @@ namespace MyBulkMealsApp.Repositories
             }
         }
 
-        public IngredientRepository(MyBulkMealsAppContext context) : base(context)
+        public IngredientRepository(MyBulkMealsAppContext context, UserManager<ApplicationUser> userManager) : base(context, userManager)
         {
-        }
-
-        public override async Task<List<Ingredient>> GetAll()
-        {
-            return await Collection.ToListAsync();
         }
 
         public override async Task<List<Ingredient>> GetByCreationTime(bool descending)
@@ -45,7 +41,7 @@ namespace MyBulkMealsApp.Repositories
 
         public async Task<List<Ingredient>> GetAllUnverified()
         {
-            return await Collection.OrderByDescending(e => e.CreatedTime).Where(e => !e.IsVerified).ToListAsync();
+            return await Collection.OrderByDescending(e => e.CreatedTime).Where(e => !e.IsVerified && e.IsPublic).ToListAsync();
         }
 
         [Authorize("Admin")]

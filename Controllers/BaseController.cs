@@ -32,7 +32,7 @@ namespace MyBulkMealsApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index(int pageNumber = 1)
         {
-            var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetAll(), pageNumber, pageSize);
+            var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetAll(_userManager.GetUserAsync(User).Result), pageNumber, pageSize);
             return View(list);
         }
 

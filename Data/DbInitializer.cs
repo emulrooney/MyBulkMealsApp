@@ -192,6 +192,7 @@ namespace MyBulkMealsApp.Data
                         BaseServings = Int32.Parse(r[1]),
                         Instructions = r[2],
                         Time = Int32.Parse(r[3]),
+                        IsPublic = true,
                         Ingredients = new List<RecipeIngredient>()
                     };
 
@@ -239,7 +240,8 @@ namespace MyBulkMealsApp.Data
                         Protein = short.Parse(i[4]), 
                         Carbs = short.Parse(i[5]), 
                         Fat = short.Parse(i[6]), 
-                        IsVerified = true
+                        IsVerified = true,
+                        IsPublic = true
                     });
                 } 
                 catch (Exception e)
