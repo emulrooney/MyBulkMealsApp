@@ -20,9 +20,10 @@
                 <strong>@(UserManager.GetUserAsync(User).Result.FirstName ?? @User.Identity.Name)</strong>!
             </p>
 
-            <a class="btn btn-secondary btn-lg" href="~/Recipes" role="button">Recipes</a>
-            <a class="btn btn-secondary btn-lg" href="~/Ingredients" role="button">Ingredients</a>
-            @*<a class="btn btn-secondary btn-lg" href="~/MealPlans" role="button">Meal Plans</a>*@
+            <a class="btn btn-primary btn-lg" href="~/Recipes" role="button">Recipes</a>
+            <a class="btn btn-primary btn-lg" href="~/Ingredients" role="button">Ingredients</a>
+            @*<a class="btn btn-primary btn-lg" href="~/MealPlans" role="button">Meal Plans</a>*@
+            <a class="btn btn-secondary btn-lg" href="~/Home/Contact" role="button">Contact</a>
         }
         else
         {
@@ -31,6 +32,8 @@
             </p>
             <a class="btn btn-primary btn-lg" asp-area="Identity" asp-page="/Account/Register" role="button">Register</a>
             <a class="btn btn-secondary btn-lg" asp-area="Identity" asp-page="/Account/Login" role="button">Login</a>
+            <a class="btn btn-secondary btn-lg" href="~/Home/About" role="button">More About Us</a>
+            <a class="btn btn-secondary btn-lg" href="~/Home/Contact" role="button">Contact</a>
         }
     </div>
 </div>
