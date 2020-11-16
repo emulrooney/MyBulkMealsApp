@@ -3,12 +3,14 @@
 @{
     List<Recipe> unverifiedRecipes = (List<Recipe>)ViewData["UnverifiedRecipes"];
     List<Ingredient> unverifiedIngredients = (List<Ingredient>)ViewData["UnverifiedIngredients"];
+
+    ViewData["Title"] = "Administration";
 }
 
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script>
     $(document).ready(function () {
-        
+
         $("#updateRange").on("click", function () {
             let year = new Date().getFullYear();
             $("#fromDate").val(year + "-01-01");
@@ -257,7 +259,7 @@
                             </div>
                             <div class="col-4">
                                 <label class="col-form-label" for="includeUnverified">Include Unverified Items</label>
-                                <input class="form-check" type="checkbox" id="includeUnverified"  />
+                                <input class="form-check" type="checkbox" id="includeUnverified" />
                             </div>
                         </div>
                     </div>
@@ -298,7 +300,7 @@
                             </button>
                             <span class="js__name--@r.Id">
                                 <a href="~/Recipes/Details/@r.Id">
-                                   @r.ItemName
+                                    @r.ItemName
                                 </a>
                                 by @r.CreatorName
                             </span>
