@@ -7,6 +7,7 @@ namespace MyBulkMealsApp.Models
     {
         public int Id { get; set; }
         public int UserItemId { get; set; }
-        public int SavedBy { get; set; }
+        public UserItem UserItem { get; set; }
+        public string SavedBy { get; set; }
     }
 }
