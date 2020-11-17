@@ -137,11 +137,15 @@ namespace MyBulkApps.Data
         {
             return await context.Set<UserItem>().Where(i => i is TUserItem).ToListAsync();
         }
-    
+
         //TO DO: handle saving items
-        public virtual async Task<List<TEntity>> GetSavedBy(string userId)
+        public virtual async Task<List<UserItem>> GetSavedBy(string id)
         {
-            return await Collection.Where(i => i.CreatorId == userId).ToListAsync();
+            return await context.Set<UserSavedItem>()
+                .Where(i => i.SavedBy == id && i.UserItem.GetType() is TEntity)
+                .Include(i => i.UserItem)
+                .Select(i => i.UserItem)
+                .ToListAsync();
         }
 
         public async Task<TEntity> Update(TEntity entity)
