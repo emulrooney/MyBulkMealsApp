@@ -32,7 +32,11 @@ namespace MyBulkMealsApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index(int pageNumber = 1)
         {
-            var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetAll(_userManager.GetUserAsync(User).Result), pageNumber, pageSize);
+            var user = _userManager.GetUserAsync(User).Result;
+
+            var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetAll(user), pageNumber, pageSize);
+            ViewData["SavedIds"] = await _repo.GetSavedIds(list);
+
             return View(list);
         }
 
@@ -40,6 +44,7 @@ namespace MyBulkMealsApp.Controllers
         public async Task<IActionResult> Results(string keyword, int pageNumber = 1)
         {
             var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetByKeyword(keyword), pageNumber, pageSize);
+
             return View("Index", list);
         }
 
@@ -59,10 +64,16 @@ namespace MyBulkMealsApp.Controllers
 
         public async Task<IActionResult> Saved()
         {
-            var created = await _repo.GetSavedBy(_userManager.GetUserAsync(User).Result.Id);
+            List<TEntity> created = _repo.GetSavedBy(_userManager.GetUserAsync(User).Result.Id);
 
-            var list = await PaginatedList<UserItem>.CreateAsync(created, 1, 20);
+            var list = await PaginatedList<TEntity>.CreateAsync(created, 1, 20);
             return View("Index", list);
+        }
+
+        public virtual async Task<JsonResult> SaveItem(int id)
+        {
+            var saved = await _repo.ToggleSavedItem(id, _userManager.GetUserAsync(User).Result.Id);
+            return new JsonResult(saved);
         }
 
         public async Task<IActionResult> Random(int quantity)

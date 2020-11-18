@@ -15,6 +15,8 @@
     {
         isAdmin = UserManager.GetRolesAsync(user).Result.FirstOrDefault(c => c.Contains("Admin")) != null;
     }
+
+    Dictionary<int, bool> SavedIds = (Dictionary<int, bool>)ViewData["SavedIds"];
 }
 
 <h1>Recipes</h1>
@@ -82,7 +84,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+            <tr data-saved="@(SavedIds.Keys.Contains(item.Id) ? SavedIds[item.Id] : false)">
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id">
                         @Html.DisplayFor(modelItem => item.ItemName)

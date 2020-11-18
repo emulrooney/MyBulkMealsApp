@@ -210,14 +210,14 @@ namespace MyBulkMealsApp.Models
                 entity.Property(e => e.ItemName)
                     .IsRequired()
                     .HasMaxLength(128)
-                    .IsUnicode(false);
+                    .IsUnicode(false);  
 
                 entity.Property(e => e.VerificationSubmissionTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<UserSavedItem>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -138,14 +138,61 @@ namespace MyBulkApps.Data
             return await context.Set<UserItem>().Where(i => i is TUserItem).ToListAsync();
         }
 
-        //TO DO: handle saving items
-        public virtual async Task<List<UserItem>> GetSavedBy(string id)
+
+        public virtual List<TEntity> GetSavedBy(string id)
         {
-            return await context.Set<UserSavedItem>()
-                .Where(i => i.SavedBy == id && i.UserItem.GetType() is TEntity)
-                .Include(i => i.UserItem)
-                .Select(i => i.UserItem)
-                .ToListAsync();
+            var saved = context.Set<UserSavedItem>()
+                .Where(i => i.SavedBy == id)
+                .Include(i => i.UserItem); 
+
+            var savedReturn = new List<TEntity>();
+
+            foreach (var item in saved)
+            {
+                if (item.UserItem.GetType() == typeof(TEntity))
+                    savedReturn.Add(item.UserItem as TEntity);
+            }
+
+            return savedReturn;
+        }
+
+        public async virtual Task<Dictionary<int, bool>> GetSavedIds(PaginatedList<TEntity> page)
+        {
+            var ids = page.Select(p => p.Id).ToList();
+            var saved = await context.Set<UserSavedItem>()
+                .Select(i => new { Key = i.UserItemId, Value = ids.Contains(i.Id) })
+                .ToDictionaryAsync(k => k.Key, v => v.Value);
+            return saved;
+        }
+
+        public async Task<bool?> ToggleSavedItem(int itemId, string userId)
+        {
+            var item = Collection.Where(i => i.Id == itemId).FirstOrDefault();
+
+            var alreadySaved = context.Set<UserSavedItem>()
+                .Where(i => i.UserItemId == itemId && i.SavedBy.Contains(userId)).FirstOrDefault();
+
+            if (alreadySaved == null && item != null)
+            {
+                var entity = new UserSavedItem()
+                {
+                    SavedBy = userId,
+                    UserItemId = item.Id
+                };
+
+                context.Set<UserSavedItem>().Add(entity);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            else if (item != null)
+            {
+                context.Set<UserSavedItem>().Remove(alreadySaved);
+                await context.SaveChangesAsync();
+
+                return false;
+            }
+
+            return null;
         }
 
         public async Task<TEntity> Update(TEntity entity)

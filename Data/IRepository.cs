@@ -13,9 +13,10 @@ namespace MyBulkMealsApp.Data
         Task<List<T>> GetByCreationTime(bool descending);
         Task<List<T>> GetRandom(int quantity);
         Task<List<T>> GetCreatedBy(string id);
-        Task<List<UserItem>> GetSavedBy(string id);
-
+        List<T> GetSavedBy(string id);
+        Task<Dictionary<int, bool>> GetSavedIds(PaginatedList<T> list);
         Task<T> Get(int id);
+        Task<bool?> ToggleSavedItem(int id, string userId);
         Task<T> Add(T entity);
         Task<T> Update(T entity);
         Task<T> Delete(int id);

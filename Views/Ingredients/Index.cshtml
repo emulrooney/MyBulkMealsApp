@@ -17,6 +17,8 @@
     {
         isAdmin = UserManager.GetRolesAsync(user).Result.FirstOrDefault(c => c.Contains("Admin")) != null;
     }
+
+    Dictionary<int, bool> SavedIds = (Dictionary<int, bool>)ViewData["SavedIds"] ?? new Dictionary<int, bool>();
 }
 
 <script>
@@ -30,13 +32,36 @@
             $("#modalProtein").html(row.data("protein"));
             $("#modalCarbs").html(row.data("carbs"));
             $("#modalFat").html(row.data("fat"));
+            $("#modalId").val(row.data("id"));
+
+            toggleSaveButton(row.data("saved"));
 
             $("#ingredientModal").modal('show');
         });
+
+        $(".js__save-ingredients").on("click", function () {
+            let modalId = $("#modalId").val();
+            $.ajax({
+                url: "Ingredients/SaveItem",
+                data: { id: modalId },
+                success: function(result) {
+                    toggleSaveButton(result);
+                }
+            })
+        });
+
+        function toggleSaveButton(saved) {
+            if (saved) {
+                $(".js__save-ingredients").text("Remove from Saved Ingredients");
+            } else {
+                $(".js__save-ingredients").text("Add to Saved Ingredient");
+            }
+        }
     });
 </script>
 
 <div id="ingredientModal" class="modal" tabindex="-1" role="dialog">
+    <input type="hidden" value="" id="modalId" />
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -55,7 +80,7 @@
                 </ul>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-primary">Save to My Ingredients</button>
+                <button type="button" class="js__save-ingredients btn btn-sm btn-primary">Save to My Ingredients</button>
                 <button type="button" class="btn btn-sm btn-info">Propose Amendment</button>
                 <button type="button" class="btn btn-sm btn-info">Make Copy</button>
             </div>
@@ -64,6 +89,16 @@
 </div>
 
 <h1>Ingredients</h1>
+
+<div>
+    @foreach (var i in SavedIds)
+    {
+        <p>@i.Key - @i.Value </p>
+
+    }
+
+
+</div>
 
 <hr />
 <h2>Popular Searches</h2>
@@ -123,7 +158,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr data-calories="@item.Calories" data-protein="@item.Protein" data-carbs="@item.Carbs" data-fat="@item.Fat">
+            <tr data-id="@item.Id" data-saved="@(SavedIds.Keys.Contains(item.Id) ? SavedIds[item.Id] : false)" data-calories="@item.Calories" data-protein="@item.Protein" data-carbs="@item.Carbs" data-fat="@item.Fat">
                 <td>
                     <a href="#" class="js__show-nutrition">
                         @Html.DisplayFor(modelItem => item.ItemName)
@@ -144,6 +179,11 @@
                     @if (item.IsVerified)
                     {
                         <i class="fa fa-check-circle"></i>
+                    }
+
+                    @if (SavedIds.Keys.Contains(item.Id) ? SavedIds[item.Id] : false)
+                    {
+                        <i class="fa fa-save"></i>
                     }
                 </td>
                 <td>

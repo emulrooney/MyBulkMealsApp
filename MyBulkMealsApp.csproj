@@ -28,6 +28,8 @@
     <Compile Remove="Migrations\20201022011353_Tweaks_Oct21.Designer.cs" />
     <Compile Remove="Migrations\20201022011730_Tweaks_Oct21.cs" />
     <Compile Remove="Migrations\20201022011730_Tweaks_Oct21.Designer.cs" />
+    <Compile Remove="Migrations\20201118013244_Nov17_TweakUserSavedItem.cs" />
+    <Compile Remove="Migrations\20201118013244_Nov17_TweakUserSavedItem.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -105,6 +105,7 @@ namespace MyBulkMealsApp.Controllers
             var chartData = await _ingredientRepository.GetVerifiedIngredientsChartData(fromDate, toDate);
             return new JsonResult(chartData);
         }
+
         public async Task<JsonResult> GetVerifiedRecipesChartData(DateTime? fromDate, DateTime? toDate)
         {
             var chartData = await _recipeRepository.GetVerifiedRecipesChartData(fromDate, toDate);
