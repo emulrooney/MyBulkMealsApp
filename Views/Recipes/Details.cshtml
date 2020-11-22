@@ -71,8 +71,8 @@
                         {
                             <li class="ingredient__item list-group-item" data-id="@ingredient.Id">
                                 <div class="input-group row">
-                                    <a class="col-4 font-size--1point5" target="_blank" href="~/Ingredients/@ingredient.Id">@ingredient.Ingredient.ItemName</a>
-                                    <input type="number" disabled class="ingredient__item__quantity form-control col-7" value="@ingredient.MeasurementAmount}" aria-label="quantity">
+                                    <a class="col-4" target="_blank" href="~/Ingredients/@ingredient.Id">@ingredient.Ingredient.ItemName</a>
+                                    <input type="number" disabled class="ingredient__item__quantity form-control col-7" value="@ingredient.MeasurementAmount" aria-label="quantity">
                                     <div class="input-group-append">
                                         <span class="input-group-text" id="basic-addon2">@ingredient.Ingredient.Measurement.Symbol</span>
                                     </div>
