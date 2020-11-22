@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -44,6 +45,7 @@ namespace MyBulkMealsApp.Controllers
         public async Task<IActionResult> Results(string keyword, int pageNumber = 1)
         {
             var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetByKeyword(keyword), pageNumber, pageSize);
+            ViewData["SavedIds"] = await _repo.GetSavedIds(list);
 
             return View("Index", list);
         }
@@ -51,23 +53,30 @@ namespace MyBulkMealsApp.Controllers
         public async Task<IActionResult> Newest(int pageNumber = 1)
         {
             var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetByCreationTime(true), pageNumber, pageSize);
+            ViewData["SavedIds"] = await _repo.GetSavedIds(list);
             ViewData["showCreatedTime"] = true;
             return View("Index", list);
         } 
 
-        public async Task<IActionResult> Created()
+        public async Task<IActionResult> Created(int pageNumber = 1)
         {
             var created = await _repo.GetCreatedBy(_userManager.GetUserAsync(User).Result.Id);
-            var list = await PaginatedList<TEntity>.CreateAsync(created, 1, 20);
+            var list = await PaginatedList<TEntity>.CreateAsync(created, pageNumber, pageSize);
             return View("Index", list);
         }
 
-        public async Task<IActionResult> Saved()
+        public async Task<IActionResult> Saved(int pageNumber = 1)
         {
             List<TEntity> created = _repo.GetSavedBy(_userManager.GetUserAsync(User).Result.Id);
 
-            var list = await PaginatedList<TEntity>.CreateAsync(created, 1, 20);
+            var list = await PaginatedList<TEntity>.CreateAsync(created, pageNumber, pageSize);
             return View("Index", list);
+        }
+
+        public async Task<IActionResult> Amendments(int id, int pageNumber = 1)
+        {
+            var amendments = await _repo.GetAmendmentsFor(id);
+            return View("Index", await PaginatedList<TEntity>.CreateAsync(amendments, pageNumber, pageSize));
         }
 
         public virtual async Task<JsonResult> SaveItem(int id)
@@ -78,7 +87,7 @@ namespace MyBulkMealsApp.Controllers
 
         public async Task<IActionResult> Random(int quantity)
         {
-            var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetRandom(quantity), 1, 20);
+            var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetRandom(quantity), 1, quantity);
             return View("Index", list);
         }
 
@@ -108,6 +117,13 @@ namespace MyBulkMealsApp.Controllers
             return View();
         }
 
+        // GET: {controller}/Create
+        public async virtual Task<IActionResult> Amend(int id)
+        {
+            var item = await _repo.Get(id);
+            return View(item);
+        }
+
         // GET: {controller}/Edit/5
         public async virtual Task<IActionResult> Edit(int? id)
         {
@@ -124,7 +140,19 @@ namespace MyBulkMealsApp.Controllers
             return View(recipe);
         }
 
-        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Copy(int id)
+        {
+            var entity = await _repo.Get(id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var other = entity.Copy(id);
+            other.CreatorId = userId;
+
+            return await Index();
+        }
+
+
 
         // GET: {controller}/Delete/5
         public async Task<IActionResult> Delete(int? id)

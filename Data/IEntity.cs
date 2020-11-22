@@ -14,8 +14,12 @@ namespace MyBulkMealsApp.Data
         DateTime CreatedTime { get; set; }
 
         bool IsPublic { get; set; }
+        bool IsAmendment { get; set; }
+        int AmendmentCount { get; set; };
+        int BasedOn { get; set; }
         bool IsVerified { get; set; }
         DateTime? VerificationSubmissionTime { get; set; }
 
+        IEntity Copy(int id);
     }
 }

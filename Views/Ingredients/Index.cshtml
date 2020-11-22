@@ -32,7 +32,13 @@
             $("#modalProtein").html(row.data("protein"));
             $("#modalCarbs").html(row.data("carbs"));
             $("#modalFat").html(row.data("fat"));
-            $("#modalId").val(row.data("id"));
+            $(".js__modal-id").val(row.data("id"));
+
+            if (row.data("amendments")) {
+                $(".js__see-amendments").removeClass("d-none");
+            } else {
+                $(".js__see-amendments").addClass("d-none");
+            }
 
             toggleSaveButton(row.data("saved"));
 
@@ -40,7 +46,7 @@
         });
 
         $(".js__save-ingredients").on("click", function () {
-            let modalId = $("#modalId").val();
+            let modalId = $(".js__modal-id").val();
             $.ajax({
                 url: "Ingredients/SaveItem",
                 data: { id: modalId },
@@ -49,6 +55,15 @@
                 }
             })
         });
+
+        $(".js__propose-amendment").on("click", function () {
+            $("#amendmentForm").submit();
+        });
+
+        $(".js__make-copy").on("click", function () {
+            $("#copyForm").submit();
+        });
+
 
         function toggleSaveButton(saved) {
             if (saved) {
@@ -61,7 +76,7 @@
 </script>
 
 <div id="ingredientModal" class="modal" tabindex="-1" role="dialog">
-    <input type="hidden" value="" id="modalId" />
+    <input type="hidden" value="" name="id" class="js__modal-id" />
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -76,30 +91,35 @@
                     <li>Protein: <span id="modalProtein"></span></li>
                     <li>Carbs: <span id="modalCarbs"></span></li>
                     <li>Fat: <span id="modalFat"></span></li>
-
                 </ul>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <button class="js__see-amendments d-none btn-outline-primary btn-sm">See Proposed Amendments</button>
+                }
             </div>
             <div class="modal-footer">
-                <button type="button" class="js__save-ingredients btn btn-sm btn-primary">Save to My Ingredients</button>
-                <button type="button" class="btn btn-sm btn-info">Propose Amendment</button>
-                <button type="button" class="btn btn-sm btn-info">Make Copy</button>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <button type="button" class="js__save-ingredients btn btn-sm btn-primary">Save to My Ingredients</button>
+                    <button type="button" class="js__propose-amendment btn btn-sm btn-info">Propose Amendment</button>
+                    <button type="button" class="js__make-copy btn btn-sm btn-info">Make Copy</button>
+                    <form asp-action="Copy" id="copyForm" class="d-none" method="get">
+                        <input type="hidden" value="" name="id" class="js__modal-id" />
+                    </form>
+                    <form asp-action="Amend" id="amendmentForm" class="d-none" method="get">
+                        <input type="hidden" value="" name="id" class="js__modal-id" />
+                    </form>
+                }
+                else
+                {
+                    <span class="text-secondary">Log in to save this ingredient!</span>
+                }
             </div>
         </div>
     </div>
 </div>
 
 <h1>Ingredients</h1>
-
-<div>
-    @foreach (var i in SavedIds)
-    {
-        <p>@i.Key - @i.Value </p>
-
-    }
-
-
-</div>
-
 <hr />
 <h2>Popular Searches</h2>
 <ul class="list-inline">
@@ -158,7 +178,7 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr data-id="@item.Id" data-saved="@(SavedIds.Keys.Contains(item.Id) ? SavedIds[item.Id] : false)" data-calories="@item.Calories" data-protein="@item.Protein" data-carbs="@item.Carbs" data-fat="@item.Fat">
+            <tr data-id="@item.Id" @(SignInManager.IsSignedIn(User) && item.AmendmentsCount > 0 ? "data-amendments='true'" : "") data-saved="@(SavedIds.Keys.Contains(item.Id) ? SavedIds[item.Id] : false)" data-calories="@item.Calories" data-protein="@item.Protein" data-carbs="@item.Carbs" data-fat="@item.Fat">
                 <td>
                     <a href="#" class="js__show-nutrition">
                         @Html.DisplayFor(modelItem => item.ItemName)

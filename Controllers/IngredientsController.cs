@@ -39,12 +39,31 @@ namespace MyBulkMealsApp.Controllers
             return View(ingredient);
         }
 
+
+        // POST: Ingredients/Amend
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Amend([Bind("MeasurementId,BaseMeasurement,Calories,Protein,Carbs,Fat,ItemName")] Ingredient ingredient, int id)
+        {
+            ingredient.IsAmendment = true;
+            ingredient.BasedOn = id;
+            ingredient.CreatorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ingredient.IsPublic = true;
+
+            return await Create(ingredient);
+        }
+        
         public async override Task<IActionResult> Create()
         {
             ViewData["Measurements"] = await base._repo.GetMeasurements();
             return await base.Create();
         }
 
+        public async override Task<IActionResult> Amend(int id)
+        {
+            ViewData["Measurements"] = await base._repo.GetMeasurements();
+            return await base.Amend(id);
+        }
 
         public async override Task<IActionResult> Edit(int? id)
         {

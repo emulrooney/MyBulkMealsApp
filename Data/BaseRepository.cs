@@ -22,6 +22,17 @@ namespace MyBulkApps.Data
             get
             {
                 return context.Set<TEntity>()
+                .Where(i => !i.IsAmendment)
+                .OfType<TEntity>();
+            }
+        }
+
+        public virtual IQueryable<TEntity> Amendments
+        {
+            get
+            {
+                return context.Set<TEntity>()
+                .Where(i => i.IsAmendment)
                 .OfType<TEntity>();
             }
         }
@@ -35,6 +46,11 @@ namespace MyBulkApps.Data
         public async Task<TEntity> Add(TEntity entity)
         {
             context.Set<TEntity>().Add(entity);
+
+            if (entity.BasedOn > 0)
+            {
+
+            }
             
             await context.SaveChangesAsync();
             return entity;
@@ -81,6 +97,16 @@ namespace MyBulkApps.Data
         public virtual async Task<TEntity> Get(int id)
         {
             return await context.Set<TEntity>().FindAsync(id);
+        }
+
+        public virtual async Task<List<TEntity>> GetAmendment(int id)
+        {
+            return await Amendments.Where(a => a.BasedOn == id).ToListAsync();
+        }
+
+        public virtual async Task<List<TEntity>> GetAmendments()
+        {
+            return await Amendments.ToListAsync();
         }
 
         public virtual async Task<List<TEntity>> GetByKeyword(string keyword)
@@ -164,6 +190,10 @@ namespace MyBulkApps.Data
                 .ToDictionaryAsync(k => k.Key, v => v.Value);
             return saved;
         }
+        public async Task<List<TEntity>> GetAmendmentsFor(int id)
+        {
+            return await Amendments.Where(a => a.BasedOn == id).ToListAsync();
+        }
 
         public async Task<bool?> ToggleSavedItem(int itemId, string userId)
         {
@@ -200,6 +230,14 @@ namespace MyBulkApps.Data
             context.Entry(entity).State = EntityState.Modified;
             await context.SaveChangesAsync();
             return entity;
+        }
+
+        public async void IncrementAmendments(int id)
+        {
+            var item = Collection.Where(i => i.Id == id).FirstOrDefault();
+            item.AmendmentCount++;
+
+            await context.SaveChangesAsync();
         }
 
         public async Task<int> Count()

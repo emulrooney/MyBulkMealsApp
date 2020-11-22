@@ -1,7 +1,7 @@
 ﻿@model MyBulkMealsApp.Models.Ingredient
 
 @{
-    ViewData["Title"] = "Amendment";
+    ViewData["Title"] = "Copy";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var Measurements = (List<Measurement>)ViewData["Measurements"];
@@ -19,7 +19,7 @@
 </script>
 
 <div class="item-page__details">
-    <h1 class="text-center pt-5">Proposing an amendment to: @Model.ItemName</h1>
+    <h1 class="text-center pt-5">Copy of: @Model.ItemName</h1>
     <hr />
     <div class="row">
         <form asp-action="Amend">
