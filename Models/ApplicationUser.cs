@@ -12,7 +12,9 @@ namespace MyBulkMealsApp.Models
         public string LastName { get; set; }
         public string Location { get; set; }
 
-        public string FullName { get
+        public string FullName
+        {
+            get
             {
                 if (!String.IsNullOrEmpty(FirstName) && !String.IsNullOrEmpty(LastName))
                     return FirstName + " " + LastName;

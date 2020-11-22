@@ -9,5 +9,6 @@ namespace MyBulkMealsApp.Data
     {
         public string SeededAdminPassword { get; set; }
         public string SeededUserPassword { get; set; }
+        public string SendGridApiKey { get; set; }
     }
 }
