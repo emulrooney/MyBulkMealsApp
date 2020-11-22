@@ -20,7 +20,7 @@ namespace MyBulkMealsApp.Controllers
         protected readonly TRepository _repo;
         protected readonly UserManager<ApplicationUser> _userManager;
 
-        protected int pageSize = 20; //temp
+        protected int pageSize = 20;
 
         public BaseController(TRepository repository, UserManager<ApplicationUser> userManager)
         {
@@ -117,8 +117,15 @@ namespace MyBulkMealsApp.Controllers
             return View();
         }
 
-        // GET: {controller}/Create
+        // GET: {controller}/Amend
         public async virtual Task<IActionResult> Amend(int id)
+        {
+            var item = await _repo.Get(id);
+            return View(item);
+        }
+
+        // GET: {controller}/Copy
+        public async virtual Task<IActionResult> Copy(int id)
         {
             var item = await _repo.Get(id);
             return View(item);
@@ -142,14 +149,19 @@ namespace MyBulkMealsApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Copy(int id)
+        public async Task<IActionResult> Copy([Bind("MeasurementId,BaseMeasurement,Calories,Protein,Carbs,Fat,ItemName,IsPublic")] Ingredient ingredient, int id)
         {
             var entity = await _repo.Get(id);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var other = entity.Copy(id);
+
+            other.AmendmentCount = 0;
             other.CreatorId = userId;
 
-            return await Index();
+            await _repo.Add((TEntity)other);
+            await _repo.ToggleSavedItem(other.Id, userId);
+
+            return await Saved();
         }
 
 

@@ -21,7 +21,8 @@ namespace MyBulkMealsApp.Data
         Task<T> Add(T entity);
         Task<T> Update(T entity);
         Task<T> Delete(int id);
-
+        Task IncrementAmendments(int id);
         Task<int> Count();
+
     }
 }

@@ -232,7 +232,7 @@ namespace MyBulkApps.Data
             return entity;
         }
 
-        public async void IncrementAmendments(int id)
+        public async Task IncrementAmendments(int id)
         {
             var item = Collection.Where(i => i.Id == id).FirstOrDefault();
             item.AmendmentCount++;

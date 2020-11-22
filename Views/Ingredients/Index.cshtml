@@ -64,6 +64,9 @@
             $("#copyForm").submit();
         });
 
+        $(".js__see-amendments").on("click", function () {
+            $("#seeAmendmentsForm").submit();
+        });
 
         function toggleSaveButton(saved) {
             if (saved) {
@@ -107,6 +110,9 @@
                         <input type="hidden" value="" name="id" class="js__modal-id" />
                     </form>
                     <form asp-action="Amend" id="amendmentForm" class="d-none" method="get">
+                        <input type="hidden" value="" name="id" class="js__modal-id" />
+                    </form>
+                    <form asp-action="Amendments" id="viewAmendmentsForm" class="d-none" method="get">
                         <input type="hidden" value="" name="id" class="js__modal-id" />
                     </form>
                 }
@@ -172,13 +178,13 @@
             }
             <th>
             </th>
-            <th></th>
+            <th style="min-width: 0px;"></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr data-id="@item.Id" @(SignInManager.IsSignedIn(User) && item.AmendmentsCount > 0 ? "data-amendments='true'" : "") data-saved="@(SavedIds.Keys.Contains(item.Id) ? SavedIds[item.Id] : false)" data-calories="@item.Calories" data-protein="@item.Protein" data-carbs="@item.Carbs" data-fat="@item.Fat">
+            <tr data-id="@item.Id" data-amendments="@((SignInManager.IsSignedIn(User) && item.AmendmentCount > 0).ToString().ToLower())" data-saved="@(SavedIds.Keys.Contains(item.Id) ? SavedIds[item.Id] : false)" data-calories="@item.Calories" data-protein="@item.Protein" data-carbs="@item.Carbs" data-fat="@item.Fat">
                 <td>
                     <a href="#" class="js__show-nutrition">
                         @Html.DisplayFor(modelItem => item.ItemName)
@@ -206,14 +212,14 @@
                         <i class="fa fa-save"></i>
                     }
                 </td>
-                <td>
                     @if ((item.CreatorId == currentUserId && !item.IsVerified) || isAdmin)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <span>|</span>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <span>|</span>
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
                     }
-                </td>
             </tr>
         }
     </tbody>

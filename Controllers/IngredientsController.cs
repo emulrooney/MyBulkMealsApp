@@ -49,6 +49,7 @@ namespace MyBulkMealsApp.Controllers
             ingredient.BasedOn = id;
             ingredient.CreatorId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             ingredient.IsPublic = true;
+            await _repo.IncrementAmendments(id);
 
             return await Create(ingredient);
         }
@@ -64,6 +65,12 @@ namespace MyBulkMealsApp.Controllers
             ViewData["Measurements"] = await base._repo.GetMeasurements();
             return await base.Amend(id);
         }
+        public async override Task<IActionResult> Copy(int id)
+        {
+            ViewData["Measurements"] = await base._repo.GetMeasurements();
+            return await base.Copy(id);
+        }
+
 
         public async override Task<IActionResult> Edit(int? id)
         {
