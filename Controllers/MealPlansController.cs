@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,19 +11,22 @@ using MyBulkMealsApp.Models;
 
 namespace MyBulkMealsApp.Controllers
 {
+    [Authorize]
     public class MealPlansController : Controller
     {
         private readonly MyBulkMealsAppContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public MealPlansController(MyBulkMealsAppContext context)
+        public MealPlansController(MyBulkMealsAppContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: MealPlans
         public async Task<IActionResult> Index()
         {
-            return View(await _context.MealPlan.ToListAsync());
+            return View(await _context.MealPlan.Where(m => MealPlanIsCurrentUsers(m)).ToListAsync());
         }
 
         // GET: MealPlans/Details/5
@@ -34,7 +39,7 @@ namespace MyBulkMealsApp.Controllers
 
             var mealPlan = await _context.MealPlan
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (mealPlan == null)
+            if (mealPlan == null || !MealPlanIsCurrentUsers(mealPlan) )
             {
                 return NotFound();
             }
@@ -73,7 +78,7 @@ namespace MyBulkMealsApp.Controllers
             }
 
             var mealPlan = await _context.MealPlan.FindAsync(id);
-            if (mealPlan == null)
+            if (mealPlan == null || !MealPlanIsCurrentUsers(mealPlan))
             {
                 return NotFound();
             }
@@ -125,7 +130,7 @@ namespace MyBulkMealsApp.Controllers
 
             var mealPlan = await _context.MealPlan
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (mealPlan == null)
+            if (mealPlan == null || !MealPlanIsCurrentUsers(mealPlan))
             {
                 return NotFound();
             }
@@ -139,14 +144,24 @@ namespace MyBulkMealsApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var mealPlan = await _context.MealPlan.FindAsync(id);
-            _context.MealPlan.Remove(mealPlan);
-            await _context.SaveChangesAsync();
+            if (MealPlanIsCurrentUsers(mealPlan))
+            {
+                _context.MealPlan.Remove(mealPlan);
+                await _context.SaveChangesAsync();
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool MealPlanExists(int id)
         {
             return _context.MealPlan.Any(e => e.Id == id);
+        }
+
+        private bool MealPlanIsCurrentUsers(MealPlan mp)
+        {
+            var userId = _userManager.GetUserId(User);
+            return mp.CreatorId == userId;
         }
     }
 }
