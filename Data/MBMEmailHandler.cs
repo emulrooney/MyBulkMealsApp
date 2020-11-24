@@ -9,7 +9,7 @@ namespace MyBulkMealsApp.Data
 {
     public static class MBMEmailHandler
     {
-        private static readonly string emailSource = "notifications@mybulkmealsapp.ca";
+        private static readonly string emailSource = "mbmadmin@emudev.site";
         private static readonly string emailFrom = "MyBulkMeals Admin";
         public static AppSecrets AppSecrets { get; set; }
 
@@ -60,7 +60,9 @@ namespace MyBulkMealsApp.Data
             var htmlContent = $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
 
-            return await client.SendEmailAsync(msg);
+            var response = await client.SendEmailAsync(msg);
+
+            return response;
 
         }
 
