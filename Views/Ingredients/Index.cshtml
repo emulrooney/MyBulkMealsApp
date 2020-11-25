@@ -234,17 +234,22 @@
    asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
+   class="btn btn-default btn-outline-info btn-lg  mt-2 @prevDisabled">
+    <i class="fa fa-arrow-left mr-1" aria-hidden="true"></i>
     Previous
 </a>
 <a asp-action="Index"
    asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
+   class="btn btn-default btn-outline-info btn-lg  mt-2 @nextDisabled">
     Next
+    <i class="fa fa-arrow-right ml-1" aria-hidden="true"></i>
 </a>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-default btn-outline-primary btn-lg mt-2">
+        <i class="fa fa-plus mr-1" aria-hidden="true"></i>
+        Create New
+    </a>
 </p>

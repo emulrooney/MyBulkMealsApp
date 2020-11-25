@@ -1,12 +1,12 @@
 ﻿@model IEnumerable<MyBulkMealsApp.Models.MealPlan>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Meal Plans";
 }
 
-<h1>Index</h1>
+<h1>My Meal Plans</h1>
 
-<table class="table">
+<table class="table-bordered table-striped w-100 font-size--1point5">
     <thead>
         <tr>
             <th>
@@ -28,32 +28,37 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PlanName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MealsPerDay)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalDays)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartsOn)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndsOn)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">
+                        @Html.DisplayFor(modelItem => item.PlanName)
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MealsPerDay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalDays)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartsOn)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndsOn)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 <div>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-default btn-outline-primary btn-lg mt-2">
+        <i class="fa fa-plus mr-1" aria-hidden="true"></i>
+        Create New
+    </a>
 </div>
