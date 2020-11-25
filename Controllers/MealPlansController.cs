@@ -44,6 +44,9 @@ namespace MyBulkMealsApp.Controllers
             }
 
             var mealPlan = await _context.MealPlan
+                .Include(m => m.MealPlanEntries)
+                .ThenInclude(r => r.Recipe)
+                .ThenInclude(r => r.Ingredients)
                 .FirstOrDefaultAsync(m => m.Id == id);
             var userId = _userManager.GetUserId(User);
 
@@ -104,13 +107,33 @@ namespace MyBulkMealsApp.Controllers
                 return NotFound();
             }
 
-            var mealPlan = await _context.MealPlan.FindAsync(id);
+            var mealPlan = await _context.MealPlan.Where(m => m.Id == id)
+                .Include(m => m.MealPlanEntries)
+                .ThenInclude(m => m.Recipe)
+                .ThenInclude(r => r.Ingredients)
+                .ThenInclude(ri => ri.Ingredient)
+                .FirstOrDefaultAsync();
+
             var userId = _userManager.GetUserId(User);
 
             if (mealPlan == null || mealPlan.CreatorId != userId)
             {
                 return NotFound();
             }
+
+            ViewData["RecipesList"] = JsonConvert.SerializeObject(
+                mealPlan.MealPlanEntries.Select(i => new { i.Recipe, i.Quantity })
+                .Select(i => new {
+                    label = i.Recipe.ItemName, //assigning as label lets us use default jquery-ui
+                    i.Recipe.Id,
+                    Calories = i.Recipe.TotalCalories,
+                    Protein = i.Recipe.TotalProtein,
+                    Carbs = i.Recipe.TotalCarbs,
+                    Fat = i.Recipe.TotalFat,
+                    i.Quantity
+                }).ToList(),
+                Formatting.Indented);
+
             return View(mealPlan);
         }
 
@@ -157,8 +180,12 @@ namespace MyBulkMealsApp.Controllers
                 return NotFound();
             }
 
-            var mealPlan = await _context.MealPlan
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var mealPlan = await _context.MealPlan.Where(m => m.Id == id)
+                .Include(m => m.MealPlanEntries)
+                .ThenInclude(r => r.Recipe)
+                .ThenInclude(r => r.Ingredients)
+                .FirstOrDefaultAsync();
+
             var userId = _userManager.GetUserId(User);
 
             if (mealPlan == null || mealPlan.CreatorId != userId)

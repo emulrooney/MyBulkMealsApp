@@ -1,54 +1,78 @@
 ﻿@model MyBulkMealsApp.Models.MealPlan
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Plan Details";
 }
 
-<h1>Details</h1>
+<h1>@Model.PlanName Details</h1>
 
-<div>
-    <h4>MealPlan</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PlanName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PlanName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatorId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatorId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MealsPerDay)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MealsPerDay)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalDays)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalDays)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDay)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartDay)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDay)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndDay)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<hr />
+    <input type="hidden" id="recipesList" name="recipesList" />
+    <div class="tab-pane fade show active" id="ingredients" role="tabpanel" aria-labelledby="ingredientsTab">
+        <div class="row">
+            <div class="col-sm-12 col-lg-4">
+                <dl class="row">
+                    <dd class="pt-1 col-9">Calories</dd>
+                    <dt class="mb-2 col-2 nutrition__calories btn btn-outline-info"></dt>
+                    <dd class="pt-1 col-9">Protein</dd>
+                    <dt class="mb-2 col-2 nutrition__protein btn btn-outline-info"></dt>
+                    <dd class="pt-1 col-9">Carbs</dd>
+                    <dt class="mb-2 col-2 nutrition__carbs btn btn-outline-info"></dt>
+                    <dd class="pt-1 col-9">Fat</dd>
+                    <dt class="mb-2 col-2 nutrition__fat btn btn-outline-info"></dt>
+                </dl>
+            </div>
+            <div class="col-sm-12 col-lg-8">
+
+                <h4>Current Recipes:</h4>
+                <ol class="plan__recipes list-group mb-3">
+                    @foreach (var entry in Model.MealPlanEntries)
+                    {
+                        <li class="recipe__item list-group-item" data-id="@entry.RecipeId">
+                            <div class="input-group row">
+                                <a class="col-8" target="_blank" href="@(Url.Action("Details", "Recipes"))/@entry.RecipeId">@entry.Recipe.ItemName</a>
+                                <input type="number" readonly class="recipe__item__quantity form-control col-3" value="@entry.Quantity" aria-label="quantity">
+                            </div>
+                        </li>
+                    }
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PlanName" class="control-label"></label>
+                <input asp-for="PlanName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="MealsPerDay" class="control-label"></label>
+                <input asp-for="MealsPerDay" readonly class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="TotalDays" class="control-label"></label>
+                <input asp-for="TotalDays" readonly class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="StartDay" class="control-label"></label>
+                <select asp-for="StartDay" readonly class="form-control">
+                    @for (int i = 0; i < 7; i++)
+                    {
+                        <option value="@i">@MealPlan.GetDayAsString(i)</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDay" readonly class="control-label"></label>
+                <select asp-for="EndDay" readonly class="form-control">
+                    @for (int i = 0; i < 7; i++)
+                    {
+                        <option value="@i">@MealPlan.GetDayAsString(i)</option>
+                    }
+                </select>
+            </div>
+            <a asp-action="Index" class="btn btn-lg btn-outline-secondary">Back to List</a>
+        </div>
+    </div>
