@@ -425,7 +425,9 @@ namespace MyBulkMealsApp.Migrations
             modelBuilder.Entity("MyBulkMealsApp.Models.MealPlan", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatorId")
                         .HasColumnType("nvarchar(max)");
@@ -456,21 +458,15 @@ namespace MyBulkMealsApp.Migrations
             modelBuilder.Entity("MyBulkMealsApp.Models.MealPlanEntry", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("Day")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte[]>("IsException")
-                        .HasColumnType("binary(1)")
-                        .IsFixedLength(true)
-                        .HasMaxLength(1);
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("MealPlanId")
                         .HasColumnType("int");
 
-                    b.Property<byte>("Quantity")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<int>("RecipeId")
                         .HasColumnType("int");
@@ -637,11 +633,6 @@ namespace MyBulkMealsApp.Migrations
 
                     b.Property<int>("BaseServings")
                         .HasColumnType("int");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("varchar(256)")
-                        .HasMaxLength(256)
-                        .IsUnicode(false);
 
                     b.Property<string>("Instructions")
                         .HasColumnType("varchar(4096)")

@@ -1,31 +1,171 @@
 ﻿@model MyBulkMealsApp.Models.MealPlan
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create"; 
 }
+
+<script>
+    var recipesList = [];
+    var nutrition = {
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0
+    };
+
+    function updateNutrition() {
+        nutrition = {
+            calories: 0,
+            protein: 0,
+            carbs: 0,
+            fat: 0
+        };
+
+        for (const i in recipesList) {
+            nutrition.calories += recipesList[i].calories;
+            nutrition.protein += recipesList[i].protein;
+            nutrition.carbs += recipesList[i].carbs;
+            nutrition.fat += recipesList[i].fat;
+        }
+
+        for (const n in nutrition) {
+            $(".nutrition__" + n).text(nutrition[n]);
+        }
+    }
+
+    function addRecipe(i) {
+        @* Stupid check to deal with .map not working with single item*@
+        if ((recipesList.length > 0 && recipesList[0].id == i.id) || i.id in recipesList.map(ing => ing.id)) {
+            console.log("Already in list.");
+            return;
+        }
+
+        i["_calories"] = i["calories"];
+        i["_protein"] = i["protein"];
+        i["_carbs"] = i["carbs"];
+        i["_fat"] = i["fat"];
+
+        recipesList.push(i);
+
+        $(".plan__recipes").append(`
+<li class="recipe__item list-group-item" data-id="${i.id}">
+    <div class="input-group row">
+        <a class="col-8" target="_blank" href="@(Url.Action("Details", "Recipes"))/${i.id}">${i.label}</a>
+        <input type="number" min="0" class="recipe__item__quantity form-control col-3" value="1" aria-label="quantity">
+        <button type="button" data-id="${i.id}" class="btn btn-sm btn-info col-1 ml-1 recipe__item--remove" aria-label="Remove ${i.label}">
+            <i aria-hidden="true" class="fa fa-times"></i>
+        </button>
+    </div>
+</li>
+`);
+        updateNutrition();
+    }
+
+    function removeIngredient(element) {
+        let id = $(element).data("id");
+        for (const i in recipesList) {
+            if (recipesList[i].id == id) {
+                recipesList.splice(recipesList.map(rec => rec.id).indexOf(id));
+                $(element).parents("li").remove();
+                updateNutrition();
+                return;
+            }
+        }
+    }
+
+    function createRecipeIdValues() {
+        var hiddenValueArray = [];
+
+        $(".recipes__item").each(function () {
+            hiddenValueArray.push({
+                id: parseInt($(this).data("id")),
+                quantity: parseFloat($(this).find(".recipes__item__quantity").val())
+            });
+        });
+    }
+
+    $(document).ready(function () {
+        @* Auto complete ingredient lookup *@
+        $("#planAddRecipe").autocomplete({
+            source: "AutocompleteRecipes",
+            minLength: 3,
+            select: function (event, ui) {
+                addRecipe(ui.item);
+            }
+        });
+
+        $(document).on('click', ".recipe__item--remove", function () {
+            removeIngredient($(this));
+        });
+
+        @* Adjust based on quantities*@
+        $(document).on("change", ".recipe__item__quantity", function () {
+            let id = $(".recipe__item__quantity").index(this);
+            let modValue = parseInt($(this).val());
+
+            recipesList[id].calories = Math.round(recipesList[id]._calories * modValue);
+            recipesList[id].protein = Math.round(recipesList[id]._protein * modValue);
+            recipesList[id].carbs = Math.round(recipesList[id]._carbs * modValue);
+            recipesList[id].fat = Math.round(recipesList[id]._fat * modValue);
+            recipesList[id].currentMeasurement = modValue;
+
+            if (recipesList[id].baseMeasurement != modValue)
+                $(this).addClass("input--modified");
+            else
+                $(this).removeClass("input--modified");
+
+            updateNutrition();
+        });
+
+        $(".plan__submit").on("click", function () {
+            $("#recipesList").val(JSON.stringify(recipesList.map(i => ({ id: i.id, quantity: i.currentMeasurement }))));
+            $("#recipeForm").submit();
+        });
+    });
+</script>
 
 <h1>Create</h1>
 
-<h4>MealPlan</h4>
+<h4>New Meal Plan</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
+<form id="recipeForm" asp-action="Create">
+    <input type="hidden" id="recipesList" name="recipesList" />
+    <div class="tab-pane fade show active" id="ingredients" role="tabpanel" aria-labelledby="ingredientsTab">
+        <div class="form-group row">
+            <label for="addRecipe" class="col-sm-3 col-form-label">Add Recipe to Plan:</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="addRecipe" id="planAddRecipe" placeholder="Recipe Keyword">
             </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-lg-4">
+                <dl class="row">
+                    <dd class="pt-1 col-9">Calories</dd>
+                    <dt class="mb-2 col-2 nutrition__calories btn btn-outline-info">0</dt>
+                    <dd class="pt-1 col-9">Protein</dd>
+                    <dt class="mb-2 col-2 nutrition__protein btn btn-outline-info">0</dt>
+                    <dd class="pt-1 col-9">Carbs</dd>
+                    <dt class="mb-2 col-2 nutrition__carbs btn btn-outline-info">0</dt>
+                    <dd class="pt-1 col-9">Fat</dd>
+                    <dt class="mb-2 col-2 nutrition__fat btn btn-outline-info">0</dt>
+                </dl>
+            </div>
+            <div class="col-sm-12 col-lg-8">
+
+                <h4>Current Recipes:</h4>
+                <ol class="plan__recipes list-group mb-3"> 
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="PlanName" class="control-label"></label>
                 <input asp-for="PlanName" class="form-control" />
                 <span asp-validation-for="PlanName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatorId" class="control-label"></label>
-                <input asp-for="CreatorId" class="form-control" />
-                <span asp-validation-for="CreatorId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="MealsPerDay" class="control-label"></label>
@@ -39,24 +179,29 @@
             </div>
             <div class="form-group">
                 <label asp-for="StartDay" class="control-label"></label>
-                <input asp-for="StartDay" class="form-control" />
+                <select asp-for="StartDay" class="form-control">
+                    @for (int i = 0; i < 7; i++)
+                    {
+                        <option value="@i">@MealPlan.GetDayAsString(i)</option>
+                    }
+                </select>
                 <span asp-validation-for="StartDay" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="EndDay" class="control-label"></label>
-                <input asp-for="EndDay" class="form-control" />
+                <select asp-for="EndDay" class="form-control">
+                    @for (int i = 0; i < 7; i++)
+                    {
+                        <option value="@i">@MealPlan.GetDayAsString(i)</option>
+                    }
+                </select>
                 <span asp-validation-for="EndDay" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+            <button type="button" class="recipe__submit btn btn-lg btn-success plan__submit">Submit Meal Plan</button>
+            <a asp-action="Index" class="btn btn-lg btn-outline-secondary">Back to List</a>>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+</form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -154,7 +154,7 @@ namespace MyBulkMealsApp.Models
 
             modelBuilder.Entity<MealPlan>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.PlanName)
                     .IsRequired()
@@ -164,20 +164,16 @@ namespace MyBulkMealsApp.Models
 
             modelBuilder.Entity<MealPlanEntry>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.IsException)
-                    .HasMaxLength(1)
-                    .IsFixedLength();
+                //entity.Property(e => e.IsException)
+                //    .HasMaxLength(1)
+                //    .IsFixedLength();
             });
 
             modelBuilder.Entity<Recipe>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.ImageUrl)
-                    .HasMaxLength(256)
-                    .IsUnicode(false);
 
                 entity.Property(e => e.Instructions)
                     .HasMaxLength(4096)

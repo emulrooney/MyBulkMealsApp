@@ -30,6 +30,10 @@
     <Compile Remove="Migrations\20201022011730_Tweaks_Oct21.Designer.cs" />
     <Compile Remove="Migrations\20201118013244_Nov17_TweakUserSavedItem.cs" />
     <Compile Remove="Migrations\20201118013244_Nov17_TweakUserSavedItem.Designer.cs" />
+    <Compile Remove="Migrations\20201124182729_ReworkMealPlanEntry_Nov24.cs" />
+    <Compile Remove="Migrations\20201124182729_ReworkMealPlanEntry_Nov24.Designer.cs" />
+    <Compile Remove="Migrations\20201124184907_ReworkMealPlanEntry_3_Nov24.cs" />
+    <Compile Remove="Migrations\20201124184907_ReworkMealPlanEntry_3_Nov24.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

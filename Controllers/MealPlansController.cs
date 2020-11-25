@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyBulkMealsApp.Models;
+using MyBulkMealsApp.Repositories;
+using Newtonsoft.Json;
 
 namespace MyBulkMealsApp.Controllers
 {
@@ -16,17 +18,21 @@ namespace MyBulkMealsApp.Controllers
     {
         private readonly MyBulkMealsAppContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RecipeRepository _recipes;
 
-        public MealPlansController(MyBulkMealsAppContext context, UserManager<ApplicationUser> userManager)
+        public MealPlansController(MyBulkMealsAppContext context, UserManager<ApplicationUser> userManager, RecipeRepository recipes)
         {
             _context = context;
             _userManager = userManager;
+            _recipes = recipes;
         }
+
 
         // GET: MealPlans
         public async Task<IActionResult> Index()
         {
-            return View(await _context.MealPlan.Where(m => MealPlanIsCurrentUsers(m)).ToListAsync());
+            var userId = _userManager.GetUserId(User);
+            return View(await _context.MealPlan.Where(m => m.CreatorId == userId).ToListAsync());
         }
 
         // GET: MealPlans/Details/5
@@ -39,7 +45,9 @@ namespace MyBulkMealsApp.Controllers
 
             var mealPlan = await _context.MealPlan
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (mealPlan == null || !MealPlanIsCurrentUsers(mealPlan) )
+            var userId = _userManager.GetUserId(User);
+
+            if (mealPlan == null || mealPlan.CreatorId != userId )
             {
                 return NotFound();
             }
@@ -58,14 +66,33 @@ namespace MyBulkMealsApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,PlanName,CreatorId,MealsPerDay,TotalDays,StartDay,EndDay")] MealPlan mealPlan)
+        public async Task<IActionResult> Create([Bind("PlanName,MealsPerDay,TotalDays,StartDay,EndDay")] MealPlan mealPlan, string recipesList)
         {
+            var typeDefinition = new[] { new { Id = 0, Quantity = 0 } };
+            var recipes = JsonConvert.DeserializeAnonymousType(recipesList, typeDefinition);
+
+            List<MealPlanEntry> entries = new List<MealPlanEntry>();
+
+            mealPlan.CreatorId = _userManager.GetUserId(User);
+
+            foreach (var r in recipes)
+            {
+                entries.Add(new MealPlanEntry()
+                {
+                    RecipeId = r.Id,
+                    Quantity = r.Quantity
+                });
+            }
+
             if (ModelState.IsValid)
             {
-                _context.Add(mealPlan);
+                mealPlan.MealPlanEntries = entries;
+                _context.MealPlan.Add(mealPlan);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(mealPlan);
         }
 
@@ -78,7 +105,9 @@ namespace MyBulkMealsApp.Controllers
             }
 
             var mealPlan = await _context.MealPlan.FindAsync(id);
-            if (mealPlan == null || !MealPlanIsCurrentUsers(mealPlan))
+            var userId = _userManager.GetUserId(User);
+
+            if (mealPlan == null || mealPlan.CreatorId != userId)
             {
                 return NotFound();
             }
@@ -130,7 +159,9 @@ namespace MyBulkMealsApp.Controllers
 
             var mealPlan = await _context.MealPlan
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (mealPlan == null || !MealPlanIsCurrentUsers(mealPlan))
+            var userId = _userManager.GetUserId(User);
+
+            if (mealPlan == null || mealPlan.CreatorId != userId)
             {
                 return NotFound();
             }
@@ -144,7 +175,9 @@ namespace MyBulkMealsApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var mealPlan = await _context.MealPlan.FindAsync(id);
-            if (MealPlanIsCurrentUsers(mealPlan))
+            var userId = _userManager.GetUserId(User);
+
+            if (mealPlan == null || mealPlan.CreatorId != userId)
             {
                 _context.MealPlan.Remove(mealPlan);
                 await _context.SaveChangesAsync();
@@ -158,10 +191,23 @@ namespace MyBulkMealsApp.Controllers
             return _context.MealPlan.Any(e => e.Id == id);
         }
 
-        private bool MealPlanIsCurrentUsers(MealPlan mp)
+        [Route("MealPlans/AutocompleteRecipes")]
+        [Route("MealPlans/Edit/AutocompleteRecipes")]
+        public async Task<JsonResult> AutocompleteRecipes(string term)
         {
-            var userId = _userManager.GetUserId(User);
-            return mp.CreatorId == userId;
+            var foundRecipes = await _recipes.GetByKeywordWithIngredients(term, 6);
+
+            return Json(foundRecipes
+                .Select(i => new {
+                label = i.ItemName, //assigning as label lets us use default jquery-ui
+                i.Id,
+                Calories = i.TotalCalories,
+                Protein = i.TotalProtein,
+                Carbs = i.TotalCarbs,
+                Fat = i.TotalFat
+            }).ToArray());
         }
+
+
     }
 }

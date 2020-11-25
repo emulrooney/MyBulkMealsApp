@@ -6,17 +6,11 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.PlanName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatorId)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.MealsPerDay)
@@ -40,19 +34,16 @@
                 @Html.DisplayFor(modelItem => item.PlanName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreatorId)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.MealsPerDay)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.TotalDays)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.StartDay)
+                @Html.DisplayFor(modelItem => item.StartsOn)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.EndDay)
+                @Html.DisplayFor(modelItem => item.EndsOn)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -63,3 +54,6 @@
 }
     </tbody>
 </table>
+<div>
+    <a asp-action="Create">Create New</a>
+</div>

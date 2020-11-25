@@ -52,7 +52,7 @@
         $(".recipe__ingredients").append(`
 <li class="ingredient__item list-group-item" data-id="${i.id}">
     <div class="input-group row">
-        <a class="col-8" target="_blank" href="~/Ingredients/${i.id}">${i.label}</a>
+        <a class="col-8" target="_blank" href="~/Ingredients/Details/${i.id}">${i.label}</a>
         <input type="number" min="0" class="ingredient__item__quantity form-control col-3" value="${i.baseMeasurement}" aria-label="quantity">
         <div class="input-group-append">
             <span class="input-group-text" id="basic-addon2">${i.symbol}</span>

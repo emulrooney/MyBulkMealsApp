@@ -83,7 +83,8 @@ namespace MyBulkMealsApp.Controllers
             if (id != null)
             {
                 var item = await _repo.Get((int)id);
-                return await base.Results(item.ItemName, 1);
+                if (item != null)
+                    return await base.Results(item.ItemName, 1);
             }
 
             return await Index(1);

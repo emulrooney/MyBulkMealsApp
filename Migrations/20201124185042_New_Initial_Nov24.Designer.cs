@@ -10,8 +10,8 @@ using MyBulkMealsApp.Models;
 namespace MyBulkMealsApp.Migrations
 {
     [DbContext(typeof(MyBulkMealsAppContext))]
-    [Migration("20201122180820_AmendmentTweaks_Nov22")]
-    partial class AmendmentTweaks_Nov22
+    [Migration("20201124185042_New_Initial_Nov24")]
+    partial class New_Initial_Nov24
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -427,10 +427,12 @@ namespace MyBulkMealsApp.Migrations
             modelBuilder.Entity("MyBulkMealsApp.Models.MealPlan", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CreatorId")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("EndDay")
                         .HasColumnType("int");
@@ -458,21 +460,15 @@ namespace MyBulkMealsApp.Migrations
             modelBuilder.Entity("MyBulkMealsApp.Models.MealPlanEntry", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<byte>("Day")
-                        .HasColumnType("tinyint");
-
-                    b.Property<byte[]>("IsException")
-                        .HasColumnType("binary(1)")
-                        .IsFixedLength(true)
-                        .HasMaxLength(1);
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("MealPlanId")
                         .HasColumnType("int");
 
-                    b.Property<byte>("Quantity")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<int>("RecipeId")
                         .HasColumnType("int");
@@ -536,7 +532,7 @@ namespace MyBulkMealsApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AmendmentsCount")
+                    b.Property<int>("AmendmentCount")
                         .HasColumnType("int");
 
                     b.Property<int>("BasedOn")
@@ -639,11 +635,6 @@ namespace MyBulkMealsApp.Migrations
 
                     b.Property<int>("BaseServings")
                         .HasColumnType("int");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("varchar(256)")
-                        .HasMaxLength(256)
-                        .IsUnicode(false);
 
                     b.Property<string>("Instructions")
                         .HasColumnType("varchar(4096)")
