@@ -67,6 +67,9 @@ namespace MyBulkMealsApp.Controllers
             ViewData["UnverifiedRecipes"] = await _recipeRepository.GetAllUnverified();
             ViewData["UnverifiedIngredients"] = await _ingredientRepository.GetAllUnverified();
 
+            ViewData["UnverifiedRecipeAmendments"] = await _recipeRepository.GetAllUnverified();
+            ViewData["UnverifiedIngredientAmendments"] = await _ingredientRepository.GetAllUnverified();
+
             return View();
         }
 
