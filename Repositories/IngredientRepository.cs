@@ -56,7 +56,7 @@ namespace MyBulkMealsApp.Repositories
                 .Select(r => new { Day = r.Key, Count = r.Count() })
                 .Where(r => r.Day >= from && r.Day <= to)
                 .OrderBy(r => r.Day)
-                .Select(r => new { Day = r.Day.ToShortDateString(), Count = r.Count})
+                .Select(r => new { Day = r.Day.ToShortDateString(), r.Count})
                 .ToArrayAsync();
 
             return ingredients;
