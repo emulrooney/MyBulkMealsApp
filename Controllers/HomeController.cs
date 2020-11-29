@@ -67,6 +67,9 @@ namespace MyBulkMealsApp.Controllers
             ViewData["UnverifiedRecipes"] = await _recipeRepository.GetAllUnverified();
             ViewData["UnverifiedIngredients"] = await _ingredientRepository.GetAllUnverified();
 
+            ViewData["UnverifiedRecipeAmendments"] = await _recipeRepository.GetAllUnverified();
+            ViewData["UnverifiedIngredientAmendments"] = await _ingredientRepository.GetAllUnverified();
+
             return View();
         }
 
@@ -105,6 +108,7 @@ namespace MyBulkMealsApp.Controllers
             var chartData = await _ingredientRepository.GetVerifiedIngredientsChartData(fromDate, toDate);
             return new JsonResult(chartData);
         }
+
         public async Task<JsonResult> GetVerifiedRecipesChartData(DateTime? fromDate, DateTime? toDate)
         {
             var chartData = await _recipeRepository.GetVerifiedRecipesChartData(fromDate, toDate);

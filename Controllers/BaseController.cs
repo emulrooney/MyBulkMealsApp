@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -19,7 +20,7 @@ namespace MyBulkMealsApp.Controllers
         protected readonly TRepository _repo;
         protected readonly UserManager<ApplicationUser> _userManager;
 
-        protected int pageSize = 20; //temp
+        protected int pageSize = 20;
 
         public BaseController(TRepository repository, UserManager<ApplicationUser> userManager)
         {
@@ -32,7 +33,11 @@ namespace MyBulkMealsApp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index(int pageNumber = 1)
         {
-            var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetAll(_userManager.GetUserAsync(User).Result), pageNumber, pageSize);
+            var user = _userManager.GetUserAsync(User).Result;
+
+            var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetAll(user), pageNumber, pageSize);
+            ViewData["SavedIds"] = await _repo.GetSavedIds(list);
+
             return View(list);
         }
 
@@ -40,33 +45,49 @@ namespace MyBulkMealsApp.Controllers
         public async Task<IActionResult> Results(string keyword, int pageNumber = 1)
         {
             var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetByKeyword(keyword), pageNumber, pageSize);
+            ViewData["SavedIds"] = await _repo.GetSavedIds(list);
+
             return View("Index", list);
         }
 
         public async Task<IActionResult> Newest(int pageNumber = 1)
         {
             var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetByCreationTime(true), pageNumber, pageSize);
+            ViewData["SavedIds"] = await _repo.GetSavedIds(list);
             ViewData["showCreatedTime"] = true;
             return View("Index", list);
         } 
 
-        public async Task<IActionResult> Created()
+        public async Task<IActionResult> Created(int pageNumber = 1)
         {
             var created = await _repo.GetCreatedBy(_userManager.GetUserAsync(User).Result.Id);
-            var list = await PaginatedList<TEntity>.CreateAsync(created, 1, 20);
+            var list = await PaginatedList<TEntity>.CreateAsync(created, pageNumber, pageSize);
             return View("Index", list);
         }
 
-        public async Task<IActionResult> Saved()
+        public async Task<IActionResult> Saved(int pageNumber = 1)
         {
-            var created = await _repo.GetSavedBy(_userManager.GetUserAsync(User).Result.Id);
-            var list = await PaginatedList<TEntity>.CreateAsync(created, 1, 20);
+            List<TEntity> created = _repo.GetSavedBy(_userManager.GetUserAsync(User).Result.Id);
+
+            var list = await PaginatedList<TEntity>.CreateAsync(created, pageNumber, pageSize);
             return View("Index", list);
+        }
+
+        public async Task<IActionResult> Amendments(int id, int pageNumber = 1)
+        {
+            var amendments = await _repo.GetAmendmentsFor(id);
+            return View("Index", await PaginatedList<TEntity>.CreateAsync(amendments, pageNumber, pageSize));
+        }
+
+        public virtual async Task<JsonResult> SaveItem(int id)
+        {
+            var saved = await _repo.ToggleSavedItem(id, _userManager.GetUserAsync(User).Result.Id);
+            return new JsonResult(saved);
         }
 
         public async Task<IActionResult> Random(int quantity)
         {
-            var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetRandom(quantity), 1, 20);
+            var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetRandom(quantity), 1, quantity);
             return View("Index", list);
         }
 
@@ -96,6 +117,20 @@ namespace MyBulkMealsApp.Controllers
             return View();
         }
 
+        // GET: {controller}/Amend
+        public async virtual Task<IActionResult> Amend(int id)
+        {
+            var item = await _repo.Get(id);
+            return View(item);
+        }
+
+        // GET: {controller}/Copy
+        public async virtual Task<IActionResult> Copy(int id)
+        {
+            var item = await _repo.Get(id);
+            return View(item);
+        }
+
         // GET: {controller}/Edit/5
         public async virtual Task<IActionResult> Edit(int? id)
         {
@@ -112,7 +147,24 @@ namespace MyBulkMealsApp.Controllers
             return View(recipe);
         }
 
-        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Copy([Bind("MeasurementId,BaseMeasurement,Calories,Protein,Carbs,Fat,ItemName,IsPublic")] Ingredient ingredient, int id)
+        {
+            var entity = await _repo.Get(id);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var other = entity.Copy(id);
+
+            other.AmendmentCount = 0;
+            other.CreatorId = userId;
+
+            await _repo.Add((TEntity)other);
+            await _repo.ToggleSavedItem(other.Id, userId);
+
+            return await Saved();
+        }
+
+
 
         // GET: {controller}/Delete/5
         public async Task<IActionResult> Delete(int? id)

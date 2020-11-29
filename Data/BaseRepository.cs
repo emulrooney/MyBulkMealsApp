@@ -22,6 +22,17 @@ namespace MyBulkApps.Data
             get
             {
                 return context.Set<TEntity>()
+                .Where(i => !i.IsAmendment)
+                .OfType<TEntity>();
+            }
+        }
+
+        public virtual IQueryable<TEntity> Amendments
+        {
+            get
+            {
+                return context.Set<TEntity>()
+                .Where(i => i.IsAmendment)
                 .OfType<TEntity>();
             }
         }
@@ -35,6 +46,11 @@ namespace MyBulkApps.Data
         public async Task<TEntity> Add(TEntity entity)
         {
             context.Set<TEntity>().Add(entity);
+
+            if (entity.BasedOn > 0)
+            {
+
+            }
             
             await context.SaveChangesAsync();
             return entity;
@@ -83,6 +99,16 @@ namespace MyBulkApps.Data
             return await context.Set<TEntity>().FindAsync(id);
         }
 
+        public virtual async Task<List<TEntity>> GetAmendment(int id)
+        {
+            return await Amendments.Where(a => a.BasedOn == id).ToListAsync();
+        }
+
+        public virtual async Task<List<TEntity>> GetAmendments()
+        {
+            return await Amendments.ToListAsync();
+        }
+
         public virtual async Task<List<TEntity>> GetByKeyword(string keyword)
         {
             return await Collection.Where(i => i.ItemName.Contains(keyword)).ToListAsync();
@@ -97,8 +123,7 @@ namespace MyBulkApps.Data
         {
             return await Collection.Where(i => i.ItemName.Contains(keyword)).Take(quantity).ToListAsync();
         }
-
-
+        
         public virtual async Task<List<TEntity>> GetByCreationTime(bool descending)
         {
             if (descending)
@@ -137,11 +162,66 @@ namespace MyBulkApps.Data
         {
             return await context.Set<UserItem>().Where(i => i is TUserItem).ToListAsync();
         }
-    
-        //TO DO: handle saving items
-        public virtual async Task<List<TEntity>> GetSavedBy(string userId)
+
+
+        public virtual List<TEntity> GetSavedBy(string id)
         {
-            return await Collection.Where(i => i.CreatorId == userId).ToListAsync();
+            var saved = context.Set<UserSavedItem>()
+                .Where(i => i.SavedBy == id)
+                .Include(i => i.UserItem); 
+
+            var savedReturn = new List<TEntity>();
+
+            foreach (var item in saved)
+            {
+                if (item.UserItem.GetType() == typeof(TEntity))
+                    savedReturn.Add(item.UserItem as TEntity);
+            }
+
+            return savedReturn;
+        }
+
+        public async virtual Task<Dictionary<int, bool>> GetSavedIds(PaginatedList<TEntity> page)
+        {
+            var ids = page.Select(p => p.Id).ToList();
+            var saved = await context.Set<UserSavedItem>()
+                .Select(i => new { Key = i.UserItemId, Value = ids.Contains(i.Id) })
+                .ToDictionaryAsync(k => k.Key, v => v.Value);
+            return saved;
+        }
+        public async Task<List<TEntity>> GetAmendmentsFor(int id)
+        {
+            return await Amendments.Where(a => a.BasedOn == id).ToListAsync();
+        }
+
+        public async Task<bool?> ToggleSavedItem(int itemId, string userId)
+        {
+            var item = Collection.Where(i => i.Id == itemId).FirstOrDefault();
+
+            var alreadySaved = context.Set<UserSavedItem>()
+                .Where(i => i.UserItemId == itemId && i.SavedBy.Contains(userId)).FirstOrDefault();
+
+            if (alreadySaved == null && item != null)
+            {
+                var entity = new UserSavedItem()
+                {
+                    SavedBy = userId,
+                    UserItemId = item.Id
+                };
+
+                context.Set<UserSavedItem>().Add(entity);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            else if (item != null)
+            {
+                context.Set<UserSavedItem>().Remove(alreadySaved);
+                await context.SaveChangesAsync();
+
+                return false;
+            }
+
+            return null;
         }
 
         public async Task<TEntity> Update(TEntity entity)
@@ -149,6 +229,14 @@ namespace MyBulkApps.Data
             context.Entry(entity).State = EntityState.Modified;
             await context.SaveChangesAsync();
             return entity;
+        }
+
+        public async Task IncrementAmendments(int id)
+        {
+            var item = Collection.Where(i => i.Id == id).FirstOrDefault();
+            item.AmendmentCount++;
+
+            await context.SaveChangesAsync();
         }
 
         public async Task<int> Count()

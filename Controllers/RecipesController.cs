@@ -53,7 +53,7 @@ namespace MyBulkMealsApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ImageUrl,BaseServings,Instructions,Time,Views,ItemName,CreatedTime,IsVerified,IsPublic,IsAmendment")] Recipe recipe, string ingredientsList)
+        public async Task<IActionResult> Create([Bind("BaseServings,Instructions,Time,Views,ItemName,CreatedTime,IsVerified,IsPublic,IsAmendment")] Recipe recipe, string ingredientsList)
         {
             var typeDefinition = new[] { new { Id = 0, Quantity = 0 } };
             var ingredients = JsonConvert.DeserializeAnonymousType(ingredientsList, typeDefinition);
@@ -65,7 +65,6 @@ namespace MyBulkMealsApp.Controllers
                 recipeIngredients.Add(new RecipeIngredient()
                 {
                     IngredientId = i.Id,
-                    //RecipeId = recipe.Id,
                     MeasurementAmount = i.Quantity
                 });
             }
@@ -120,7 +119,7 @@ namespace MyBulkMealsApp.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ImageUrl,BaseServings,Instructions,Time,Views,ItemName,CreatorId,IsVerified,IsPublic,VerificationSubmissionTime,IsAmendment")] Recipe recipe)
+        public async Task<IActionResult> Edit(int id, [Bind("BaseServings,Instructions,Time,Views,ItemName,CreatorId,IsVerified,IsPublic,VerificationSubmissionTime,IsAmendment")] Recipe recipe)
         {
             if (id != recipe.Id)
             {

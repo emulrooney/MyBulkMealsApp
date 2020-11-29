@@ -49,6 +49,16 @@ namespace MyBulkMealsApp.Repositories {
                 .Where(r => r.ItemName.Contains(keyword) || r.Instructions.Contains(keyword)).ToListAsync();
         }
 
+        public async Task<List<Recipe>> GetByKeywordWithIngredients(string keyword, int quantity)
+        {
+            return await Collection
+                .Where(r => r.ItemName.Contains(keyword) || r.Instructions.Contains(keyword))
+                .Include(r => r.Ingredients)
+                .ThenInclude(ri => ri.Ingredient)
+                .Take(quantity)
+                .ToListAsync();
+        }
+
         public async Task<List<Recipe>> GetByViews(bool descending = true)
         {
             if (descending)
@@ -80,6 +90,7 @@ namespace MyBulkMealsApp.Repositories {
                 .Select(r => new { Day = r.Key, Count = r.Count() })
                 .Where(r => r.Day >= from && r.Day <= to)
                 .OrderBy(r => r.Day)
+                .Select(r => new { Day = r.Day.ToShortDateString(), r.Count })
                 .ToArrayAsync();
 
             return recipes;

@@ -8,7 +8,6 @@ namespace MyBulkMealsApp.Models
 {
     public partial class Ingredient : UserItem
     {
-        
         public int MeasurementId { get; set; }
         public virtual Measurement Measurement { get; set; }
 

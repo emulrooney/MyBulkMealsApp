@@ -1,6 +1,7 @@
 ﻿using MyBulkMealsApp.Data;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -9,8 +10,8 @@ namespace MyBulkMealsApp.Models
 {
     public partial class Recipe : UserItem
     {
-        public string ImageUrl { get; set; }
         [Required]
+        [DisplayName("Base Servings")]
         public int BaseServings { get; set; }
         public string Instructions { get; set; }
         public int Time { get; set; }
@@ -26,7 +27,7 @@ namespace MyBulkMealsApp.Models
                     foreach (var i in Ingredients )
                     {
                         Console.WriteLine(i);
-                        calories += (int)(i.Ingredient.Calories * i.MeasurementAmount);
+                        calories += (int)(i.Ingredient.Calories / i.Ingredient.BaseMeasurement * i.MeasurementAmount);
                     }
                 }
                 return calories;
@@ -38,7 +39,7 @@ namespace MyBulkMealsApp.Models
             get
             {
                 if (Ingredients != null)
-                    return (int)(Ingredients.Sum(i => i.Ingredient.Protein * i.MeasurementAmount));
+                    return (int)(Ingredients.Sum(i => i.Ingredient.Protein / i.Ingredient.BaseMeasurement * i.MeasurementAmount));
                 return 0;
             }
         }
@@ -48,7 +49,7 @@ namespace MyBulkMealsApp.Models
             get
             {
                 if (Ingredients != null)
-                    return (int)(Ingredients.Sum(i => i.Ingredient.Carbs * i.MeasurementAmount));
+                    return (int)(Ingredients.Sum(i => i.Ingredient.Carbs / i.Ingredient.BaseMeasurement * i.MeasurementAmount));
                 return 0;
             }
         }
@@ -58,7 +59,7 @@ namespace MyBulkMealsApp.Models
             get
             {
                 if (Ingredients != null)
-                    return (int)(Ingredients.Sum(i => i.Ingredient.Fat * i.MeasurementAmount));
+                    return (int)(Ingredients.Sum(i => i.Ingredient.Fat / i.Ingredient.BaseMeasurement * i.MeasurementAmount));
                 return 0;
             }
         }

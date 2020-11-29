@@ -23,6 +23,8 @@ namespace MyBulkMealsApp.Models
         public bool IsPublic { get; set; }
         public DateTime? VerificationSubmissionTime { get; set; }
         public bool IsAmendment { get; set; }
+        public int AmendmentCount { get; set; }
+        public int BasedOn { get; set; }
 
         public ApplicationUser Creator { get; set; }
 
@@ -42,6 +44,18 @@ namespace MyBulkMealsApp.Models
         public UserItem()
         {
             CreatedTime = DateTime.Now;
+        }
+
+        public IEntity Copy(int id)
+        {
+            var userItem = (UserItem)this.MemberwiseClone();
+            userItem.Id = 0;
+            userItem.BasedOn = id;
+            userItem.CreatedTime = DateTime.Now;
+            userItem.IsPublic = false;
+            userItem.IsVerified = false;
+
+            return userItem;
         }
     }
 }

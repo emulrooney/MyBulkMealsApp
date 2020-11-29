@@ -23,6 +23,7 @@ namespace MyBulkMealsApp
 
             var secrets = configuration.GetSection("Secrets").Get<AppSecrets>();
             DbInitializer.AppSecrets = secrets;
+            MBMEmailHandler.AppSecrets = secrets; 
 
             using (var scope = host.Services.CreateScope())
                 DbInitializer.SeedDatabase(scope.ServiceProvider).Wait();

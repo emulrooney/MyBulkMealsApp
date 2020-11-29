@@ -3,12 +3,16 @@
 @{
     List<Recipe> unverifiedRecipes = (List<Recipe>)ViewData["UnverifiedRecipes"];
     List<Ingredient> unverifiedIngredients = (List<Ingredient>)ViewData["UnverifiedIngredients"];
+    List<Recipe> unverifiedRecipeAmendments = (List<Recipe>)ViewData["UnverifiedRecipeAmendments"];
+    List<Ingredient> unverifiedIngredientAmendments = (List<Ingredient>)ViewData["UnverifiedIngredientAmendments"];
+
+    ViewData["Title"] = "Administration";
 }
 
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script>
     $(document).ready(function () {
-        
+
         $("#updateRange").on("click", function () {
             let year = new Date().getFullYear();
             $("#fromDate").val(year + "-01-01");
@@ -257,7 +261,7 @@
                             </div>
                             <div class="col-4">
                                 <label class="col-form-label" for="includeUnverified">Include Unverified Items</label>
-                                <input class="form-check" type="checkbox" id="includeUnverified"  />
+                                <input class="form-check" type="checkbox" id="includeUnverified" />
                             </div>
                         </div>
                     </div>
@@ -278,6 +282,7 @@
         </div>
     </div>
     <div class="col-lg-4 col-s-12">
+        <h4>Pending Verifications</h4>
         <span class="verify__last-item"></span>
         <ul class="nav nav-tabs nav-fill" role="tablist">
             <li class="nav-item">
@@ -298,7 +303,7 @@
                             </button>
                             <span class="js__name--@r.Id">
                                 <a href="~/Recipes/Details/@r.Id">
-                                   @r.ItemName
+                                    @r.ItemName
                                 </a>
                                 by @r.CreatorName
                             </span>
@@ -310,6 +315,55 @@
             <div class="tab-pane fade" id="ingredients" role="tabpanel" aria-labelledby="ingredientsTab">
                 <ol class="list-group">
                     @foreach (var r in unverifiedIngredients)
+                    {
+                        <li class="list-group-item list__ingredient js__li--@r.Id">
+                            <button type="button" class="btn btn-sm btn-success verify__button float-right" data-type="ingredient" data-id="@r.Id">
+                                <i class="fa fa-thumbs-up"></i>
+                            </button>
+                            <span class="js__name--@r.Id">
+                                <a href="~/Ingredients/Details/@r.Id">@r.ItemName</a>
+                                by @r.CreatorName
+                            </span>
+                        </li>
+                    }
+                </ol>
+                <div class="@(unverifiedRecipeAmendments.Count >  0 ? "d-none " : "")alert alert-success list__ingredient--none">All ingredient amendments are verified! You're all caught up!</div>
+            </div>
+        </div>
+
+        <h4>Pending Amendments</h4>
+        <span class="verify__last-amendment"></span>
+        <ul class="nav nav-tabs nav-fill" role="tablist">
+            <li class="nav-item">
+                <a id="recipesAmendmentTab" class="nav-link active" data-toggle="tab" href="#recipesAmendments" role="tab" aria-controls="recipesAmendments" aria-selected="true">Recipes</a>
+            </li>
+            <li class="nav-item">
+                <a id="ingredientsAmendmentTab" class="nav-link" data-toggle="tab" href="#ingredientsAmendments" role="tab" aria-controls="ingredientsAmendment" aria-selected="false">Ingredients</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="recipes" role="tabpanel" aria-labelledby="recipesAmendmentTab">
+                <ol class="list-group">
+                    @foreach (var r in unverifiedRecipeAmendments)
+                    {
+                        <li class="list-group-item list__recipe js__li--@r.Id">
+                            <button type="button" class="btn btn-sm btn-success verify__button float-right" data-type="recipe" data-id="@r.Id">
+                                <i class="fa fa-thumbs-up"></i>
+                            </button>
+                            <span class="js__name--@r.Id">
+                                <a href="~/Recipes/Details/@r.Id">
+                                    @r.ItemName
+                                </a>
+                                by @r.CreatorName
+                            </span>
+                        </li>
+                    }
+                </ol>
+                <div class="@(unverifiedIngredientAmendments.Count > 0 ? "d-none " : "")alert alert-success list__recipe--none">All recipe amendments are verified! You're all caught up!</div>
+            </div>
+            <div class="tab-pane fade" id="ingredients" role="tabpanel" aria-labelledby="ingredientsTab">
+                <ol class="list-group">
+                    @foreach (var r in unverifiedIngredientAmendments)
                     {
                         <li class="list-group-item list__ingredient js__li--@r.Id">
                             <button type="button" class="btn btn-sm btn-success verify__button float-right" data-type="ingredient" data-id="@r.Id">

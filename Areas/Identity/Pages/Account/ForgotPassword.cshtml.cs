@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using MyBulkMealsApp.Models;
+using MyBulkMealsApp.Data;
 
 namespace MyBulkMealsApp.Areas.Identity.Pages.Account
 {
@@ -57,10 +58,7 @@ namespace MyBulkMealsApp.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                await _emailSender.SendEmailAsync(
-                    Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                var response = await MBMEmailHandler.SendPasswordResetEmail(user, callbackUrl);
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

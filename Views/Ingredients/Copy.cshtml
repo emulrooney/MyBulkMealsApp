@@ -1,29 +1,40 @@
 ﻿@model MyBulkMealsApp.Models.Ingredient
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Copy";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var Measurements = (List<Measurement>)ViewData["Measurements"];
 }
 
+<script>
+    $(document).ready(function () {
+        $(".js--check-original").on("blur", function () {
+            if ($(this).val() != "" + $(this).data("original"))
+                $(this).addClass("input--modified");
+            else
+                $(this).removeClass("input--modified");
+        });
+    });
+</script>
 
 <div class="item-page__details">
-    <h1 class="text-center pt-5">New Ingredient</h1>
-    <hr />  
+    <h1 class="text-center pt-5">Copy of: @Model.ItemName</h1>
+    <hr />
     <div class="row">
-        <form asp-action="Create">
+        <form asp-action="Copy">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="ItemName" class="control-label"></label>
-                <input asp-for="ItemName" class="form-control" />
+                <input asp-for="ItemName" data-original="@Model.ItemName" class="js--check-original form-control" />
                 <span asp-validation-for="ItemName" class="text-danger"></span>
             </div>
             <div class="input-group justify-content-between">
                 <label asp-for="BaseMeasurement" class="control-label pt-2"></label>
                 <div class="input-group-append">
-                    <input asp-for="BaseMeasurement" class="form-control " />
-                    <select asp-for="MeasurementId" id="MeasurementId" class="btn btn-outline-secondary dropdown-toggle ">
+                    <input asp-for="BaseMeasurement" data-original="@Model.BaseMeasurement" class="form-control js--check-original" />
+                    <select asp-for="MeasurementId" data-original="@Model.MeasurementId" id="MeasurementId" class="btn btn-outline-secondary dropdown-toggle js--check-original">
                         @foreach (Measurement m in Measurements)
                         {
                             <option value="@m.Id">@m.Name (@m.Symbol)</option>
@@ -36,47 +47,31 @@
                 <div class="form-group col-3 text-center">
                     <label asp-for="Calories" class="control-label"></label>
                     <br />
-                    <input class=" form-control" asp-for="Calories" />
+                    <input class="js--check-original form-control" data-original="@Model.Calories" asp-for="Calories" />
                     <span asp-validation-for="Calories" class="text-danger"></span>
                 </div>
                 <div class="form-group col-3 text-center">
                     <label asp-for="Protein" class="control-label"></label>
                     <br />
-                    <input class=" form-control" asp-for="Protein" />
+                    <input class="js--check-original form-control" data-original="@Model.Protein" asp-for="Protein" />
                     <span asp-validation-for="Protein" class="text-danger"></span>
                 </div>
                 <div class="form-group col-3 text-center">
                     <label asp-for="Carbs" class="control-label"></label>
                     <br />
-                    <input class=" form-control" asp-for="Carbs" />
+                    <input class="js--check-original form-control" data-original="@Model.Carbs" asp-for="Carbs" />
                     <span asp-validation-for="Carbs" class="text-danger"></span>
                 </div>
                 <div class="form-group col-3 text-center">
                     <label asp-for="Fat" class="control-label"></label>
                     <br />
-                    <input class=" form-control" asp-for="Fat" />
+                    <input class="js--check-original form-control" data-original="@Model.Fat" asp-for="Fat" />
                     <span asp-validation-for="Fat" class="text-danger"></span>
                 </div>
             </div>
-
-            <div>
-                <h3>Settings</h3>
-                <div class="form-group form-check form-check-inline">
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <label class="form-check-label">
-                            <input class="form-check-input" asp-for="IsVerified" checked /> @Html.DisplayNameFor(model => model.IsVerified)
-                        </label>
-                    }
-                    <label class="form-check-label">
-                        <input class="form-check-input" asp-for="IsPublic" /> @Html.DisplayNameFor(model => model.IsPublic)
-                    </label>
-                </div>
-            </div>
-
             <div class="form-group mt-5">
-                <input type="submit" value="Create Ingredient" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-info">Cancel</a>
+                <input type="submit" value="Make Copy" class="btn btn-primary btn-lg" />
+                <a asp-action="Index" class="btn btn-info btn-lg">Cancel</a>
             </div>
         </form>
     </div>

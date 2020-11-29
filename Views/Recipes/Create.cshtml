@@ -52,13 +52,13 @@
         $(".recipe__ingredients").append(`
 <li class="ingredient__item list-group-item" data-id="${i.id}">
     <div class="input-group row">
-        <a class="col-4 font-size--1point5" target="_blank" href="~/Ingredients/${i.id}">${i.label}</a>
-        <input type="number" min="0" class="ingredient__item__quantity form-control col-7" value="${i.baseMeasurement}" aria-label="quantity">
+        <a class="col-8" target="_blank" href="~/Ingredients/Details/${i.id}">${i.label}</a>
+        <input type="number" min="0" class="ingredient__item__quantity form-control col-3" value="${i.baseMeasurement}" aria-label="quantity">
         <div class="input-group-append">
             <span class="input-group-text" id="basic-addon2">${i.symbol}</span>
         </div>
         <button type="button" data-id="${i.id}" class="btn btn-sm btn-info col-1 ml-1 ingredient__item--remove" aria-label="Remove ${i.label}">
-            <i class="fa fa-times"></i>
+            <i aria-hidden="true" class="fa fa-times"></i>
         </button>
     </div>
 </li>
@@ -104,7 +104,7 @@
         });
 
         @* Adjust based on quantities*@
-        $(document).on("blur", ".ingredient__item__quantity", function () {
+        $(document).on("change", ".ingredient__item__quantity", function () {
             let id = $(".ingredient__item__quantity").index(this);
             let modValue = parseInt($(this).val());
             let quantityModifier = modValue / ingredientsList[id].baseMeasurement;
@@ -119,16 +119,14 @@
                 $(this).addClass("input--modified");
             else
                 $(this).removeClass("input--modified");
+
+            updateNutrition();
         });
 
-        $(".recipe__servings--up").on("click", function () {
-            var currentValue = parseInt($(".recipe__servings__value").first().val());
-            $(".recipe__servings__value").val(currentValue + 1);
-        });
-
-        $(".recipe__servings--down").on("click", function () {
-            var currentValue = parseInt($(".recipe__servings__value").first().val());
-            $(".recipe__servings__value").val(Math.max(currentValue - 1, 0));
+        $(".recipe__servings__value").on("change", function () {
+            if ($(this).val() <= 0) {
+                $(this).val(1);
+            }
         });
 
         $(".recipe__submit").on("click", function () {
@@ -149,13 +147,6 @@
             <div class="col-sm-9">
                 <input type="text" class="form-control" asp-for="ItemName" placeholder="My new recipe!">
                 <span asp-validation-for="ItemName" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label asp-for="ImageUrl" class="col-sm-3 col-form-label" class="control-label">Image URL:</label>
-            <div class="col-sm-9">
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
             </div>
         </div>
         <dl class="row">
@@ -179,11 +170,7 @@
                 @Html.DisplayNameFor(model => model.BaseServings)
             </dt>
             <dd class="col-sm-2">
-                <input class="recipe__servings__value form-text" min="0" value="0" asp-for="BaseServings" />
-                <div class="recipe__servings">
-                    <button type="button" class="btn btn-sm btn-info recipe__servings--down" aria-label="Reduce Servings"><</button>
-                    <button type="button" class="btn btn-sm btn-info recipe__servings--up" aria-label="Increase Servings">></button>
-                </div>
+                <input class="recipe__servings__value form-control" min="1" value="0" asp-for="BaseServings" />
             </dd>
         </dl>
 

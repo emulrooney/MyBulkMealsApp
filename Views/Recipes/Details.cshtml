@@ -18,7 +18,7 @@
             @Html.DisplayNameFor(model => model.Time)
         </dt>
         <dd class="col-sm-2">
-            <input asp-for="Time" class="form-control" disabled />
+            <input asp-for="Time" class="form-control" readonly />
         </dd>
 
         <dt class="col-sm-2">
@@ -32,7 +32,7 @@
             @Html.DisplayNameFor(model => model.BaseServings)
         </dt>
         <dd class="col-sm-2">
-            <input class="recipe__servings__value form-text" min="0" asp-for="BaseServings" />
+            <input class="recipe__servings__value form-text" readonly min="0" asp-for="BaseServings" />
             <div class="recipe__servings">
                 <button type="button" class="btn btn-sm btn-info recipe__servings--down" aria-label="Reduce Servings"><</button>
                 <button type="button" class="btn btn-sm btn-info recipe__servings--up" aria-label="Increase Servings">></button>
@@ -71,8 +71,8 @@
                         {
                             <li class="ingredient__item list-group-item" data-id="@ingredient.Id">
                                 <div class="input-group row">
-                                    <a class="col-4 font-size--1point5" target="_blank" href="~/Ingredients/@ingredient.Id">@ingredient.Ingredient.ItemName</a>
-                                    <input type="number" disabled class="ingredient__item__quantity form-control col-7" value="@ingredient.MeasurementAmount}" aria-label="quantity">
+                                    <a class="col-4" target="_blank" href="~/Ingredients/@ingredient.Id">@ingredient.Ingredient.ItemName</a>
+                                    <input type="number" readonly class="ingredient__item__quantity form-control col-7" value="@ingredient.MeasurementAmount" aria-label="quantity">
                                     <div class="input-group-append">
                                         <span class="input-group-text" id="basic-addon2">@ingredient.Ingredient.Measurement.Symbol</span>
                                     </div>
@@ -86,7 +86,7 @@
         <div class="tab-pane fade" id="steps" role="tabpanel" aria-labelledby="stepsTab">
             <div class="form-group">
                 <label asp-for="@Model.Instructions"></label>
-                <textarea disabled asp-for="@Model.Instructions" class="form-control" rows="24" cols="160"></textarea>
+                <textarea readonly asp-for="@Model.Instructions" class="form-control" rows="24" cols="160"></textarea>
             </div>
         </div>
     </div>

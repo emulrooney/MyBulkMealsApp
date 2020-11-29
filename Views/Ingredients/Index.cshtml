@@ -5,7 +5,7 @@
 
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "My Ingredients";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
 
@@ -17,6 +17,8 @@
     {
         isAdmin = UserManager.GetRolesAsync(user).Result.FirstOrDefault(c => c.Contains("Admin")) != null;
     }
+
+    Dictionary<int, bool> SavedIds = (Dictionary<int, bool>)ViewData["SavedIds"] ?? new Dictionary<int, bool>();
 }
 
 <script>
@@ -30,13 +32,54 @@
             $("#modalProtein").html(row.data("protein"));
             $("#modalCarbs").html(row.data("carbs"));
             $("#modalFat").html(row.data("fat"));
+            $(".js__modal-id").val(row.data("id"));
+
+            if (row.data("amendments")) {
+                $(".js__see-amendments").removeClass("d-none");
+            } else {
+                $(".js__see-amendments").addClass("d-none");
+            }
+
+            toggleSaveButton(row.data("saved"));
 
             $("#ingredientModal").modal('show');
         });
+
+        $(".js__save-ingredients").on("click", function () {
+            let modalId = $(".js__modal-id").val();
+            $.ajax({
+                url: "Ingredients/SaveItem",
+                data: { id: modalId },
+                success: function(result) {
+                    toggleSaveButton(result);
+                }
+            })
+        });
+
+        $(".js__propose-amendment").on("click", function () {
+            $("#amendmentForm").submit();
+        });
+
+        $(".js__make-copy").on("click", function () {
+            $("#copyForm").submit();
+        });
+
+        $(".js__see-amendments").on("click", function () {
+            $("#seeAmendmentsForm").submit();
+        });
+
+        function toggleSaveButton(saved) {
+            if (saved) {
+                $(".js__save-ingredients").text("Remove from Saved Ingredients");
+            } else {
+                $(".js__save-ingredients").text("Add to Saved Ingredient");
+            }
+        }
     });
 </script>
 
 <div id="ingredientModal" class="modal" tabindex="-1" role="dialog">
+    <input type="hidden" value="" name="id" class="js__modal-id" />
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -51,20 +94,38 @@
                     <li>Protein: <span id="modalProtein"></span></li>
                     <li>Carbs: <span id="modalCarbs"></span></li>
                     <li>Fat: <span id="modalFat"></span></li>
-
                 </ul>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <button class="js__see-amendments d-none btn-outline-primary btn-sm">See Proposed Amendments</button>
+                }
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-primary">Save to My Ingredients</button>
-                <button type="button" class="btn btn-sm btn-info">Propose Amendment</button>
-                <button type="button" class="btn btn-sm btn-info">Make Copy</button>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <button type="button" class="js__save-ingredients btn btn-sm btn-primary">Save to My Ingredients</button>
+                    <button type="button" class="js__propose-amendment btn btn-sm btn-info">Propose Amendment</button>
+                    <button type="button" class="js__make-copy btn btn-sm btn-info">Make Copy</button>
+                    <form asp-action="Copy" id="copyForm" class="d-none" method="get">
+                        <input type="hidden" value="" name="id" class="js__modal-id" />
+                    </form>
+                    <form asp-action="Amend" id="amendmentForm" class="d-none" method="get">
+                        <input type="hidden" value="" name="id" class="js__modal-id" />
+                    </form>
+                    <form asp-action="Amendments" id="viewAmendmentsForm" class="d-none" method="get">
+                        <input type="hidden" value="" name="id" class="js__modal-id" />
+                    </form>
+                }
+                else
+                {
+                    <span class="text-secondary">Log in to save this ingredient!</span>
+                }
             </div>
         </div>
     </div>
 </div>
 
 <h1>Ingredients</h1>
-
 <hr />
 <h2>Popular Searches</h2>
 <ul class="list-inline">
@@ -117,13 +178,13 @@
             }
             <th>
             </th>
-            <th></th>
+            <th style="min-width: 0px;"></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr data-calories="@item.Calories" data-protein="@item.Protein" data-carbs="@item.Carbs" data-fat="@item.Fat">
+            <tr data-id="@item.Id" data-amendments="@((SignInManager.IsSignedIn(User) && item.AmendmentCount > 0).ToString().ToLower())" data-saved="@(SavedIds.Keys.Contains(item.Id) ? SavedIds[item.Id] : false)" data-calories="@item.Calories" data-protein="@item.Protein" data-carbs="@item.Carbs" data-fat="@item.Fat">
                 <td>
                     <a href="#" class="js__show-nutrition">
                         @Html.DisplayFor(modelItem => item.ItemName)
@@ -145,15 +206,20 @@
                     {
                         <i class="fa fa-check-circle"></i>
                     }
-                </td>
-                <td>
-                    @if ((item.CreatorId == currentUserId && !item.IsVerified) || isAdmin)
+
+                    @if (SavedIds.Keys.Contains(item.Id) ? SavedIds[item.Id] : false)
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <span>|</span>
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <i class="fa fa-save"></i>
                     }
                 </td>
+                    @if ((item.CreatorId == currentUserId && !item.IsVerified) || isAdmin)
+                    {
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <span>|</span>
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    }
             </tr>
         }
     </tbody>
@@ -168,17 +234,22 @@
    asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
+   class="btn btn-default btn-outline-info btn-lg  mt-2 @prevDisabled">
+    <i class="fa fa-arrow-left mr-1" aria-hidden="true"></i>
     Previous
 </a>
 <a asp-action="Index"
    asp-route-sortOrder="@ViewData["CurrentSort"]"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
    asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
+   class="btn btn-default btn-outline-info btn-lg  mt-2 @nextDisabled">
     Next
+    <i class="fa fa-arrow-right ml-1" aria-hidden="true"></i>
 </a>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-default btn-outline-primary btn-lg mt-2">
+        <i class="fa fa-plus mr-1" aria-hidden="true"></i>
+        Create New
+    </a>
 </p>
