@@ -197,5 +197,9 @@ namespace MyBulkMealsApp.Controllers
             return _repo.Get(id) != null;
         }
 
+        public virtual async Task<IActionResult> Report() {
+            return View();
+        }
+
     }
 }

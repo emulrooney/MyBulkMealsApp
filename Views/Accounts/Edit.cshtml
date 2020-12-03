@@ -1,0 +1,47 @@
+﻿@model MyBulkMealsApp.Models.ApplicationUser
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "User Account";
+
+    var user = await UserManager.GetUserAsync(User);
+    var currentUserId = user?.Id;
+}
+
+<h1>Editing: @Model.FullName (Public Info)</h1>
+
+<hr />
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+    <label asp-for="FirstName"></label>
+    <input asp-for="FirstName" />
+
+    <label asp-for="LastName"></label>
+    <input asp-for="LastName" />
+
+    <label asp-for="Email"></label>
+    <span>@Model.Email</span>
+    <span class="text-secondary">
+        @if (Model.Id == currentUserId)
+        {
+            <span>Change your email by clicking your account name in the navbar.</span>
+        }
+        else
+        {
+            <span>Only the account holder can change their email.</span>
+        }
+    </span>
+
+    <label asp-for="Location"></label>
+    <input asp-for="Location" />
+    </div>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <button type="submit" class="btn btn-lg btn-secondary">Submit Edits</button>
+    }
+
+    <a asp-controller="Home" asp-action="Index" class="btn btn-lg btn-primary">Back to Home</a>
+</form>

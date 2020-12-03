@@ -19,6 +19,10 @@
     Dictionary<int, bool> SavedIds = (Dictionary<int, bool>)ViewData["SavedIds"];
 }
 
+<a class="btn btn-lg btn-info float-right" asp-action="Report">
+    <i aria-hidden="true" class="fa fa-line-chart"></i>
+    View Reports
+</a>
 <h1>Recipes</h1>
 <hr />
 
@@ -138,7 +142,7 @@
 </a>
 
 <div>
-    <a asp-action="Create" class="btn btn-default btn-outline-primary btn-lg">
+    <a asp-action="Create" class="btn btn-default btn-outline-primary btn-lg  mt-2">
         <i class="fa fa-plus mr-1" aria-hidden="true"></i>
         Create New
     </a>

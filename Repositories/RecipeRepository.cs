@@ -37,10 +37,13 @@ namespace MyBulkMealsApp.Repositories {
         public override async Task<Recipe> Get(int id)
         {
             return await Collection
+                .Include(r => r.Creator)
                 .Include(r => r.Ingredients)
                 .ThenInclude(ri => ri.Ingredient)
                 .ThenInclude(i => i.Measurement)
                 .FirstOrDefaultAsync(i => i.Id == id);
+
+
         }
 
         public override async Task<List<Recipe>> GetByKeyword(string keyword)

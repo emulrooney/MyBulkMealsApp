@@ -1,0 +1,34 @@
+﻿@model MyBulkMealsApp.Models.ApplicationUser
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Account: " + Model.FullName;
+
+    var user = UserManager.GetUserAsync(User);
+    var currentUserId = user?.Result.Id;
+}
+
+<h1>@Model.FullName</h1>
+@if (currentUserId == Model.Id)
+{
+    <p class="text-secondary">Is this your account? Click your name in the top-right of the nav to edit account settings.</p>
+}
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-2">Full Name</dt>
+    <dd class="col-sm-2">@Model.FullName</dd>
+
+    <dt class="col-sm-2">Email</dt>
+    <dd class="col-sm-2">@Model.Email</dd>
+
+    <dt class="col-sm-2">Location</dt>
+    <dd class="col-sm-2">@Model.Location</dd>
+</dl>
+
+@if (User.IsInRole("Admin"))
+{
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-lg btn-secondary">Edit</a>
+}
+<a asp-controller="Home" asp-action="Index" class="btn btn-lg btn-primary">Back to Home</a>

@@ -12,6 +12,15 @@
     <h1>
         @Model.ItemName
     </h1>
+    <h2>
+        @if (Model.CreatorId != null)
+        {
+            <a asp-controller="Accounts" asp-for="Details" asp-route-id="@Model.CreatorId">@Model.CreatorName</a>
+        } else
+        {
+            <span>@Model.CreatorName</span>
+        }
+    </h2>
 
     <dl class="row">
         <dt class="col-sm-2">
@@ -20,6 +29,7 @@
         <dd class="col-sm-2">
             <input asp-for="Time" class="form-control" readonly />
         </dd>
+
 
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Ingredients)
