@@ -48,6 +48,7 @@ namespace MyBulkMealsApp.Controllers
                 .ThenInclude(r => r.Recipe)
                 .ThenInclude(r => r.Ingredients)
                 .FirstOrDefaultAsync(m => m.Id == id);
+            
             var userId = _userManager.GetUserId(User);
 
             if (mealPlan == null || mealPlan.CreatorId != userId )

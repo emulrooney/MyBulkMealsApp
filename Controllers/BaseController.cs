@@ -50,6 +50,7 @@ namespace MyBulkMealsApp.Controllers
             return View("Index", list);
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Newest(int pageNumber = 1)
         {
             var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetByCreationTime(true), pageNumber, pageSize);
@@ -85,6 +86,7 @@ namespace MyBulkMealsApp.Controllers
             return new JsonResult(saved);
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Random(int quantity)
         {
             var list = await PaginatedList<TEntity>.CreateAsync(await _repo.GetRandom(quantity), 1, quantity);

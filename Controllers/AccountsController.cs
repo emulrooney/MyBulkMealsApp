@@ -13,6 +13,9 @@ using Newtonsoft.Json;
 
 namespace MyBulkMealsApp.Controllers
 {
+    /// <summary>
+    /// Minimal controller for user accounts (as ApplicationUser).
+    /// </summary>
     [Authorize]
     public class AccountsController : Controller
     {

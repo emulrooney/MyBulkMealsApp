@@ -14,6 +14,7 @@ namespace MyBulkMealsApp.Models
         [DisplayName("Base Servings")]
         public int BaseServings { get; set; }
         public string Instructions { get; set; }
+        [DisplayName("Time (Minutes)")]
         public int Time { get; set; }
         public int Views { get; set; }
 
@@ -26,7 +27,6 @@ namespace MyBulkMealsApp.Models
                 {
                     foreach (var i in Ingredients )
                     {
-                        Console.WriteLine(i);
                         calories += (int)(i.Ingredient.Calories / i.Ingredient.BaseMeasurement * i.MeasurementAmount);
                     }
                 }

@@ -33,6 +33,40 @@ namespace MyBulkMealsApp.Repositories
             return await Collection.OrderByDescending(e => e.CreatedTime).ToListAsync();
         }
 
+        public override async Task<Ingredient> Verify(int id)
+        {
+            var ingredient = await context.Set<Ingredient>().FindAsync(id);
+            if (ingredient == null)
+            {
+                return ingredient;
+            }
+
+            ingredient.IsVerified = true;
+            ingredient.VerificationSubmissionTime = DateTime.Now;
+
+            if (ingredient.IsAmendment)
+            {
+                var replaced = await Get(id);
+                replaced.ItemName = ingredient.ItemName;
+                replaced.Calories = ingredient.Calories;
+                replaced.Carbs = ingredient.Carbs;
+                replaced.Fat = ingredient.Fat;
+                replaced.Protein= ingredient.Protein;
+                replaced.BaseMeasurement = ingredient.BaseMeasurement;
+                replaced.MeasurementId = ingredient.MeasurementId;
+
+                replaced.AmendmentCount--;
+                await Delete(ingredient.Id);
+                ingredient = replaced;
+                await Update(ingredient);
+            }
+
+            await context.SaveChangesAsync();
+
+            return ingredient;
+        }
+
+
         //TODO Instead, should probably use measurement helper
         public async Task<List<Measurement>> GetMeasurements()
         {
@@ -42,6 +76,11 @@ namespace MyBulkMealsApp.Repositories
         public async Task<List<Ingredient>> GetAllUnverified()
         {
             return await Collection.OrderByDescending(e => e.CreatedTime).Where(e => !e.IsVerified && e.IsPublic).ToListAsync();
+        }
+
+        public async Task<List<Ingredient>> GetAllUnverifiedAmendments()
+        {
+            return await Amendments.OrderByDescending(e => e.CreatedTime).Where(e => !e.IsVerified && e.IsPublic).ToListAsync();
         }
 
         [Authorize("Admin")]

@@ -59,7 +59,7 @@ namespace MyBulkApps.Data
             return entities;
         }
 
-        public async Task<TEntity> Verify(int id)
+        public async virtual Task<TEntity> Verify(int id)
         {
             var entity = await context.Set<TEntity>().FindAsync(id);
             if (entity == null)

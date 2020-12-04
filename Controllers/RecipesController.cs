@@ -190,6 +190,7 @@ namespace MyBulkMealsApp.Controllers
 
         public virtual async Task<IActionResult> Report()
         {
+            ViewData["TopRecipes"] = await _repo.GetTopRecipes(10);
             return View();
         }
     }

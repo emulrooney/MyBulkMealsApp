@@ -46,6 +46,36 @@ namespace MyBulkMealsApp.Repositories {
 
         }
 
+        public override async Task<Recipe> Verify(int id)
+        {
+            var recipe = await context.Set<Recipe>().FindAsync(id);
+            if (recipe == null)
+            {
+                return recipe;
+            }
+
+            recipe.IsVerified = true;
+            recipe.VerificationSubmissionTime = DateTime.Now;
+
+            if (recipe.IsAmendment)
+            {
+                var replaced = await Get(id);
+                replaced.ItemName = recipe.ItemName;
+                replaced.Instructions = recipe.ItemName;
+                replaced.BaseServings = recipe.BaseServings;
+                replaced.Ingredients = recipe.Ingredients;
+                replaced.Views += recipe.Views;
+                replaced.AmendmentCount--;
+
+                await Delete(recipe.Id);
+                recipe = replaced;
+            }
+
+            await context.SaveChangesAsync();
+
+            return recipe;
+        }
+
         public override async Task<List<Recipe>> GetByKeyword(string keyword)
         {
             return await Collection
@@ -79,6 +109,11 @@ namespace MyBulkMealsApp.Repositories {
         public async Task<List<Recipe>> GetAllUnverified()
         {
             return await Collection.OrderByDescending(e => e.CreatedTime).Where(e => !e.IsVerified && e.IsPublic).ToListAsync();
+        }
+
+        public async Task<List<Recipe>> GetAllUnverifiedAmendments()
+        {
+            return await Amendments.OrderByDescending(e => e.CreatedTime).Where(e => !e.IsVerified && e.IsPublic).ToListAsync();
         }
 
         [Authorize("Admin")]
