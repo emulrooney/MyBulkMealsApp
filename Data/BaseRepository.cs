@@ -47,11 +47,6 @@ namespace MyBulkApps.Data
         {
             context.Set<TEntity>().Add(entity);
 
-            if (entity.BasedOn > 0)
-            {
-
-            }
-            
             await context.SaveChangesAsync();
             return entity;
         }
@@ -242,6 +237,11 @@ namespace MyBulkApps.Data
         public async Task<int> Count()
         {
             return await Collection.CountAsync();
+        }
+
+        public async Task<int> GetNumberOfUnverifiedItems()
+        {
+            return Collection.Where(i => !i.IsVerified && i.IsPublic).Count();
         }
 
     }
