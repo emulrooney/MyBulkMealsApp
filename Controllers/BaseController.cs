@@ -20,7 +20,7 @@ namespace MyBulkMealsApp.Controllers
         protected readonly TRepository _repo;
         protected readonly UserManager<ApplicationUser> _userManager;
 
-        protected int pageSize = 20;
+        protected int pageSize = SimpleConfig.ItemsPerPage;
 
         public BaseController(TRepository repository, UserManager<ApplicationUser> userManager)
         {
@@ -159,6 +159,7 @@ namespace MyBulkMealsApp.Controllers
             other.CreatorId = userId;
 
             await _repo.Add((TEntity)other);
+
             await _repo.ToggleSavedItem(other.Id, userId);
 
             return await Saved();
@@ -196,10 +197,5 @@ namespace MyBulkMealsApp.Controllers
         {
             return _repo.Get(id) != null;
         }
-
-        public virtual async Task<IActionResult> Report() {
-            return View();
-        }
-
     }
 }

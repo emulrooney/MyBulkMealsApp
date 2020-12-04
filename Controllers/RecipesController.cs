@@ -76,6 +76,21 @@ namespace MyBulkMealsApp.Controllers
             {
                 recipe.Ingredients = recipeIngredients;
                 await _repo.Add(recipe);
+                var quantity = await _repo.GetNumberOfUnverifiedItems();
+
+                if (quantity > SimpleConfig.VerificationNotificationTrigger && User.IsInRole("Admin"))
+                {
+                    List<ApplicationUser> users = (List<ApplicationUser>)await _userManager.GetUsersInRoleAsync("Admin");
+
+                    var callbackUrl = Url.Page(
+                    "/Admin",
+                    pageHandler: null,
+                    values: null,
+                    protocol: Request.Scheme);
+
+                    await MBMEmailHandler.SendNotificationEmail(recipe, users, callbackUrl, SimpleConfig.VerificationNotificationTrigger);
+                }
+
 
                 return RedirectToAction(nameof(Index));
             }
@@ -171,6 +186,11 @@ namespace MyBulkMealsApp.Controllers
         private bool RecipeExists(int id)
         {
             return _repo.Get(id) != null;
+        }
+
+        public virtual async Task<IActionResult> Report()
+        {
+            return View();
         }
     }
 }
