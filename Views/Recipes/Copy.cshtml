@@ -138,6 +138,8 @@
             $("#ingredientsList").val(JSON.stringify(ingredientsList.map(i => ({ id: i.id, quantity: i.currentMeasurement }))));
             $("#recipeForm").submit();
         });
+
+        updateNutrition();
     });
 </script>
 <div class="item-page__details">

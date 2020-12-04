@@ -124,20 +124,12 @@
                 $(this).removeClass("input--modified");
         });
 
-        $(".recipe__servings--up").on("click", function () {
-            var currentValue = parseInt($(".recipe__servings__value").first().val());
-            $(".recipe__servings__value").val(currentValue + 1);
-        });
-
-        $(".recipe__servings--down").on("click", function () {
-            var currentValue = parseInt($(".recipe__servings__value").first().val());
-            $(".recipe__servings__value").val(Math.max(currentValue - 1, 0));
-        });
-
         $(".recipe__submit").on("click", function () {
             $("#ingredientsList").val(JSON.stringify(ingredientsList.map(i => ({ id: i.id, quantity: i.currentMeasurement }))));
             $("#recipeForm").submit();
         });
+
+        updateNutrition();
     });
 </script>
 <div class="item-page__details">
@@ -176,10 +168,6 @@
             </dt>
             <dd class="col-sm-2">
                 <input class="recipe__servings__value form-text" min="0" value="0" asp-for="BaseServings" />
-                <div class="recipe__servings">
-                    <button type="button" class="btn btn-sm btn-info recipe__servings--down" aria-label="Reduce Servings"><</button>
-                    <button type="button" class="btn btn-sm btn-info recipe__servings--up" aria-label="Increase Servings">></button>
-                </div>
             </dd>
         </dl>
 
