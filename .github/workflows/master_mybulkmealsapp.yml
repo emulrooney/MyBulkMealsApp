@@ -31,5 +31,5 @@ jobs:
       with:
         app-name: 'mybulkmealsapp'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_f7480f1096e3458386031ca6ec83b6e2 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_63a712cc17ed497ba027940e1a9deeef }}
         package: ${{env.DOTNET_ROOT}}/myapp 
