@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyBulkMealsApp.Models;
 
 namespace MyBulkMealsApp.Migrations
 {
     [DbContext(typeof(MyBulkMealsAppContext))]
-    partial class MyBulkMealsAppContextModelSnapshot : ModelSnapshot
+    [Migration("20201208015530_AppUserValidation_Dec7")]
+    partial class AppUserValidation_Dec7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -50,10 +50,14 @@ namespace MyBulkMealsApp.Areas.Identity.Pages.Account
         {
             [Required]
             [Display(Name = "First Name")]
+            [StringLength(20, ErrorMessage = "Your last name cannot exceed 40 characters.")]
+            [RegularExpression("/[A-Za-z -]*/")]
             public string FirstName { get; set; }
 
             [Required]
             [Display(Name = "Last Name")]
+            [StringLength(40, ErrorMessage = "Your last name cannot exceed 40 characters.")]
+            [RegularExpression("/[A-Za-z -]*/")]
             public string LastName { get; set; }
 
             [Required]
@@ -62,7 +66,7 @@ namespace MyBulkMealsApp.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "Your {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "Your {0} must be at least {2} and at max {1} characters long.", MinimumLength = 8)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
@@ -71,7 +75,6 @@ namespace MyBulkMealsApp.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "Your password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
-
 
             [StringLength(128, ErrorMessage = "The location cannot exceed 128 characters.")]
             public string Location { get; set; }
