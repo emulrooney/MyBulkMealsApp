@@ -14,11 +14,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyBulkMealsApp.Models;
 using MyBulkMealsApp.Repositories;
+using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Http;
 
 namespace MyBulkMealsApp
 {
     public class Startup
     {
+
+        private readonly string AllowSpecificOrigins = "_allowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -37,6 +42,18 @@ namespace MyBulkMealsApp
                 .AddEntityFrameworkStores<MyBulkMealsAppContext>()
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: AllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("https://code.highcharts.com/",
+                                                          "https://ajax.googleapis.com/",
+                                                          "https://fonts.googleapis.com/"
+                                                          );
+                                  });
+            });
 
             //REPOS & OTHER HELPFUL CLASSES
             services.AddScoped<RecipeRepository>();
@@ -58,13 +75,27 @@ namespace MyBulkMealsApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseHttpsRedirection();
+            app.UseHttpsRedirection(); 
             app.UseStaticFiles();
 
+            app.UseCookiePolicy(new CookiePolicyOptions
+            {
+                HttpOnly = HttpOnlyPolicy.Always,
+                Secure = CookieSecurePolicy.Always,
+                MinimumSameSitePolicy = SameSiteMode.Strict
+            });
+
             app.UseRouting();
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+                await next();
+            });
 
             app.UseEndpoints(endpoints =>
             {
