@@ -51,13 +51,13 @@ namespace MyBulkMealsApp.Areas.Identity.Pages.Account
             [Required]
             [Display(Name = "First Name")]
             [StringLength(20, ErrorMessage = "Your last name cannot exceed 40 characters.")]
-            [RegularExpression("/[A-Za-z -]*/")]
+            [RegularExpression("[A-Za-z -]*")]
             public string FirstName { get; set; }
 
             [Required]
             [Display(Name = "Last Name")]
             [StringLength(40, ErrorMessage = "Your last name cannot exceed 40 characters.")]
-            [RegularExpression("/[A-Za-z -]*/")]
+            [RegularExpression("[A-Za-z -]*")]
             public string LastName { get; set; }
 
             [Required]

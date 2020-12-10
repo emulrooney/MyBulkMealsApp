@@ -11,14 +11,14 @@ namespace MyBulkMealsApp.Models
     {
         [Display(Name = "First Name")]
         [MaxLength(20)]
-        [RegularExpression("/[A-Za-z -]*/")]
+        [RegularExpression("[A-Za-z -]*")]
         public string FirstName { get; set; }
         [Display(Name = "Last Name")]
         [MaxLength(40)]
-        [RegularExpression("/[A-Za-z -]*/")]
+        [RegularExpression("[A-Za-z -]*")]
         public string LastName { get; set; }
         [MaxLength(40)]
-        [RegularExpression("/[A-Za-z -]*/")]
+        [RegularExpression("[A-Za-z -]*")]
         public string Location { get; set; }
 
         [Display(Name = "Name")]
